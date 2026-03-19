@@ -597,6 +597,15 @@ pre[class*="language-"] {
 .toast-success .toast-dot { background: var(--green); }
 .toast-error .toast-dot { background: var(--red); }
 
+/* ── PROVIDER TABS ──────────────────────────── */
+.provider-tab {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+  padding: 6px 10px; border-radius: 6px; border: none;
+  cursor: pointer; flex: 1; transition: all 0.2s;
+  background: transparent; color: var(--text-muted);
+}
+.active-tab { background: var(--amber); color: #0e0e10; font-weight: 700; }
+
 /* ── FOOTER ─────────────────────────────────── */
 .footer {
   border-top: 1px solid var(--border);
@@ -626,7 +635,7 @@ pre[class*="language-"] {
   </a>
   <div class="header-right">
     <span class="badge-urdu">🇵🇰 Roman Urdu</span>
-    <button class="api-btn" onclick="openModal()">🔑 API Key</button>
+    <button class="api-btn" onclick="openModal()">🔑 Free API Key</button>
   </div>
 </header>
 
@@ -634,7 +643,7 @@ pre[class*="language-"] {
      HERO
 ════════════════════════════════════════════ -->
 <section class="hero">
-  <div class="hero-tagline">AI Coding Tutor — Powered by GPT-4</div>
+  <div class="hero-tagline">AI Coding Tutor — Powered by Groq + Llama 3 (100% Free)</div>
   <h1 class="hero-title">Error ho gaya? <em>Koi baat nahi.</em></h1>
   <p class="hero-sub">Apna buggy code paste karo. CodeDost Roman Urdu mein explain karega — desi analogy ke saath — aur fix bhi karega.</p>
   <div class="mode-toggle">
@@ -720,7 +729,7 @@ def calculate_total(items):
         <div class="btn-spinner"></div>
       </button>
       <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;">
-        GPT-4 se powered · Roman Urdu mein jawab milega
+        Groq (Free) se powered · Roman Urdu mein jawab milega
       </p>
     </div>
 
@@ -853,7 +862,7 @@ def calculate_total(items):
      FOOTER
 ════════════════════════════════════════════ -->
 <footer class="footer">
-  Built with <span>♥</span> for Pakistani CS students · CodeDost v1.0 · Powered by GPT-4
+  Built with <span>♥</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
 </footer>
 
 <!-- ═══════════════════════════════════════════
@@ -861,14 +870,60 @@ def calculate_total(items):
 ════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
-    <h2>🔑 OpenAI API Key</h2>
-    <p>CodeDost GPT-4 use karta hai. Apna API key enter karo — yeh sirf tumhare browser mein save hoga, kahi send nahi hoga.</p>
-    <input class="modal-input" type="password" id="modal-api-key"
-      placeholder="sk-proj-..." autocomplete="off"/>
-    <button class="modal-save" onclick="saveApiKey()">Key Save Karo ✓</button>
-    <div class="modal-note">
-      Key: <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--amber)">platform.openai.com/api-keys</a> se milegi · 100% local storage
+    <h2>🔑 Free API Key Setup</h2>
+    <p>Neeche se koi bhi ek provider choose karo — sab free hain, credit card nahi chahiye.</p>
+
+    <!-- Provider tabs -->
+    <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px">
+      <button id="ptab-groq" class="provider-tab active-tab" onclick="setProvider('groq')">⚡ Groq (Best)</button>
+      <button id="ptab-gemini" class="provider-tab" onclick="setProvider('gemini')">💎 Gemini</button>
+      <button id="ptab-openrouter" class="provider-tab" onclick="setProvider('openrouter')">🔀 OpenRouter</button>
     </div>
+
+    <!-- Groq -->
+    <div id="provider-groq" class="provider-info">
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#10b981;margin-bottom:4px">✓ 100% FREE · No credit card · Fastest response</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://console.groq.com" target="_blank" style="color:var(--amber)">console.groq.com</a> pe jao<br>
+          2. Sign up (Google se bhi ho sakta hai)<br>
+          3. "API Keys" → "Create API Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-groq" placeholder="gsk_..." autocomplete="off"/>
+    </div>
+
+    <!-- Gemini -->
+    <div id="provider-gemini" class="provider-info" style="display:none">
+      <div style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#60a5fa;margin-bottom:4px">✓ 100% FREE · Google ka product · Reliable</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--amber)">aistudio.google.com/apikey</a> pe jao<br>
+          2. Google account se login karo<br>
+          3. "Create API Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-gemini" placeholder="AIza..." autocomplete="off"/>
+    </div>
+
+    <!-- OpenRouter -->
+    <div id="provider-openrouter" class="provider-info" style="display:none">
+      <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#a78bfa;margin-bottom:4px">✓ Free models available · Multiple AI models</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--amber)">openrouter.ai/keys</a> pe jao<br>
+          2. Sign up karo (free)<br>
+          3. "Create Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-openrouter" placeholder="sk-or-..." autocomplete="off"/>
+    </div>
+
+    <button class="modal-save" onclick="saveApiKey()">Key Save Karo ✓</button>
+    <div class="modal-note" style="margin-top:10px">Key sirf tumhare browser mein save hoti hai · Kahi send nahi hoti</div>
   </div>
 </div>
 
@@ -1038,82 +1093,122 @@ function loadExample(key) {
 }
 
 // ═══════════════════════════════════════
+// PROVIDER CONFIG
+// ═══════════════════════════════════════
+let currentProvider = localStorage.getItem('cd_provider') || 'groq';
+
+const PROVIDERS = {
+  groq: {
+    url:   'https://api.groq.com/openai/v1/chat/completions',
+    model: 'llama-3.3-70b-versatile',
+    header: key => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }),
+    keyPrefix: 'gsk_',
+    storageKey: 'cd_api_key_groq',
+    label: 'Groq'
+  },
+  gemini: {
+    url:   null,   // handled separately via gemini REST
+    model: 'gemini-1.5-flash',
+    header: key => ({ 'Content-Type': 'application/json' }),
+    keyPrefix: 'AIza',
+    storageKey: 'cd_api_key_gemini',
+    label: 'Gemini'
+  },
+  openrouter: {
+    url:   'https://openrouter.ai/api/v1/chat/completions',
+    model: 'meta-llama/llama-3.1-8b-instruct:free',
+    header: key => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`,
+      'HTTP-Referer': 'https://codedost.app',
+      'X-Title': 'CodeDost'
+    }),
+    keyPrefix: 'sk-or-',
+    storageKey: 'cd_api_key_openrouter',
+    label: 'OpenRouter'
+  }
+};
+
+function getActiveKey() {
+  return localStorage.getItem(PROVIDERS[currentProvider].storageKey) || '';
+}
+
+// ═══════════════════════════════════════
 // MAIN ANALYZE FUNCTION
 // ═══════════════════════════════════════
 async function analyzeCode() {
   const code = document.getElementById('code-input').value.trim();
   const errorMsg = document.getElementById('error-input').value.trim();
 
-  if (!code) {
-    showToast('error', 'Pehle code paste karo yaar!');
-    return;
-  }
+  if (!code) { showToast('error', 'Pehle code paste karo yaar!'); return; }
 
-  const apiKey = localStorage.getItem('cd_api_key');
+  const apiKey = getActiveKey();
   if (!apiKey) {
     showToast('error', 'API key daalo pehle — upar wali button se');
-    openModal();
-    return;
+    openModal(); return;
   }
 
-  // Set loading state
   const btn = document.getElementById('submit-btn');
-  btn.classList.add('loading');
-  btn.disabled = true;
+  btn.classList.add('loading'); btn.disabled = true;
 
   try {
-    const userMessage = `Language: ${currentLang.toUpperCase()}
+    const userMessage = `Language: ${currentLang.toUpperCase()}\n\nCode:\n${code}\n\n${errorMsg ? `Error Message: ${errorMsg}` : '(No error message — analyze the code for bugs)'}`;
+    let rawContent = '';
 
-Code:
-${code}
+    if (currentProvider === 'gemini') {
+      // Gemini REST API (different format)
+      const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const gemBody = {
+        contents: [{
+          parts: [{ text: buildSystemPrompt() + '\n\nUser request:\n' + userMessage }]
+        }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 1800 }
+      };
+      const res = await fetch(gemUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(gemBody) });
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `Gemini Error ${res.status}`); }
+      const d = await res.json();
+      rawContent = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-${errorMsg ? `Error Message: ${errorMsg}` : '(No error message provided — analyze the code for bugs)'}`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        max_tokens: 1800,
-        temperature: 0.4,
-        messages: [
-          { role: 'system', content: buildSystemPrompt() },
-          { role: 'user', content: userMessage }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      const msg = errData?.error?.message || `API Error ${response.status}`;
-      throw new Error(msg);
+    } else {
+      // OpenAI-compatible (Groq + OpenRouter)
+      const p = PROVIDERS[currentProvider];
+      const res = await fetch(p.url, {
+        method: 'POST',
+        headers: p.header(apiKey),
+        body: JSON.stringify({
+          model: p.model,
+          max_tokens: 1800,
+          temperature: 0.4,
+          messages: [
+            { role: 'system', content: buildSystemPrompt() },
+            { role: 'user',   content: userMessage }
+          ]
+        })
+      });
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `API Error ${res.status}`); }
+      const d = await res.json();
+      rawContent = d.choices?.[0]?.message?.content?.trim() || '';
     }
 
-    const data = await response.json();
-    const rawContent = data.choices[0].message.content.trim();
-
-    // Parse JSON — clean any accidental markdown fences
-    let cleaned = rawContent.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    // Parse JSON — strip any accidental markdown fences
+    const cleaned = rawContent.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
     const result = JSON.parse(cleaned);
 
     renderOutput(result, code, errorMsg);
     saveToHistory(result, code, errorMsg);
     updatePatterns(result.mistake_category);
-    showToast('success', 'Explanation ready hai! Dekho right side pe.');
+    showToast('success', `Explanation ready! (via ${PROVIDERS[currentProvider].label})`);
 
-  } catch (err) {
+  } catch(err) {
     console.error('CodeDost error:', err);
-    let userMsg = 'Kuch error ho gaya. Dobara try karo.';
-    if (err.message.includes('API key')) userMsg = 'API key galat hai. Check karo.';
-    else if (err.message.includes('quota')) userMsg = 'API quota khatam ho gaya.';
-    else if (err.message.includes('JSON')) userMsg = 'Response parse nahi hua. Dobara try karo.';
-    showToast('error', userMsg);
+    let msg = 'Kuch error ho gaya. Dobara try karo.';
+    if (err.message.includes('API key') || err.message.includes('401')) msg = 'API key galat hai. Check karo.';
+    else if (err.message.includes('quota') || err.message.includes('429')) msg = 'Rate limit — thodi der baad try karo.';
+    else if (err.message.includes('JSON')) msg = 'Response parse nahi hua. Dobara try karo.';
+    else if (err.message.includes('fetch')) msg = 'Internet connection check karo.';
+    showToast('error', msg);
   } finally {
-    btn.classList.remove('loading');
-    btn.disabled = false;
+    btn.classList.remove('loading'); btn.disabled = false;
   }
 }
 
@@ -1342,26 +1437,51 @@ function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; 
 // ── MODAL ──────────────────────────────
 function openModal() {
   document.getElementById('modal-overlay').classList.add('open');
-  const saved = localStorage.getItem('cd_api_key');
-  if (saved) document.getElementById('modal-api-key').value = saved;
-  setTimeout(() => document.getElementById('modal-api-key').focus(), 100);
+  // Load saved keys into inputs
+  ['groq','gemini','openrouter'].forEach(p => {
+    const saved = localStorage.getItem(PROVIDERS[p].storageKey) || '';
+    const el = document.getElementById('key-' + p);
+    if (el && saved) el.value = saved;
+  });
+  // Restore active tab
+  setProvider(currentProvider, false);
+  setTimeout(() => {
+    const el = document.getElementById('key-' + currentProvider);
+    if (el) el.focus();
+  }, 100);
 }
 
 function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) {
+  if (e.target === document.getElementById('modal-overlay'))
     document.getElementById('modal-overlay').classList.remove('open');
-  }
+}
+
+function setProvider(p, focus = true) {
+  currentProvider = p;
+  localStorage.setItem('cd_provider', p);
+  // Update tabs
+  ['groq','gemini','openrouter'].forEach(id => {
+    document.getElementById('ptab-' + id)?.classList.remove('active-tab');
+    document.getElementById('provider-' + id).style.display = 'none';
+  });
+  document.getElementById('ptab-' + p)?.classList.add('active-tab');
+  document.getElementById('provider-' + p).style.display = 'block';
+  if (focus) setTimeout(() => document.getElementById('key-' + p)?.focus(), 50);
 }
 
 function saveApiKey() {
-  const key = document.getElementById('modal-api-key').value.trim();
-  if (!key || !key.startsWith('sk-')) {
-    showToast('error', 'Valid API key daalo (sk- se shuru hona chahiye)');
+  const key = document.getElementById('key-' + currentProvider)?.value.trim();
+  if (!key) { showToast('error', 'Key paste karo pehle'); return; }
+
+  const prefix = PROVIDERS[currentProvider].keyPrefix;
+  if (!key.startsWith(prefix)) {
+    showToast('error', `${PROVIDERS[currentProvider].label} key "${prefix}" se shuru honi chahiye`);
     return;
   }
-  localStorage.setItem('cd_api_key', key);
+
+  localStorage.setItem(PROVIDERS[currentProvider].storageKey, key);
   document.getElementById('modal-overlay').classList.remove('open');
-  showToast('success', 'API key save ho gayi! Ab analyze kar sakte ho.');
+  showToast('success', `${PROVIDERS[currentProvider].label} key save! Ab analyze kar sakte ho.`);
 }
 
 // ── KEYBOARD SHORTCUTS ─────────────────
@@ -1394,10 +1514,9 @@ document.getElementById('code-input').addEventListener('keydown', function(e) {
 (function init() {
   renderHistory();
   renderPatterns();
-  // Show modal on first visit if no API key
-  if (!localStorage.getItem('cd_api_key')) {
-    setTimeout(openModal, 800);
-  }
+  // Show modal if no key saved for ANY provider
+  const hasAnyKey = ['groq','gemini','openrouter'].some(p => localStorage.getItem(PROVIDERS[p].storageKey));
+  if (!hasAnyKey) setTimeout(openModal, 800);
 })();
 </script>
 </body>
