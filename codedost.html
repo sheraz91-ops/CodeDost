@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CodeDost — Your AI Coding Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
+<style>
+/* ============================================================
+   CODEDOST — COMPLETE STYLES
+   Theme: Dark terminal with warm amber + desi green accents
+   ============================================================ */
+
+:root {
+  --bg-base:       #0e0e10;
+  --bg-surface:    #161618;
+  --bg-elevated:   #1e1e22;
+  --bg-hover:      #26262c;
+  --border:        #2e2e36;
+  --border-focus:  #f59e0b;
+
+  --amber:         #f59e0b;
+  --amber-dim:     #d97706;
+  --amber-glow:    rgba(245,158,11,0.12);
+  --amber-subtle:  rgba(245,158,11,0.06);
+  --green:         #10b981;
+  --green-dim:     #059669;
+  --green-glow:    rgba(16,185,129,0.1);
+  --red:           #f87171;
+  --red-bg:        rgba(248,113,113,0.08);
+  --blue:          #60a5fa;
+  --purple:        #a78bfa;
+
+  --text-primary:  #f1f0ee;
+  --text-secondary:#9a9a9e;
+  --text-muted:    #5a5a62;
+  --text-code:     #e2e0dc;
+
+  --font-ui:       'Syne', sans-serif;
+  --font-code:     'JetBrains Mono', monospace;
+
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     14px;
+  --radius-xl:     18px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ──────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3e3e48; }
+
+/* ── Selection ──────────────────────────────── */
+::selection { background: var(--amber-glow); color: var(--amber); }
+
+/* ── HEADER ─────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(14,14,16,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  background: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: #0e0e10;
+  font-family: var(--font-code);
+  letter-spacing: -1px;
+}
+.logo-text {
+  font-size: 17px; font-weight: 700; color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+.logo-text span { color: var(--amber); }
+
+.header-right {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.badge-urdu {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 99px;
+  background: var(--green-glow);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: var(--green);
+  letter-spacing: 0.3px;
+}
+
+.api-btn {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 500;
+  padding: 6px 14px; border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer; transition: all 0.2s;
+}
+.api-btn:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: var(--amber-subtle);
+}
+
+/* ── HERO STRIP ─────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 40px 24px 32px;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse 800px 300px at 50% 0%, rgba(245,158,11,0.04) 0%, transparent 70%);
+}
+.hero-tagline {
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-size: 32px; font-weight: 800; letter-spacing: -0.8px;
+  line-height: 1.15; color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.hero-title em { font-style: normal; color: var(--amber); }
+.hero-sub {
+  font-size: 14px; color: var(--text-secondary); max-width: 540px;
+  margin: 0 auto 20px; line-height: 1.7;
+}
+.mode-toggle {
+  display: inline-flex; gap: 2px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+.mode-btn {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 500;
+  padding: 6px 16px; border-radius: 7px;
+  border: none; cursor: pointer; transition: all 0.2s;
+  color: var(--text-secondary); background: transparent;
+}
+.mode-btn.active {
+  background: var(--amber);
+  color: #0e0e10;
+  font-weight: 700;
+}
+
+/* ── MAIN LAYOUT ────────────────────────────── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: calc(100vh - 56px - 145px);
+}
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+/* ── LEFT PANEL ─────────────────────────────── */
+.panel-left {
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+
+.panel-section {
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.panel-section:last-child { border-bottom: none; flex: 1; }
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text-muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.section-title::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--amber); display: block;
+}
+
+.lang-select {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 99px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer; outline: none;
+  transition: all 0.2s;
+}
+.lang-select:focus { border-color: var(--amber); color: var(--amber); }
+
+/* Code editor textarea */
+.code-editor-wrap {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-surface);
+  transition: border-color 0.2s;
+}
+.code-editor-wrap:focus-within { border-color: var(--amber); }
+
+.editor-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.lang-dots { display: flex; gap: 5px; }
+.lang-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.dot-red { background: #f87171; }
+.dot-yellow { background: #fbbf24; }
+.dot-green { background: #34d399; }
+.editor-lang-tag {
+  font-family: var(--font-code);
+  font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px;
+}
+
+.lang-picker {
+  font-family: var(--font-ui);
+  font-size: 11px; background: transparent;
+  border: none; color: var(--text-muted);
+  cursor: pointer; outline: none;
+}
+.lang-picker:focus { color: var(--amber); }
+
+#code-input {
+  width: 100%; min-height: 220px;
+  font-family: var(--font-code); font-size: 13px;
+  line-height: 1.65; color: var(--text-code);
+  background: transparent;
+  border: none; outline: none; resize: vertical;
+  padding: 14px 16px;
+  tab-size: 2;
+  caret-color: var(--amber);
+}
+#code-input::placeholder { color: var(--text-muted); }
+
+/* Error input */
+.error-input-wrap {
+  position: relative;
+}
+.error-icon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px; pointer-events: none;
+}
+#error-input {
+  width: 100%; font-family: var(--font-code); font-size: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--red);
+  padding: 10px 12px 10px 34px;
+  outline: none; transition: border-color 0.2s;
+}
+#error-input:focus { border-color: var(--red); }
+#error-input::placeholder { color: var(--text-muted); font-family: var(--font-ui); }
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  font-family: var(--font-ui); font-size: 14px; font-weight: 700;
+  padding: 13px 24px;
+  background: var(--amber);
+  color: #0e0e10;
+  border: none; border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.2px;
+}
+.submit-btn:hover { background: #fbbf24; transform: translateY(-1px); }
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-muted); cursor: not-allowed; transform: none;
+}
+
+.submit-btn .btn-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(14,14,16,0.3);
+  border-top-color: #0e0e10;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.submit-btn.loading .btn-spinner { display: block; }
+.submit-btn.loading .btn-text { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Example snippets */
+.examples-row {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.example-chip {
+  font-family: var(--font-code); font-size: 10px;
+  padding: 4px 10px; border-radius: 99px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer;
+  transition: all 0.15s;
+}
+.example-chip:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: var(--amber-subtle);
+}
+
+/* ── RIGHT PANEL ────────────────────────────── */
+.panel-right {
+  display: flex; flex-direction: column;
+  min-height: 600px;
+}
+
+.output-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; padding: 40px;
+  color: var(--text-muted);
+}
+.output-empty-icon { font-size: 40px; opacity: 0.4; }
+.output-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); }
+.output-empty-sub { font-size: 13px; text-align: center; max-width: 280px; line-height: 1.6; }
+
+.output-content { display: none; flex-direction: column; gap: 0; }
+.output-content.visible { display: flex; }
+
+/* Result cards */
+.result-card {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  animation: slideIn 0.3s ease forwards;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-card:last-child { border-bottom: none; }
+
+.card-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Error badge */
+.error-badge-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.error-type-badge {
+  font-family: var(--font-code); font-size: 11px; font-weight: 500;
+  padding: 3px 10px; border-radius: 99px;
+  background: var(--red-bg);
+  border: 1px solid rgba(248,113,113,0.3);
+  color: var(--red);
+}
+.severity-badge {
+  font-size: 11px; font-weight: 500;
+  padding: 3px 10px; border-radius: 99px;
+}
+.sev-beginner { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+.sev-intermediate { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+.sev-advanced { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+/* Explanation text */
+.explanation-text {
+  font-size: 14px; line-height: 1.8; color: var(--text-primary);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  border-left: 3px solid var(--amber);
+}
+
+/* Desi analogy */
+.analogy-box {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  border-left: 3px solid var(--green);
+  font-size: 13px; line-height: 1.75; color: var(--text-secondary);
+  font-style: italic;
+}
+.analogy-box strong { font-style: normal; color: var(--green); font-weight: 600; }
+
+/* Fixed code block */
+.code-block-wrap {
+  position: relative;
+  border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.code-block-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.code-block-title {
+  font-family: var(--font-code); font-size: 11px; color: var(--text-muted);
+}
+.copy-btn {
+  font-family: var(--font-ui); font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+}
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+pre[class*="language-"] {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: var(--bg-surface) !important;
+  font-family: var(--font-code) !important;
+  font-size: 12.5px !important;
+  line-height: 1.7 !important;
+  max-height: 300px; overflow-y: auto;
+}
+
+/* Fix bullet points */
+.fix-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.fix-list li {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.fix-list li::before {
+  content: '→'; color: var(--amber); font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+/* Concept card */
+.concept-card {
+  background: linear-gradient(135deg, rgba(167,139,250,0.08) 0%, rgba(96,165,250,0.05) 100%);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+.concept-name {
+  font-size: 15px; font-weight: 700; color: var(--purple);
+  margin-bottom: 6px;
+}
+.concept-search {
+  font-family: var(--font-code); font-size: 12px;
+  color: var(--blue); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.concept-search::after { content: '↗'; }
+
+/* ── BOTTOM TABS (History & Patterns) ────────── */
+.bottom-bar {
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+  padding: 10px 20px; background: transparent;
+  border: none; border-bottom: 2px solid transparent;
+  color: var(--text-muted); cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.2px;
+  margin-bottom: -1px;
+}
+.tab-btn.active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+}
+
+.tab-panel { display: none; padding: 16px 20px; }
+.tab-panel.active { display: block; }
+
+/* History list */
+.history-empty {
+  text-align: center; padding: 20px;
+  color: var(--text-muted); font-size: 13px;
+}
+
+.history-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
+.history-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  background: var(--bg-elevated); cursor: pointer;
+  border: 1px solid transparent; transition: all 0.15s;
+}
+.history-item:hover { border-color: var(--border); }
+.history-time { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+.history-err { font-family: var(--font-code); font-size: 11px; color: var(--red); flex: 1; truncate: ellipsis; overflow: hidden; white-space: nowrap; }
+.history-lang { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: var(--bg-surface); color: var(--text-muted); }
+
+/* Mistake patterns */
+.pattern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.pattern-card {
+  background: var(--bg-elevated); border-radius: var(--radius-sm);
+  padding: 10px 12px; border: 1px solid var(--border);
+}
+.pattern-name { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+.pattern-bar-wrap { height: 4px; background: var(--bg-hover); border-radius: 99px; overflow: hidden; }
+.pattern-bar { height: 100%; border-radius: 99px; background: var(--amber); transition: width 0.6s ease; }
+.pattern-count { font-size: 20px; font-weight: 700; color: var(--amber); margin-bottom: 2px; font-family: var(--font-code); }
+.no-patterns { font-size: 13px; color: var(--text-muted); padding: 16px 0; }
+
+/* ── API KEY MODAL ────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  width: 100%; max-width: 440px; margin: 20px;
+  animation: popIn 0.25s ease;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.modal p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; }
+.modal-input {
+  width: 100%; font-family: var(--font-code); font-size: 13px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary); padding: 11px 14px;
+  outline: none; margin-bottom: 14px; transition: border-color 0.2s;
+}
+.modal-input:focus { border-color: var(--amber); }
+.modal-save {
+  width: 100%; font-family: var(--font-ui); font-size: 14px; font-weight: 700;
+  padding: 12px; border: none; border-radius: var(--radius-md);
+  background: var(--amber); color: #0e0e10; cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-save:hover { background: #fbbf24; }
+.modal-note {
+  font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 10px;
+}
+
+/* ── TOAST ───────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  font-size: 13px; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.toast-success .toast-dot { background: var(--green); }
+.toast-error .toast-dot { background: var(--red); }
+
+/* ── PROVIDER TABS ──────────────────────────── */
+.provider-tab {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+  padding: 6px 10px; border-radius: 6px; border: none;
+  cursor: pointer; flex: 1; transition: all 0.2s;
+  background: transparent; color: var(--text-muted);
+}
+.active-tab { background: var(--amber); color: #0e0e10; font-weight: 700; }
+
+/* ── FOOTER ─────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  text-align: center;
+  font-size: 12px; color: var(--text-muted);
+}
+.footer span { color: var(--amber); }
+
+/* ── UTILITIES ──────────────────────────────── */
+.hidden { display: none !important; }
+.text-amber { color: var(--amber); }
+.text-green { color: var(--green); }
+.text-red { color: var(--red); }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header class="header">
+  <a class="logo" href="#">
+    <div class="logo-icon">{}</div>
+    <span class="logo-text">Code<span>Dost</span></span>
+  </a>
+  <div class="header-right">
+    <span class="badge-urdu">🇵🇰 Roman Urdu</span>
+    <button class="api-btn" onclick="openModal()">🔑 Free API Key</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-tagline">AI Coding Tutor — Powered by Groq + Llama 3 (100% Free)</div>
+  <h1 class="hero-title">Error ho gaya? <em>Koi baat nahi.</em></h1>
+  <p class="hero-sub">Apna buggy code paste karo. CodeDost Roman Urdu mein explain karega — desi analogy ke saath — aur fix bhi karega.</p>
+  <div class="mode-toggle">
+    <button class="mode-btn active" onclick="setMode('urdu', this)">🇵🇰 Roman Urdu</button>
+    <button class="mode-btn" onclick="setMode('mixed', this)">⚡ Mixed</button>
+    <button class="mode-btn" onclick="setMode('english', this)">🇬🇧 Full English</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MAIN GRID
+════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── LEFT: INPUT PANEL ─────────────────── -->
+  <div class="panel-left">
+
+    <!-- Code Editor -->
+    <div class="panel-section">
+      <div class="section-header">
+        <span class="section-title">Apna Code Yahan Paste Karo</span>
+      </div>
+      <div class="code-editor-wrap">
+        <div class="editor-toolbar">
+          <div class="lang-dots">
+            <span class="dot-red"></span>
+            <span class="dot-yellow"></span>
+            <span class="dot-green"></span>
+          </div>
+          <select class="lang-picker" id="lang-picker" onchange="updateLang()">
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+            <option value="html">HTML/CSS</option>
+            <option value="sql">SQL</option>
+          </select>
+          <span class="editor-lang-tag" id="lang-tag">script.py</span>
+        </div>
+        <textarea id="code-input" spellcheck="false"
+          placeholder="# Yahan apna code paste karo...
+# Example:
+def calculate_total(items):
+    total = 0
+    for item in items
+        total += item['price']
+    return total"></textarea>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="panel-section">
+      <div class="section-header">
+        <span class="section-title">Error Message</span>
+        <span style="font-size:11px;color:var(--text-muted)">(optional but helps)</span>
+      </div>
+      <div class="error-input-wrap">
+        <span class="error-icon">⚠</span>
+        <input type="text" id="error-input"
+          placeholder="e.g. TypeError: 'NoneType' object is not subscriptable"/>
+      </div>
+    </div>
+
+    <!-- Quick Examples -->
+    <div class="panel-section">
+      <div class="section-header">
+        <span class="section-title">Quick Examples</span>
+      </div>
+      <div class="examples-row">
+        <span class="example-chip" onclick="loadExample('syntax')">Syntax Error</span>
+        <span class="example-chip" onclick="loadExample('typeerror')">TypeError</span>
+        <span class="example-chip" onclick="loadExample('index')">IndexError</span>
+        <span class="example-chip" onclick="loadExample('undefined')">Undefined Var</span>
+        <span class="example-chip" onclick="loadExample('async')">Async Bug</span>
+        <span class="example-chip" onclick="loadExample('null')">Null Reference</span>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="panel-section">
+      <button class="submit-btn" id="submit-btn" onclick="analyzeCode()">
+        <span class="btn-text">🚀 &nbsp;Explain Karo — Samjha Do!</span>
+        <div class="btn-spinner"></div>
+      </button>
+      <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;">
+        Groq (Free) se powered · Roman Urdu mein jawab milega
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: OUTPUT PANEL ───────────────── -->
+  <div class="panel-right" id="panel-right">
+
+    <!-- Empty state -->
+    <div class="output-empty" id="output-empty">
+      <div class="output-empty-icon">🤖</div>
+      <div class="output-empty-title">CodeDost tayaar hai!</div>
+      <div class="output-empty-sub">Left side mein apna code paste karo, aur main Roman Urdu mein explain kar dunga — desi andaz mein.</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;max-width:260px">
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:6px;align-items:center;">
+          <span style="color:var(--green)">✓</span> Error ka cause samjhata hai
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:6px;align-items:center;">
+          <span style="color:var(--green)">✓</span> Desi analogy se concept clear hota hai
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:6px;align-items:center;">
+          <span style="color:var(--green)">✓</span> Fixed code ke saath line-by-line fix
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:6px;align-items:center;">
+          <span style="color:var(--green)">✓</span> Next step batata hai kya seekhna hai
+        </div>
+      </div>
+    </div>
+
+    <!-- Output content -->
+    <div class="output-content" id="output-content">
+
+      <!-- Error Type Badge -->
+      <div class="result-card" id="card-type">
+        <div class="card-label" style="color:var(--red)">🔴 Error Identified</div>
+        <div class="error-badge-row">
+          <span class="error-type-badge" id="out-error-type">—</span>
+          <span class="severity-badge" id="out-severity">—</span>
+        </div>
+      </div>
+
+      <!-- Plain Explanation -->
+      <div class="result-card" id="card-explain">
+        <div class="card-label" style="color:var(--amber)">💬 Kya Hua — Roman Urdu Mein</div>
+        <div class="explanation-text" id="out-explanation">—</div>
+      </div>
+
+      <!-- Desi Analogy -->
+      <div class="result-card" id="card-analogy">
+        <div class="card-label" style="color:var(--green)">🫖 Desi Analogy</div>
+        <div class="analogy-box" id="out-analogy">—</div>
+      </div>
+
+      <!-- Fixed Code -->
+      <div class="result-card" id="card-fix">
+        <div class="card-label" style="color:var(--blue)">🔧 Fixed Code</div>
+        <div class="code-block-wrap">
+          <div class="code-block-header">
+            <span class="code-block-title" id="out-fix-lang">fixed_code.py</span>
+            <button class="copy-btn" id="copy-btn" onclick="copyCode()">Copy</button>
+          </div>
+          <pre><code id="out-fixed-code" class="language-python"></code></pre>
+        </div>
+      </div>
+
+      <!-- Fix Explanation -->
+      <div class="result-card" id="card-fix-explain">
+        <div class="card-label" style="color:var(--amber)">📋 Kya Change Kiya — Line by Line</div>
+        <ul class="fix-list" id="out-fix-list"></ul>
+      </div>
+
+      <!-- Concept to Study -->
+      <div class="result-card" id="card-concept">
+        <div class="card-label" style="color:var(--purple)">📚 Aab Yeh Seekho</div>
+        <div class="concept-card">
+          <div class="concept-name" id="out-concept-name">—</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;" id="out-concept-why">—</div>
+          <a class="concept-search" id="out-concept-link" href="#" target="_blank">YouTube / Google pe search karo</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════
+     BOTTOM BAR: HISTORY + PATTERNS
+════════════════════════════════════════════ -->
+<div class="bottom-bar">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('history', this)">📋 Session History</button>
+    <button class="tab-btn" onclick="switchTab('patterns', this)">📊 Tumhare Common Mistakes</button>
+    <button class="tab-btn" onclick="switchTab('tips', this)">💡 Tips</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-history">
+    <div class="history-empty" id="history-empty">Abhi koi query nahi. Pehle koi code analyze karo!</div>
+    <div class="history-list hidden" id="history-list"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-patterns">
+    <div id="no-patterns" class="no-patterns">Patterns track hone ke liye pehle kuch errors analyze karo.</div>
+    <div class="pattern-grid hidden" id="pattern-grid"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-tips">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+      <div style="background:var(--bg-elevated);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:5px">PRO TIP #1</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">Error message copy karo puri — sirf code se zyada helpful hota hai diagnosis mein.</div>
+      </div>
+      <div style="background:var(--bg-elevated);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px">PRO TIP #2</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">Fix blindly mat karo — pehle "Kya Hua" wali explanation padhna. Understanding zaroori hai.</div>
+      </div>
+      <div style="background:var(--bg-elevated);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:5px">PRO TIP #3</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">"Aab Yeh Seekho" section ignore mat karo — woh tumhara actual weak point hai.</div>
+      </div>
+      <div style="background:var(--bg-elevated);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:5px">PRO TIP #4</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">Pattern tab dekho regularly — agar ek hi type ka error baar baar ho raha hai, toh concept gap hai.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="footer">
+  Built with <span>♥</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     API KEY MODAL
+════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <h2>🔑 Free API Key Setup</h2>
+    <p>Neeche se koi bhi ek provider choose karo — sab free hain, credit card nahi chahiye.</p>
+
+    <!-- Provider tabs -->
+    <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px">
+      <button id="ptab-groq" class="provider-tab active-tab" onclick="setProvider('groq')">⚡ Groq (Best)</button>
+      <button id="ptab-gemini" class="provider-tab" onclick="setProvider('gemini')">💎 Gemini</button>
+      <button id="ptab-openrouter" class="provider-tab" onclick="setProvider('openrouter')">🔀 OpenRouter</button>
+    </div>
+
+    <!-- Groq -->
+    <div id="provider-groq" class="provider-info">
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#10b981;margin-bottom:4px">✓ 100% FREE · No credit card · Fastest response</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://console.groq.com" target="_blank" style="color:var(--amber)">console.groq.com</a> pe jao<br>
+          2. Sign up (Google se bhi ho sakta hai)<br>
+          3. "API Keys" → "Create API Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-groq" placeholder="gsk_..." autocomplete="off"/>
+    </div>
+
+    <!-- Gemini -->
+    <div id="provider-gemini" class="provider-info" style="display:none">
+      <div style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#60a5fa;margin-bottom:4px">✓ 100% FREE · Google ka product · Reliable</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--amber)">aistudio.google.com/apikey</a> pe jao<br>
+          2. Google account se login karo<br>
+          3. "Create API Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-gemini" placeholder="AIza..." autocomplete="off"/>
+    </div>
+
+    <!-- OpenRouter -->
+    <div id="provider-openrouter" class="provider-info" style="display:none">
+      <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#a78bfa;margin-bottom:4px">✓ Free models available · Multiple AI models</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+          1. <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--amber)">openrouter.ai/keys</a> pe jao<br>
+          2. Sign up karo (free)<br>
+          3. "Create Key" click karo<br>
+          4. Key copy karo aur yahan paste karo
+        </div>
+      </div>
+      <input class="modal-input" type="password" id="key-openrouter" placeholder="sk-or-..." autocomplete="off"/>
+    </div>
+
+    <button class="modal-save" onclick="saveApiKey()">Key Save Karo ✓</button>
+    <div class="modal-note" style="margin-top:10px">Key sirf tumhare browser mein save hoti hai · Kahi send nahi hoti</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOAST
+════════════════════════════════════════════ -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">—</span>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let currentMode = 'urdu';   // urdu | mixed | english
+let currentLang = 'python';
+let sessionHistory = JSON.parse(localStorage.getItem('cd_history') || '[]');
+let mistakePatterns = JSON.parse(localStorage.getItem('cd_patterns') || '{}');
+
+const LANG_TAGS = {
+  python: 'script.py',
+  javascript: 'app.js',
+  java: 'Main.java',
+  cpp: 'main.cpp',
+  html: 'index.html',
+  sql: 'query.sql'
+};
+
+// ═══════════════════════════════════════
+// SYSTEM PROMPT — THE HEART OF CODEDOST
+// ═══════════════════════════════════════
+function buildSystemPrompt() {
+  const modeInstructions = {
+    urdu: `You MUST respond primarily in Roman Urdu (Urdu written in English letters) mixed with essential English technical terms. This is how Pakistani CS students naturally talk: "Yaar, is error ka matlab hai ke..." or "Dekho, tum ne yahan variable declare nahi kiya..." Keep Urdu dominant (70%) with English technical words (30%).`,
+    mixed: `Respond in a 50/50 mix of Roman Urdu and English. Switch naturally between both as Pakistani developers do in real life.`,
+    english: `Respond entirely in clear, simple English. Friendly and encouraging tone, like a senior developer helping a junior.`
+  };
+
+  return `You are CodeDost, a warm, encouraging AI coding tutor for Pakistani university students. You explain code errors in a friendly, big-brother/dost style — never condescending.
+
+LANGUAGE INSTRUCTION: ${modeInstructions[currentMode]}
+
+CRITICAL: You MUST respond with ONLY a valid JSON object. No text before or after. No markdown code fences. No explanation outside the JSON. Just the raw JSON object.
+
+JSON FORMAT (fill every field):
+{
+  "error_type": "Short name of the error (e.g. SyntaxError, TypeError, LogicError, UndefinedVariable, IndexError, NullReference, AsyncError, ImportError)",
+  "severity": "beginner OR intermediate OR advanced",
+  "plain_explanation": "2-3 sentences explaining WHY this error happened in ${currentMode === 'english' ? 'simple English' : 'Roman Urdu mixed with English technical terms'}. Start with 'Yaar' or 'Dekho' or 'Bhai' for urdu/mixed mode. Make it conversational.",
+  "desi_analogy": "A relatable Pakistani everyday analogy that explains the concept. Use rickshaw, chai, biryani, dukaan, gate, number plate, register, queue, ghar, darwaza etc. Format: '${currentMode !== 'english' ? 'Samjho aise: [analogy in Roman Urdu]' : 'Think of it like: [analogy]'}'",
+  "fixed_code": "The complete corrected code. Keep same structure, just fix the bug(s). No markdown backticks.",
+  "fix_bullets": [
+    "First change kya kiya aur kyun (in ${currentMode === 'english' ? 'English' : 'Roman Urdu'})",
+    "Second change if any",
+    "Third change if any"
+  ],
+  "concept_to_study": "The one CS concept this error reveals a gap in (e.g. 'Variable Scope', 'Data Types', 'Array Indexing', 'Async/Await', 'OOP Inheritance', 'Error Handling')",
+  "concept_why": "${currentMode !== 'english' ? 'Is concept ko samjhoge toh aisi galtiyan nahi hongi' : 'Understanding this will prevent similar bugs'}",
+  "concept_search": "Exact YouTube/Google search query to learn this concept (e.g. 'Python list indexing tutorial for beginners')",
+  "mistake_category": "ONE of these exact strings: syntax_error, logic_error, type_error, null_reference, scope_error, async_error, import_error, index_error, other"
+}
+
+IMPORTANT RULES:
+1. ALWAYS produce valid JSON — no trailing commas, no unescaped quotes in strings
+2. fixed_code must be complete and runnable — not just the changed lines
+3. desi_analogy must be genuinely relatable to a Pakistani student's daily life
+4. Be encouraging — add a small motivational note in plain_explanation like "(Ye common mistake hai, ghhabrao mat!)"
+5. fix_bullets should have 2-4 items minimum`;
+}
+
+// ═══════════════════════════════════════
+// EXAMPLE SNIPPETS
+// ═══════════════════════════════════════
+const EXAMPLES = {
+  syntax: {
+    lang: 'python',
+    code: `def calculate_total(items):
+    total = 0
+    for item in items
+        total += item['price']
+    return total
+
+result = calculate_total([{'price': 100}, {'price': 250}])
+print(result)`,
+    error: `SyntaxError: expected ':' (line 3)`
+  },
+  typeerror: {
+    lang: 'python',
+    code: `def get_username(user):
+    name = user['name']
+    upper_name = name.upper()
+    return "Hello " + upper_name + " your age is " + user['age']
+
+print(get_username({'name': 'Ali', 'age': 21}))`,
+    error: `TypeError: can only concatenate str (not "int") to str`
+  },
+  index: {
+    lang: 'python',
+    code: `students = ['Ahmed', 'Sara', 'Bilal', 'Fatima']
+
+for i in range(len(students) + 1):
+    print(f"Student {i+1}: {students[i]}")`,
+    error: `IndexError: list index out of range`
+  },
+  undefined: {
+    lang: 'javascript',
+    code: `function calculateDiscount(price) {
+    let discountRate = 0.1;
+    
+    if (price > 1000) {
+        let discountRate = 0.2;
+    }
+    
+    return price - (price * discountRate);
+}
+
+console.log(calculateDiscount(1500));`,
+    error: `Expected: 300 discount, Got: 150 discount (wrong result)`
+  },
+  async: {
+    lang: 'javascript',
+    code: `function getUserData(userId) {
+    const response = fetch(\`https://api.example.com/users/\${userId}\`);
+    const data = response.json();
+    return data.name;
+}
+
+const name = getUserData(123);
+console.log("User:", name);`,
+    error: `TypeError: response.json is not a function (data shows [object Promise])`
+  },
+  null: {
+    lang: 'python',
+    code: `def find_student(students, name):
+    for student in students:
+        if student['name'] == name:
+            return student
+    # Function ends without returning anything
+
+class_list = [{'name': 'Ahmed', 'grade': 'A'}, {'name': 'Sara', 'grade': 'B'}]
+result = find_student(class_list, 'Usman')
+print(result['grade'])`,
+    error: `TypeError: 'NoneType' object is not subscriptable`
+  }
+};
+
+function loadExample(key) {
+  const ex = EXAMPLES[key];
+  if (!ex) return;
+  document.getElementById('code-input').value = ex.code;
+  document.getElementById('error-input').value = ex.error;
+  const picker = document.getElementById('lang-picker');
+  picker.value = ex.lang;
+  updateLang();
+  showToast('success', `Example loaded: ${key}`);
+}
+
+// ═══════════════════════════════════════
+// PROVIDER CONFIG
+// ═══════════════════════════════════════
+let currentProvider = localStorage.getItem('cd_provider') || 'groq';
+
+const PROVIDERS = {
+  groq: {
+    url:   'https://api.groq.com/openai/v1/chat/completions',
+    model: 'llama-3.3-70b-versatile',
+    header: key => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }),
+    keyPrefix: 'gsk_',
+    storageKey: 'cd_api_key_groq',
+    label: 'Groq'
+  },
+  gemini: {
+    url:   null,   // handled separately via gemini REST
+    model: 'gemini-1.5-flash',
+    header: key => ({ 'Content-Type': 'application/json' }),
+    keyPrefix: 'AIza',
+    storageKey: 'cd_api_key_gemini',
+    label: 'Gemini'
+  },
+  openrouter: {
+    url:   'https://openrouter.ai/api/v1/chat/completions',
+    model: 'meta-llama/llama-3.1-8b-instruct:free',
+    header: key => ({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`,
+      'HTTP-Referer': 'https://codedost.app',
+      'X-Title': 'CodeDost'
+    }),
+    keyPrefix: 'sk-or-',
+    storageKey: 'cd_api_key_openrouter',
+    label: 'OpenRouter'
+  }
+};
+
+function getActiveKey() {
+  return localStorage.getItem(PROVIDERS[currentProvider].storageKey) || '';
+}
+
+// ═══════════════════════════════════════
+// MAIN ANALYZE FUNCTION
+// ═══════════════════════════════════════
+async function analyzeCode() {
+  const code = document.getElementById('code-input').value.trim();
+  const errorMsg = document.getElementById('error-input').value.trim();
+
+  if (!code) { showToast('error', 'Pehle code paste karo yaar!'); return; }
+
+  const apiKey = getActiveKey();
+  if (!apiKey) {
+    showToast('error', 'API key daalo pehle — upar wali button se');
+    openModal(); return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const userMessage = `Language: ${currentLang.toUpperCase()}\n\nCode:\n${code}\n\n${errorMsg ? `Error Message: ${errorMsg}` : '(No error message — analyze the code for bugs)'}`;
+    let rawContent = '';
+
+    if (currentProvider === 'gemini') {
+      // Gemini REST API (different format)
+      const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const gemBody = {
+        contents: [{
+          parts: [{ text: buildSystemPrompt() + '\n\nUser request:\n' + userMessage }]
+        }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 1800 }
+      };
+      const res = await fetch(gemUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(gemBody) });
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `Gemini Error ${res.status}`); }
+      const d = await res.json();
+      rawContent = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    } else {
+      // OpenAI-compatible (Groq + OpenRouter)
+      const p = PROVIDERS[currentProvider];
+      const res = await fetch(p.url, {
+        method: 'POST',
+        headers: p.header(apiKey),
+        body: JSON.stringify({
+          model: p.model,
+          max_tokens: 1800,
+          temperature: 0.4,
+          messages: [
+            { role: 'system', content: buildSystemPrompt() },
+            { role: 'user',   content: userMessage }
+          ]
+        })
+      });
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `API Error ${res.status}`); }
+      const d = await res.json();
+      rawContent = d.choices?.[0]?.message?.content?.trim() || '';
+    }
+
+    // Parse JSON — strip any accidental markdown fences
+    const cleaned = rawContent.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    const result = JSON.parse(cleaned);
+
+    renderOutput(result, code, errorMsg);
+    saveToHistory(result, code, errorMsg);
+    updatePatterns(result.mistake_category);
+    showToast('success', `Explanation ready! (via ${PROVIDERS[currentProvider].label})`);
+
+  } catch(err) {
+    console.error('CodeDost error:', err);
+    let msg = 'Kuch error ho gaya. Dobara try karo.';
+    if (err.message.includes('API key') || err.message.includes('401')) msg = 'API key galat hai. Check karo.';
+    else if (err.message.includes('quota') || err.message.includes('429')) msg = 'Rate limit — thodi der baad try karo.';
+    else if (err.message.includes('JSON')) msg = 'Response parse nahi hua. Dobara try karo.';
+    else if (err.message.includes('fetch')) msg = 'Internet connection check karo.';
+    showToast('error', msg);
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════
+// RENDER OUTPUT
+// ═══════════════════════════════════════
+function renderOutput(r, originalCode, errorMsg) {
+  // Show output panel
+  document.getElementById('output-empty').style.display = 'none';
+  const content = document.getElementById('output-content');
+  content.classList.add('visible');
+
+  // Error type + severity
+  document.getElementById('out-error-type').textContent = r.error_type || 'Unknown Error';
+  const sevEl = document.getElementById('out-severity');
+  sevEl.textContent = r.severity ? capitalize(r.severity) : 'Unknown';
+  sevEl.className = 'severity-badge sev-' + (r.severity || 'beginner');
+
+  // Explanation
+  document.getElementById('out-explanation').textContent = r.plain_explanation || '—';
+
+  // Analogy
+  document.getElementById('out-analogy').innerHTML = r.desi_analogy
+    ? `<strong>🫖 Desi Analogy:</strong> ${r.desi_analogy}`
+    : '—';
+
+  // Fixed code with syntax highlighting
+  const langClass = {
+    python: 'language-python', javascript: 'language-javascript',
+    java: 'language-java', cpp: 'language-cpp',
+    html: 'language-html', sql: 'language-sql'
+  }[currentLang] || 'language-python';
+
+  const codeEl = document.getElementById('out-fixed-code');
+  codeEl.className = langClass;
+  codeEl.textContent = r.fixed_code || '# No fix generated';
+  document.getElementById('out-fix-lang').textContent = LANG_TAGS[currentLang] || 'fixed_code.py';
+  Prism.highlightElement(codeEl);
+
+  // Fix bullets
+  const fixList = document.getElementById('out-fix-list');
+  fixList.innerHTML = '';
+  if (r.fix_bullets && Array.isArray(r.fix_bullets)) {
+    r.fix_bullets.forEach(bullet => {
+      const li = document.createElement('li');
+      li.textContent = bullet;
+      fixList.appendChild(li);
+    });
+  }
+
+  // Concept card
+  document.getElementById('out-concept-name').textContent = r.concept_to_study || 'General Debugging';
+  document.getElementById('out-concept-why').textContent = r.concept_why || '';
+  const conceptLink = document.getElementById('out-concept-link');
+  const searchQuery = r.concept_search || r.concept_to_study || 'programming debugging tutorial';
+  conceptLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+  conceptLink.textContent = `"${searchQuery}" ↗`;
+
+  // Scroll output into view on mobile
+  if (window.innerWidth < 900) {
+    document.getElementById('panel-right').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ═══════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════
+function saveToHistory(result, code, errorMsg) {
+  const entry = {
+    id: Date.now(),
+    time: new Date().toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' }),
+    errorType: result.error_type,
+    errorMsg: errorMsg || result.error_type,
+    lang: currentLang,
+    code: code,
+    result: result
+  };
+  sessionHistory.unshift(entry);
+  if (sessionHistory.length > 20) sessionHistory.pop();
+  localStorage.setItem('cd_history', JSON.stringify(sessionHistory));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const empty = document.getElementById('history-empty');
+
+  if (sessionHistory.length === 0) {
+    empty.classList.remove('hidden');
+    list.classList.add('hidden');
+    return;
+  }
+
+  empty.classList.add('hidden');
+  list.classList.remove('hidden');
+  list.innerHTML = '';
+
+  sessionHistory.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.onclick = () => reloadHistory(entry);
+    div.innerHTML = `
+      <span class="history-time">${entry.time}</span>
+      <span class="history-err">${entry.errorMsg || entry.errorType}</span>
+      <span class="history-lang">${entry.lang}</span>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function reloadHistory(entry) {
+  document.getElementById('code-input').value = entry.code;
+  document.getElementById('error-input').value = entry.errorMsg || '';
+  const picker = document.getElementById('lang-picker');
+  picker.value = entry.lang;
+  currentLang = entry.lang;
+  updateLang();
+  renderOutput(entry.result, entry.code, entry.errorMsg);
+  showToast('success', 'History se load kiya');
+}
+
+// ═══════════════════════════════════════
+// MISTAKE PATTERNS
+// ═══════════════════════════════════════
+const PATTERN_LABELS = {
+  syntax_error: 'Syntax Errors',
+  logic_error: 'Logic Errors',
+  type_error: 'Type Errors',
+  null_reference: 'Null Reference',
+  scope_error: 'Scope Errors',
+  async_error: 'Async Bugs',
+  import_error: 'Import Errors',
+  index_error: 'Index Errors',
+  other: 'Other Bugs'
+};
+
+function updatePatterns(category) {
+  if (!category) return;
+  mistakePatterns[category] = (mistakePatterns[category] || 0) + 1;
+  localStorage.setItem('cd_patterns', JSON.stringify(mistakePatterns));
+  renderPatterns();
+}
+
+function renderPatterns() {
+  const grid = document.getElementById('pattern-grid');
+  const noP = document.getElementById('no-patterns');
+  const total = Object.values(mistakePatterns).reduce((a, b) => a + b, 0);
+
+  if (total === 0) {
+    noP.classList.remove('hidden');
+    grid.classList.add('hidden');
+    return;
+  }
+
+  noP.classList.add('hidden');
+  grid.classList.remove('hidden');
+  grid.innerHTML = '';
+
+  const sorted = Object.entries(mistakePatterns).sort((a, b) => b[1] - a[1]);
+  const maxVal = sorted[0][1];
+
+  sorted.forEach(([cat, count]) => {
+    const pct = Math.round((count / maxVal) * 100);
+    const card = document.createElement('div');
+    card.className = 'pattern-card';
+    card.innerHTML = `
+      <div class="pattern-count">${count}</div>
+      <div class="pattern-name">${PATTERN_LABELS[cat] || cat}</div>
+      <div class="pattern-bar-wrap">
+        <div class="pattern-bar" style="width:${pct}%"></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════
+function setMode(mode, el) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateLang() {
+  currentLang = document.getElementById('lang-picker').value;
+  document.getElementById('lang-tag').textContent = LANG_TAGS[currentLang] || 'code.txt';
+  const codeEl = document.getElementById('out-fixed-code');
+  if (codeEl) {
+    document.getElementById('out-fix-lang').textContent = LANG_TAGS[currentLang] || 'fixed_code';
+  }
+}
+
+function switchTab(tabId, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+async function copyCode() {
+  const code = document.getElementById('out-fixed-code').textContent;
+  try {
+    await navigator.clipboard.writeText(code);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  } catch { showToast('error', 'Copy nahi hua — manually select karo'); }
+}
+
+function showToast(type, msg) {
+  const toast = document.getElementById('toast');
+  const dot = toast.querySelector('.toast-dot');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.className = 'toast toast-' + type;
+  dot.style.background = type === 'success' ? 'var(--green)' : 'var(--red)';
+  void toast.offsetWidth;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+// ── MODAL ──────────────────────────────
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  // Load saved keys into inputs
+  ['groq','gemini','openrouter'].forEach(p => {
+    const saved = localStorage.getItem(PROVIDERS[p].storageKey) || '';
+    const el = document.getElementById('key-' + p);
+    if (el && saved) el.value = saved;
+  });
+  // Restore active tab
+  setProvider(currentProvider, false);
+  setTimeout(() => {
+    const el = document.getElementById('key-' + currentProvider);
+    if (el) el.focus();
+  }, 100);
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function setProvider(p, focus = true) {
+  currentProvider = p;
+  localStorage.setItem('cd_provider', p);
+  // Update tabs
+  ['groq','gemini','openrouter'].forEach(id => {
+    document.getElementById('ptab-' + id)?.classList.remove('active-tab');
+    document.getElementById('provider-' + id).style.display = 'none';
+  });
+  document.getElementById('ptab-' + p)?.classList.add('active-tab');
+  document.getElementById('provider-' + p).style.display = 'block';
+  if (focus) setTimeout(() => document.getElementById('key-' + p)?.focus(), 50);
+}
+
+function saveApiKey() {
+  const key = document.getElementById('key-' + currentProvider)?.value.trim();
+  if (!key) { showToast('error', 'Key paste karo pehle'); return; }
+
+  const prefix = PROVIDERS[currentProvider].keyPrefix;
+  if (!key.startsWith(prefix)) {
+    showToast('error', `${PROVIDERS[currentProvider].label} key "${prefix}" se shuru honi chahiye`);
+    return;
+  }
+
+  localStorage.setItem(PROVIDERS[currentProvider].storageKey, key);
+  document.getElementById('modal-overlay').classList.remove('open');
+  showToast('success', `${PROVIDERS[currentProvider].label} key save! Ab analyze kar sakte ho.`);
+}
+
+// ── KEYBOARD SHORTCUTS ─────────────────
+document.addEventListener('keydown', e => {
+  // Ctrl+Enter = Submit
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    analyzeCode();
+  }
+  // Escape = close modal
+  if (e.key === 'Escape') {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+});
+
+// Tab key in code editor inserts spaces
+document.getElementById('code-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+    this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = start + 2;
+  }
+});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init() {
+  renderHistory();
+  renderPatterns();
+  // Show modal if no key saved for ANY provider
+  const hasAnyKey = ['groq','gemini','openrouter'].some(p => localStorage.getItem(PROVIDERS[p].storageKey));
+  if (!hasAnyKey) setTimeout(openModal, 800);
+})();
+</script>
+</body>
+</html>
