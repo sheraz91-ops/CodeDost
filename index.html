@@ -201,8 +201,71 @@ footer {
   .preview-inner { flex-direction: column; }
   .preview-left { border-right: none; border-bottom: 1px solid #2e2e36; }
   .steps-row::before { display:none; }
-  nav .nav-links .nav-link:not(.nav-cta) { display: none; }
+  nav .nav-links .nav-link:not(.nav-cta):not(.nav-pro) { display: none; }
 }
+
+/* ── PRO MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(10px); z-index: 999;
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.pro-modal {
+  background: #0f1d13; border: 1px solid rgba(200,151,43,0.3);
+  border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 440px;
+  position: relative; transform: translateY(24px) scale(0.97);
+  transition: transform 0.3s ease;
+}
+.modal-overlay.active .pro-modal { transform: translateY(0) scale(1); }
+.pro-modal::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--live));
+  border-radius: 20px 20px 0 0;
+}
+.modal-close-btn {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: rgba(255,255,255,0.05); border: none; color: #5A7468;
+  width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+  font-size: 1rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; line-height: 1;
+}
+.modal-close-btn:hover { background: rgba(200,151,43,0.12); color: var(--gold); }
+.modal-soon-badge {
+  display: inline-block; font-family: var(--code); font-size: 10px;
+  color: var(--live); border: 1px solid rgba(45,158,107,0.3);
+  background: rgba(45,158,107,0.07); padding: 4px 12px; border-radius: 99px;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.2rem;
+}
+.pro-modal h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; color: #F4F1EB; margin-bottom: 6px; }
+.pro-modal-price { font-family: var(--code); font-size: 13px; color: var(--gold); margin-bottom: 12px; }
+.pro-modal-desc { font-size: 14px; color: #5A7468; line-height: 1.7; margin-bottom: 1.5rem; }
+.pro-modal-desc strong { color: var(--gold-lt); }
+.pro-modal-features { list-style: none; margin-bottom: 1.8rem; display: flex; flex-direction: column; gap: 8px; }
+.pro-modal-features li { font-size: 13px; color: #8A9E93; display: flex; align-items: center; gap: 8px; }
+.pro-modal-features li::before { content: '✦'; color: var(--gold); font-size: 8px; flex-shrink: 0; }
+.modal-email-input {
+  width: 100%; padding: 12px 16px; background: #0B1F14;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+  color: #F4F1EB; font-family: var(--code); font-size: 13px;
+  outline: none; transition: border-color 0.2s; margin-bottom: 10px; display: block;
+}
+.modal-email-input::placeholder { color: #3A5444; }
+.modal-email-input:focus { border-color: rgba(200,151,43,0.45); }
+.modal-email-input.error { border-color: rgba(255,80,80,0.5); }
+.btn-join-waitlist {
+  width: 100%; padding: 13px; background: var(--gold); color: var(--dark);
+  border: none; border-radius: 10px; font-family: var(--ui);
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.btn-join-waitlist:hover { background: var(--gold-lt); transform: translateY(-1px); }
+.btn-join-waitlist:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.modal-fine-print { font-family: var(--code); font-size: 11px; color: #3A5444; text-align: center; margin-top: 10px; }
+.modal-success { text-align: center; display: none; padding: 1rem 0; }
+.modal-success-icon { font-size: 2.8rem; margin-bottom: 1rem; }
+.modal-success h3 { font-size: 1.4rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+.modal-success p { font-size: 14px; color: #5A7468; line-height: 1.65; }
 </style>
 </head>
 <body>
@@ -217,6 +280,7 @@ footer {
     <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#how">How it works</a>
     <a class="nav-link" href="#reviews">Reviews</a>
+    <a class="nav-link nav-pro" href="#" onclick="openProModal();return false;" style="color:var(--gold);font-weight:700;border:1px solid rgba(200,151,43,0.35);border-radius:8px;padding:7px 14px;">✦ Pro Plan</a>
     <a class="nav-link nav-cta" href="codedost.html">Try Free →</a>
   </div>
 </nav>
@@ -416,7 +480,7 @@ footer {
       <div class="t-uni">1st Year CS, NUST Islamabad</div>
     </div>
     <div class="testimonial-card" style="border-style:dashed">
-      <p class="t-text" style="color:var(--muted)">Apna review yahan add karwao — codedost.feedback@gmail.com ya GitHub issues pe.</p>
+      <p class="t-text" style="color:var(--muted)">Apna review yahan add karwao — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="34575b5051505b47401a525151505655575f745359555d581a575b59">[email&#160;protected]</a> ya GitHub issues pe.</p>
       <div class="t-author" style="color:var(--muted)">Your name here</div>
       <div class="t-uni" style="color:var(--border)">Your university</div>
     </div>
@@ -433,6 +497,41 @@ footer {
   </div>
 </section>
 
+<!-- PRO MODAL -->
+<div class="modal-overlay" id="proModalOverlay">
+  <div class="pro-modal" id="proModal">
+    <button class="modal-close-btn" onclick="closeProModal()">✕</button>
+
+    <div id="proFormState">
+      <div class="modal-soon-badge">🚀 Coming Soon</div>
+      <h2>Pro Plan</h2>
+      <div class="pro-modal-price">Rs. 199 / month</div>
+      <p class="pro-modal-desc">
+        Pro launch hone wala hai. Abhi join karo aur
+        <strong>3 months bilkul free</strong> pao — koi credit card nahi chahiye.
+      </p>
+      <ul class="pro-modal-features">
+        <li>Unlimited AI code explanations</li>
+        <li>Priority response — no rate limits</li>
+        <li>Advanced mistake pattern analytics</li>
+        <li>All 6 languages + upcoming ones</li>
+        <li>Priority WhatsApp support</li>
+      </ul>
+      <input class="modal-email-input" type="email" id="proEmailInput" placeholder="tumhari@email.com" />
+      <button class="btn-join-waitlist" id="proJoinBtn" onclick="joinProWaitlist()">
+        Join Waitlist — 3 Months Free Pao
+      </button>
+      <p class="modal-fine-print">No spam. No credit card. Sirf early access.</p>
+    </div>
+
+    <div class="modal-success" id="proSuccessState">
+      <div class="modal-success-icon">🎉</div>
+      <h3>Waitlist mein aa gaye!</h3>
+      <p>Pro launch hote hi tumhe email milega.<br>Tumhare 3 months free reserved hain.</p>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">{} CodeDost</div>
@@ -445,16 +544,60 @@ footer {
 </footer>
 
 <script>
-async function loadCount() {
-  try {
-    const r = await fetch('https://api.countapi.xyz/get/codedost-pk/bugs-explained');
-    const d = await r.json();
-    const count = ((d.value||0) + 1247).toLocaleString();
-    document.getElementById('hero-count').textContent = count;
-    document.getElementById('stat-count').textContent = count;
-  } catch {}
-}
-loadCount();
+  // ── Pro Modal ──
+  function openProModal() {
+    document.getElementById('proModalOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('proEmailInput').focus(), 300);
+  }
+  function closeProModal() {
+    document.getElementById('proModalOverlay').classList.remove('active');
+  }
+  document.getElementById('proModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeProModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeProModal();
+  });
+  function joinProWaitlist() {
+    var input = document.getElementById('proEmailInput');
+    var email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      input.classList.add('error');
+      input.focus();
+      return;
+    }
+    input.classList.remove('error');
+    var btn = document.getElementById('proJoinBtn');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
+    fetch('https://formspree.io/f/xojkbvjw', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email: email, source: 'CodeDost Pro Waitlist' })
+    })
+    .then(function() { showProSuccess(); })
+    .catch(function() { showProSuccess(); });
+  }
+  function showProSuccess() {
+    document.getElementById('proFormState').style.display = 'none';
+    document.getElementById('proSuccessState').style.display = 'block';
+  }
+
+  // ── Bug Counter ──
+  async function loadCount() {
+    try {
+      const r = await fetch('https://api.countapi.xyz/get/codedost-pk/bugs-explained');
+      const d = await r.json();
+      if (d && d.value) {
+        var val = d.value.toLocaleString();
+        var el1 = document.getElementById('hero-count');
+        var el2 = document.getElementById('stat-count');
+        if (el1) el1.textContent = val;
+        if (el2) el2.textContent = val;
+      }
+    } catch(e) {}
+  }
+  loadCount();
 </script>
 </body>
 </html>
