@@ -175,6 +175,48 @@ h2 { font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; letter-spacing: -0.5
 .t-author::before { content:'—'; color:var(--border); }
 .t-uni { font-size: 11px; color: var(--muted); margin-top: 2px; padding-left: 14px; }
 
+/* ── UNIVERSITIES ── */
+.uni-section { background: var(--off); padding: 72px 5%; }
+.uni-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 48px; flex-wrap: wrap;
+  background: white; border: 1px solid var(--border);
+  border-radius: 20px; padding: 3rem;
+  position: relative; overflow: hidden;
+}
+.uni-inner::before {
+  content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--gold), var(--live));
+}
+.uni-left { flex: 1; min-width: 260px; }
+.uni-tag {
+  display: inline-block; font-family: var(--code); font-size: 10px;
+  font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--live); background: rgba(45,158,107,0.08);
+  border: 1px solid rgba(45,158,107,0.2); padding: 4px 12px;
+  border-radius: 99px; margin-bottom: 14px;
+}
+.uni-title { font-size: clamp(18px,2.5vw,26px); font-weight: 800; letter-spacing: -0.3px; margin-bottom: 8px; }
+.uni-price { font-family: var(--code); font-size: 13px; color: var(--gold); font-weight: 700; margin-bottom: 10px; }
+.uni-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 420px; }
+.uni-right { display: flex; flex-direction: column; gap: 12px; min-width: 220px; }
+.btn-whatsapp {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  background: #25D366; color: white;
+  font-family: var(--ui); font-size: 14px; font-weight: 700;
+  padding: 13px 24px; border-radius: 10px; text-decoration: none;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.3); }
+.btn-email {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  background: transparent; color: var(--text);
+  font-family: var(--ui); font-size: 14px; font-weight: 600;
+  padding: 13px 24px; border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: all 0.2s; white-space: nowrap;
+}
+.btn-email:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
 /* ── CTA ── */
 .cta-section {
   background: var(--dark);
@@ -281,6 +323,7 @@ footer {
     <a class="nav-link" href="#how">How it works</a>
     <a class="nav-link" href="#reviews">Reviews</a>
     <a class="nav-link nav-pro" href="#" onclick="openProModal();return false;" style="color:var(--gold);font-weight:700;border:1px solid rgba(200,151,43,0.35);border-radius:8px;padding:7px 14px;">✦ Pro Plan</a>
+    <a class="nav-link nav-pro" href="#universities" style="color:var(--live);font-weight:700;border:1px solid rgba(45,158,107,0.35);border-radius:8px;padding:7px 14px;">🏛 Universities</a>
     <a class="nav-link nav-cta" href="codedost.html">Try Free →</a>
   </div>
 </nav>
@@ -483,6 +526,28 @@ footer {
       <p class="t-text" style="color:var(--muted)">Apna review yahan add karwao — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="34575b5051505b47401a525151505655575f745359555d581a575b59">[email&#160;protected]</a> ya GitHub issues pe.</p>
       <div class="t-author" style="color:var(--muted)">Your name here</div>
       <div class="t-uni" style="color:var(--border)">Your university</div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIVERSITIES -->
+<section class="uni-section" id="universities">
+  <div class="uni-inner">
+    <div class="uni-left">
+      <div class="uni-tag">🏛 For Institutions</div>
+      <div class="uni-title">Institution License</div>
+      <div class="uni-price">Rs. 25,000 / semester</div>
+      <p class="uni-desc">
+        Universities aur colleges ke liye bulk license. Poore CS department ke students ko access — ek semester, ek payment. Demo ke liye humse rabta karo.
+      </p>
+    </div>
+    <div class="uni-right">
+      <a class="btn-whatsapp" href="https://wa.me/923164533887?text=Hi%2C%20I%20am%20interested%20in%20CodeDost%20Institution%20License%20for%20my%20university.%20Please%20share%20demo%20details." target="_blank">
+        💬 WhatsApp Karo
+      </a>
+      <a class="btn-email" href="mailto:sherazramzan91@gmail.com?subject=CodeDost%20Institution%20License%20Demo&body=Hi%2C%20I%20am%20interested%20in%20the%20CodeDost%20Institution%20License.%20Please%20share%20details." target="_blank">
+        ✉️ Email Bhejo
+      </a>
     </div>
   </div>
 </section>
