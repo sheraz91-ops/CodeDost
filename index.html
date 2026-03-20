@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#6366f1" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="CodeDost" />
+  <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CodeDost — Pakistan's AI Coding Tutor in Roman Urdu</title>
 <meta name="description" content="Free AI coding tutor for Pakistani CS students. Explains errors in Roman Urdu with desi analogies. No download, no login."/>
@@ -733,6 +740,15 @@ footer {
     } catch(e) {}
   }
   loadCount();
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js")
+        .then(() => console.log("SW registered"))
+        .catch((err) => console.log("SW failed:", err));
+    });
+  }
 </script>
 </body>
 </html>
