@@ -674,22 +674,17 @@ footer {
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
   // ── Pro Modal ──
-  function openProModal() {
+  window.openProModal = function() {
     document.getElementById('proModalOverlay').classList.add('active');
-    setTimeout(() => document.getElementById('proEmailInput').focus(), 300);
+    setTimeout(function() { document.getElementById('proEmailInput').focus(); }, 300);
   }
-  function closeProModal() {
+  window.closeProModal = function() {
     document.getElementById('proModalOverlay').classList.remove('active');
   }
-  document.getElementById('proModalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeProModal();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeProModal();
-  });
-  function joinProWaitlist() {
+  window.joinProWaitlist = function() {
     var input = document.getElementById('proEmailInput');
     var email = input.value.trim();
     if (!email || !email.includes('@')) {
@@ -709,14 +704,35 @@ footer {
     .then(function() { showProSuccess(); })
     .catch(function() { showProSuccess(); });
   }
-  function showProSuccess() {
+  window.showProSuccess = function() {
     document.getElementById('proFormState').style.display = 'none';
     document.getElementById('proSuccessState').style.display = 'block';
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('proModalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) window.closeProModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') window.closeProModal();
+    });
+  });
 
   // ── Bug Counter ──
   async function loadCount() {
     try {
       const r = await fetch('https://api.countapi.xyz/get/codedost-pk/bugs-explained');
       const d = await r.json();
-      if (d && d.value)
+      if (d && d.value) {
+        var val = d.value.toLocaleString();
+        var el1 = document.getElementById('hero-count');
+        var el2 = document.getElementById('stat-count');
+        if (el1) el1.textContent = val;
+        if (el2) el2.textContent = val;
+      }
+    } catch(e) {}
+  }
+  loadCount();
+</script>
+</body>
+</html>
