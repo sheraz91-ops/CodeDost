@@ -240,10 +240,76 @@ footer {
 .footer-links a:hover { color: var(--gold); }
 
 @media (max-width: 720px) {
+  /* Nav */
+  nav { padding: 0 4%; height: 56px; }
+  nav .nav-links .nav-link:not(.nav-cta):not(.nav-pro) { display: none; }
+  nav .nav-links { gap: 4px; }
+  nav .nav-pro { font-size: 11px !important; padding: 5px 8px !important; border-radius: 6px !important; }
+  nav .nav-pro:first-of-type::before { content: none; }
+  /* Shorten button text on small screens */
+  .nav-pro-label-full { display: none; }
+  .nav-pro-label-short { display: inline; }
+  nav .nav-cta { font-size: 12px; padding: 7px 11px; }
+
+  /* Hero */
+  .hero { padding: 48px 5% 48px; }
+  h1 { font-size: 28px; letter-spacing: -0.5px; }
+  .hero-sub { font-size: 14px; margin-bottom: 28px; }
+  .hero-btns { flex-direction: column; gap: 10px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: 13px 20px; }
+  .hero-stats { gap: 20px; margin-top: 32px; padding-top: 24px; }
+  .stat-num { font-size: 22px; }
+
+  /* Preview strip */
   .preview-inner { flex-direction: column; }
   .preview-left { border-right: none; border-bottom: 1px solid #2e2e36; }
-  .steps-row::before { display:none; }
-  nav .nav-links .nav-link:not(.nav-cta):not(.nav-pro) { display: none; }
+  .preview-left, .preview-right { padding: 20px; }
+
+  /* Sections */
+  section { padding: 48px 5%; }
+  h2 { font-size: 22px; }
+  .section-sub { font-size: 14px; margin-bottom: 32px; }
+
+  /* Features */
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+
+  /* How it works */
+  .steps-row { flex-direction: column; gap: 28px; }
+  .steps-row::before { display: none; }
+  .step-item { text-align: left; display: flex; align-items: flex-start; gap: 16px; padding: 0; }
+  .step-num { width: 48px; height: 48px; font-size: 18px; flex-shrink: 0; margin: 0; }
+
+  /* Providers */
+  .providers-row { flex-direction: column; }
+
+  /* Testimonials */
+  .testimonials-grid { grid-template-columns: 1fr; }
+
+  /* Universities */
+  .uni-section { padding: 40px 5%; }
+  .uni-inner { flex-direction: column; gap: 24px; padding: 1.8rem 1.4rem; border-radius: 14px; }
+  .uni-title { font-size: 20px; }
+  .uni-right { flex-direction: column; width: 100%; gap: 10px; }
+  .btn-whatsapp, .btn-email { width: 100%; justify-content: center; padding: 13px 20px; font-size: 14px; }
+
+  /* CTA */
+  .cta-section { padding: 56px 5%; }
+  .cta-section div { flex-direction: column; align-items: center; }
+  .cta-section .btn-primary, .cta-section .btn-secondary { width: 100%; justify-content: center; }
+
+  /* Footer */
+  footer { flex-direction: column; text-align: center; gap: 10px; padding: 24px 5%; }
+
+  /* Pro modal */
+  .pro-modal { padding: 1.8rem 1.4rem; border-radius: 16px; }
+  .pro-modal h2 { font-size: 1.4rem; }
+  .pro-modal-features { gap: 6px; }
+}
+
+@media (max-width: 400px) {
+  nav .nav-pro { font-size: 10px !important; padding: 4px 6px !important; }
+  nav .nav-cta { font-size: 11px; padding: 6px 9px; }
+  .nav-logo-text { font-size: 15px; }
 }
 
 /* ── PRO MODAL ── */
@@ -322,8 +388,8 @@ footer {
     <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#how">How it works</a>
     <a class="nav-link" href="#reviews">Reviews</a>
-    <a class="nav-link nav-pro" href="#" onclick="openProModal();return false;" style="color:var(--gold);font-weight:700;border:1px solid rgba(200,151,43,0.35);border-radius:8px;padding:7px 14px;">✦ Pro Plan</a>
-    <a class="nav-link nav-pro" href="#universities" style="color:var(--live);font-weight:700;border:1px solid rgba(45,158,107,0.35);border-radius:8px;padding:7px 14px;">🏛 Universities</a>
+    <a class="nav-link nav-pro" href="#" onclick="openProModal();return false;" style="color:var(--gold);font-weight:700;border:1px solid rgba(200,151,43,0.35);border-radius:8px;padding:7px 14px;"><span class="nav-pro-label-full">✦ Pro Plan</span><span class="nav-pro-label-short" style="display:none;">✦ Pro</span></a>
+    <a class="nav-link nav-pro" href="#universities" style="color:var(--live);font-weight:700;border:1px solid rgba(45,158,107,0.35);border-radius:8px;padding:7px 14px;"><span class="nav-pro-label-full">🏛 Universities</span><span class="nav-pro-label-short" style="display:none;">🏛 Uni</span></a>
     <a class="nav-link nav-cta" href="codedost.html">Try Free →</a>
   </div>
 </nav>
@@ -545,7 +611,7 @@ footer {
       <a class="btn-whatsapp" href="https://wa.me/923164533887?text=Hi%2C%20I%20am%20interested%20in%20CodeDost%20Institution%20License%20for%20my%20university.%20Please%20share%20demo%20details." target="_blank">
         💬 WhatsApp Karo
       </a>
-      <a class="btn-email" href="mailto:sherazramzan91@gmail.com?subject=CodeDost%20Institution%20License%20Demo&body=Hi%2C%20I%20am%20interested%20in%20the%20CodeDost%20Institution%20License.%20Please%20share%20details." target="_blank">
+      <a class="btn-email" href="/cdn-cgi/l/email-protection#e7948f8295869d95868a9d8689ded6a7808a868e8bc984888ad89492858d828493daa4888382a3889493c2d5d7ae8994938e9392938e8889c2d5d7ab8e8482899482c2d5d7a3828a88c18588839edaaf8ec2d5a4c2d5d7aec2d5d7868ac2d5d78e899382958294938283c2d5d78e89c2d5d7938f82c2d5d7a4888382a3889493c2d5d7ae8994938e9392938e8889c2d5d7ab8e8482899482c9c2d5d7b78b82869482c2d5d7948f869582c2d5d7838293868e8b94c9" target="_blank">
         ✉️ Email Bhejo
       </a>
     </div>
@@ -608,7 +674,7 @@ footer {
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── Pro Modal ──
   function openProModal() {
     document.getElementById('proModalOverlay').classList.add('active');
@@ -653,16 +719,4 @@ footer {
     try {
       const r = await fetch('https://api.countapi.xyz/get/codedost-pk/bugs-explained');
       const d = await r.json();
-      if (d && d.value) {
-        var val = d.value.toLocaleString();
-        var el1 = document.getElementById('hero-count');
-        var el2 = document.getElementById('stat-count');
-        if (el1) el1.textContent = val;
-        if (el2) el2.textContent = val;
-      }
-    } catch(e) {}
-  }
-  loadCount();
-</script>
-</body>
-</html>
+      if (d && d.value)
