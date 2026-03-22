@@ -747,30 +747,6 @@ function setMode(mode, el) {
   if (el) el.classList.add('active');
 }
 
-// ── FONT SIZE SLIDER ─────────────────────────
-function setFontSize(px) {
-  const min = 12;
-  const max = 26;
-  const clamped = Math.min(max, Math.max(min, px));
-  document.documentElement.style.fontSize = `${clamped}px`;
-  document.getElementById('font-size-range').value = clamped;
-  document.getElementById('font-size-display').textContent = `${clamped}px`;
-  localStorage.setItem('cd_font_size', clamped);
-}
-
-function adjustFontSize(delta) {
-  const current = Number(document.getElementById('font-size-range').value) || 18;
-  setFontSize(current + delta);
-}
-
-function initFontSize() {
-  const saved = Number(localStorage.getItem('cd_font_size')) || 18;
-  setFontSize(saved);
-  document.getElementById('font-size-range').addEventListener('input', e => {
-    setFontSize(Number(e.target.value));
-  });
-}
-
 // ═══════════════════════════════════════
 // THEME CUSTOMIZATION
 // ═══════════════════════════════════════
@@ -1017,7 +993,6 @@ document.getElementById('code-input').addEventListener('keydown', function(e) {
   initModeButtons();
   renderHistory();
   renderPatterns();
-  initFontSize();
 
   // Initialize pattern date filter
   document.getElementById('pattern-date-filter').addEventListener('change', filterPatternsByDate);
