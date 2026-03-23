@@ -407,9 +407,9 @@ function renderOutput(r, originalCode, errorMsg) {
   if (newRepeat >= 2) {
     repeatBanner.style.display = 'flex';
     const txt = document.getElementById('repeat-banner-text');
-    if (newRepeat === 2) txt.textContent = 'You've seen this error type before — good news: now you'll recognise it faster.';
-    else if (newRepeat === 3) txt.textContent = 'This is the 3rd time — let's go deeper. Focus on the "Aab Yeh Seekho" concept below.';
-    else txt.textContent = `You've hit this error ${newRepeat} times. Time to master this concept once and for all.`;
+    if (newRepeat === 2) txt.textContent = "You have seen this error type before — good news: now you will recognise it faster.";
+    else if (newRepeat === 3) txt.textContent = "This is the 3rd time — let us go deeper. Focus on the Aab Yeh Seekho concept below.";
+    else txt.textContent = `You have hit this error ${newRepeat} times. Time to master this concept once and for all.`;
   } else {
     repeatBanner.style.display = 'none';
   }
@@ -1284,7 +1284,7 @@ function checkSimilarErrors(category) {
       syntax_error: 'You have hit SyntaxErrors ' + count + ' times. Watch out for missing colons (:) after loops and if statements.',
       index_error: 'You have hit IndexErrors ' + count + ' times. Remember: lists start at index 0. Use len(list)-1 for the last item.',
       null_reference: 'You have hit NullReference errors ' + count + ' times. Always check if a value is None before using it.',
-      scope_error: 'You have hit Scope errors ' + count + ' times. Variables declared inside an if block don't exist outside it.',
+      scope_error: 'You have hit Scope errors ' + count + ' times. Variables declared inside an if block do not exist outside it.',
       async_error: 'You have hit Async errors ' + count + ' times. Always use await before fetch() and async def for the function.',
       import_error: 'You have hit ImportErrors ' + count + ' times. Remember to import every module before using it.',
       index_error: 'You have hit IndexErrors ' + count + ' times. Lists are 0-indexed — a 5-item list has indices 0 through 4.',
