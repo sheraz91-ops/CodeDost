@@ -246,11 +246,11 @@ body {
   font-weight: 500;
   padding: 6px 16px;
   border-radius: 7px;
-  border: none;
+ border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s;
   color: var(--text-secondary);
-  background: transparent;
+  background: transparent ;
 }
 .mode-btn:focus-visible {
   outline: 2px solid var(--amber);
@@ -261,7 +261,19 @@ body {
   color: #0e0e10;
   font-weight: 700;
 }
-
+.theme-btn{
+  background: transparent !important;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 7px;
+ border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  background: transparent ;
+}
 /* ── MAIN LAYOUT ────────────────────────────── */
 .main {
   display: grid;
@@ -1952,6 +1964,7 @@ textarea {
   text-align: center;
   flex-direction: column;
   gap: 10px;
+  position: relative;
 }
 .cotd-icon {
   font-size: 18px;
@@ -1987,7 +2000,8 @@ textarea {
   padding: 0 2px;
   flex-shrink: 0;
   position: absolute;
-  /* top: 0; */
+  top: 0;
+  right: 15px;
 }
 .cotd-dismiss:hover {
   color: var(--text-primary);

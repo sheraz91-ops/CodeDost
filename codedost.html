@@ -41,6 +41,10 @@
     <span class="badge-urdu">🇵🇰 Roman Urdu</span>
     <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">?</button>
     <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
+    <!-- <button class="api-btn" aria-label="Open API key setup">🔑 Free API Key</button> -->
+     <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      🌙
+    </button>
   </div>
 </header>
 
@@ -53,9 +57,6 @@
   <p class="hero-sub">Apna buggy code paste karo. CodeDost Roman Urdu mein explain karega — desi analogy ke saath — aur fix bhi karega.</p>
   <div id="cotd-container"></div>
   <div class="mode-toggle" role="group" aria-label="Language mode">
-    <button type="button" id="theme-toggle" class="mode-btn" onclick="toggleTheme()" aria-label="Toggle theme">
-      🌙 Dark
-    </button>
     <button type="button" class="mode-btn active" data-mode="urdu">🇵🇰 Roman Urdu</button>
     <button type="button" class="mode-btn" data-mode="mixed">⚡ Mixed</button>
     <button type="button" class="mode-btn" data-mode="english">🇬🇧 Full English</button>
