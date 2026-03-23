@@ -446,6 +446,11 @@
     .features-section {
       background: var(--cream);
       min-height: 100vh;
+      display:flex;
+      align-items:center;
+      justify-items:center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .features-grid {
@@ -493,6 +498,11 @@
     /* ── HOW IT WORKS ── */
     .how-section {
       background: var(--dark);
+      display: flex;
+       align-items:center;
+      justify-items:center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .how-section .section-label {
@@ -565,6 +575,10 @@
     /* ── PROVIDERS ── */
     .providers-section {
       background: var(--off);
+       align-items:center;
+      justify-items:center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .providers-row {
@@ -617,12 +631,19 @@
     /* ── TESTIMONIALS ── */
     .testimonials-section {
       background: var(--cream);
+      display: flex;
+       align-items:center;
+      justify-items:center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      /* display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); */
+      display: flex;
       gap: 16px;
+      flex-wrap: wrap;
     }
 
     .testimonial-card {
@@ -631,6 +652,7 @@
       border-radius: 14px;
       padding: 22px;
       position: relative;
+      width: 350px;
     }
 
     .testimonial-card::before {
