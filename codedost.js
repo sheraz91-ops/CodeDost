@@ -1227,12 +1227,12 @@ function initHistorySwipe() {
 // FEATURE 13: CONCEPT OF THE DAY
 // ═══════════════════════════════════════
 const CONCEPTS_OF_DAY = [
-  { icon: '🔄', title: 'Variable Scope', desc: 'A variable's scope determines where it can be accessed. Variables declared inside a function only exist inside that function.' },
+  { icon: '🔄', title: 'Variable Scope', desc: 'A variable\'s scope determines where it can be accessed. Variables declared inside a function only exist inside that function.' },
   { icon: '📋', title: 'Data Types', desc: 'Python has strings (text), integers (whole numbers), floats (decimals), and booleans (True/False). You cannot mix them without converting.' },
   { icon: '📑', title: 'Array Indexing', desc: 'Lists start at index 0, not 1. A list with 5 items has indices 0,1,2,3,4. Index 5 does not exist — that causes IndexError.' },
   { icon: '⏳', title: 'Async/Await', desc: 'fetch() returns a Promise, not data. You must await it. Without await, you get [object Promise] instead of your actual data.' },
   { icon: '↩️', title: 'Return Values', desc: 'A function without a return statement returns None. If you try to use that None value as a dictionary or object, you get NoneType error.' },
-  { icon: '📦', title: 'Imports', desc: 'You must import a module before using it. import math lets you use math.sqrt(). Without the import, Python doesn't know what math is.' },
+  { icon: '📦', title: 'Imports', desc: 'You must import a module before using it. import math lets you use math.sqrt(). Without the import, Python doesn\'t know what math is.' },
   { icon: '🔁', title: 'For Loop Syntax', desc: 'Python for loops require a colon at the end: for item in list: — the colon tells Python the loop body starts on the next line.' },
   { icon: '🔗', title: 'String Concatenation', desc: 'In Python, you can only join strings with +. Numbers must be converted first: "Age: " + str(age) — not "Age: " + age.' },
   { icon: '🏗️', title: 'Object Oriented Programming', desc: 'A class is a blueprint. An object is a real instance of that blueprint. self refers to the specific object calling the method.' },
@@ -1410,4 +1410,11 @@ document.getElementById('code-input').addEventListener('keydown', function(e) {
   initEditorCounter();
   initHistorySwipe();
   showConceptOfDay();
+
+  // Register service worker for PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => console.log('SW registered'))
+      .catch(error => console.log('SW registration failed'));
+  }
 })();
