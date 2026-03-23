@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CodeDost — Your AI Coding Tutor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
 <link rel="stylesheet" href="codedost.css"/>
@@ -15,8 +16,12 @@
 <body>
 
 <!-- PILOT BANNER -->
-<div class="pilot-banner" id="pilot-banner">
-  🎓 Now piloting at <strong>Pakistani universities</strong> — <a href="https://code-dost.vercel.app" target="_blank">code-dost.vercel.app</a> &nbsp;·&nbsp; <a href="https://sherazramzan.gumroad.com/l/cfevjo" target="_blank">Upgrade to Pro — $0.99/mo ↗</a>
+<div class="pilot-banner" id="pilot-banner" >
+  <!-- 🎓 Now piloting at 
+  <strong>Pakistani universities</strong> — 
+  <a href="https://code-dost.vercel.app" target="_blank">code-dost.vercel.app</a> 
+  &nbsp;·&nbsp;  -->
+  <a href="https://sherazramzan.gumroad.com/l/cfevjo" target="_blank">Upgrade to Pro — $0.99/mo ↗</a>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -38,8 +43,10 @@
       <span id="usage-count" style="font-family:var(--font-code);font-weight:700;color:var(--green)">...</span>
       <span style="color:var(--text-muted)">bugs fixed</span>
     </div>
-    <span class="badge-urdu">🇵🇰 Roman Urdu</span>
-    <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">?</button>
+    <!-- <span class="badge-urdu">🇵🇰 Roman Urdu</span> -->
+    <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">
+      <i class="fa-regular fa-keyboard"></i>
+    </button>
     <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
     <!-- <button class="api-btn" aria-label="Open API key setup">🔑 Free API Key</button> -->
      <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
