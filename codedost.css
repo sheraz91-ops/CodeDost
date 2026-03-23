@@ -567,7 +567,7 @@ pre[class*="language-"] {
   outline-offset: 2px;
 }
 .history-time { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
-.history-err { font-family: var(--font-code); font-size: 11px; color: var(--red); flex: 1; truncate: ellipsis; overflow: hidden; white-space: nowrap; }
+.history-err { font-family: var(--font-code); font-size: 11px; color: var(--red); flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
 .history-lang { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: var(--bg-surface); color: var(--text-muted); }
 
 /* Mistake patterns */
