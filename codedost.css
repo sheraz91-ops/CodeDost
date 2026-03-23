@@ -974,3 +974,305 @@ button, input, select, textarea {
 .diff-unchanged .diff-prefix {
   color: var(--text-muted);
 }
+
+/* ── FEATURE 1: STREAK COUNTER ─────────────── */
+.streak-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 600;
+  color: var(--amber);
+  cursor: default;
+  transition: all 0.2s;
+}
+.streak-badge:hover { border-color: var(--amber); }
+.streak-fire { font-size: 14px; }
+.streak-count { font-family: var(--font-code); }
+
+/* ── FEATURE 2: UNDERSTOOD BUTTON ─────────── */
+.understood-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 0 2px;
+}
+.understood-label { font-size: 11px; color: var(--text-muted); }
+.understood-btn {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+  padding: 5px 14px; border-radius: 99px;
+  border: 1px solid var(--border); cursor: pointer;
+  background: transparent; transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.understood-btn.yes:hover, .understood-btn.yes.active {
+  border-color: var(--green); color: var(--green);
+  background: var(--green-glow);
+}
+.understood-btn.no:hover, .understood-btn.no.active {
+  border-color: var(--red); color: var(--red);
+  background: var(--red-bg);
+}
+.understood-btn.active { font-weight: 700; }
+.understood-stats {
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 6px; padding: 6px 10px;
+  background: var(--bg-elevated); border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* ── FEATURE 3: REPEAT ERROR BANNER ───────── */
+.repeat-banner {
+  margin-bottom: 8px; padding: 8px 12px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: var(--amber);
+  display: flex; align-items: center; gap: 6px;
+}
+.repeat-banner-icon { font-size: 14px; }
+
+/* ── FEATURE 5: USAGE COUNTER ──────────────── */
+.usage-counter-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 99px; padding: 4px 10px;
+  font-size: 11px; cursor: default;
+}
+.usage-pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── FEATURE 6: PILOT BADGE ────────────────── */
+.pilot-banner {
+  background: rgba(16,185,129,0.07);
+  border-bottom: 1px solid rgba(16,185,129,0.2);
+  padding: 6px 24px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 12px; color: var(--green);
+}
+.pilot-banner a {
+  color: var(--amber); text-decoration: none; font-weight: 600;
+}
+.pilot-banner a:hover { text-decoration: underline; }
+
+/* ── FEATURE 7: SHORTCUTS MODAL ────────────── */
+.shortcuts-btn {
+  font-family: var(--font-code); font-size: 11px; font-weight: 600;
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.shortcuts-btn:hover { border-color: var(--amber); color: var(--amber); }
+.shortcuts-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.shortcuts-table td {
+  padding: 7px 10px; font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.shortcuts-table td:first-child {
+  font-family: var(--font-code); color: var(--amber);
+  white-space: nowrap; width: 140px;
+}
+.shortcuts-table tr:last-child td { border-bottom: none; }
+
+/* ── FEATURE 8: EDITOR COUNTER ─────────────── */
+.editor-counter {
+  font-family: var(--font-code); font-size: 9px;
+  color: var(--text-muted); letter-spacing: 0.3px;
+}
+
+/* ── FEATURE 9: RATE LIMIT COUNTDOWN ──────── */
+.rate-limit-bar {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 12px; margin-top: 8px;
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: var(--red);
+}
+.rate-limit-bar.visible { display: flex; }
+.rate-countdown { font-family: var(--font-code); font-weight: 700; min-width: 26px; }
+.rate-progress {
+  flex: 1; height: 3px; background: var(--bg-hover);
+  border-radius: 99px; overflow: hidden;
+}
+.rate-progress-fill {
+  height: 100%; background: var(--red);
+  border-radius: 99px; transition: width 1s linear;
+}
+
+/* ── FEATURE 10: PASTE ERROR BUTTON ────────── */
+.paste-error-btn {
+  font-family: var(--font-ui); font-size: 10px; font-weight: 500;
+  padding: 3px 8px; border-radius: 99px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+.paste-error-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── FEATURE 11: SHARE CARD ─────────────────── */
+.share-card-modal {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 14px; padding: 20px;
+}
+.share-card-modal.open { display: flex; }
+.share-card-preview {
+  background: var(--bg-base); border-radius: 14px; overflow: hidden;
+  max-width: 500px; width: 100%;
+  border: 1px solid var(--border);
+}
+.sc-header {
+  background: var(--amber); padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sc-logo-box {
+  background: #0e0e10; border-radius: 5px;
+  padding: 3px 7px; font-family: var(--font-code);
+  font-size: 12px; font-weight: 800; color: var(--amber);
+}
+.sc-brand { font-family: var(--font-ui); font-size: 14px; font-weight: 700; color: #0e0e10; }
+.sc-body { padding: 14px 16px; }
+.sc-error-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.sc-explain {
+  font-size: 12px; color: var(--text-primary); line-height: 1.65;
+  background: var(--bg-surface); border-left: 3px solid var(--amber);
+  padding: 10px 12px; border-radius: 6px; margin-bottom: 8px;
+}
+.sc-analogy {
+  font-size: 11px; color: var(--text-secondary); line-height: 1.6;
+  background: var(--bg-elevated); border-left: 3px solid var(--green);
+  padding: 8px 12px; border-radius: 6px; font-style: italic;
+}
+.sc-footer {
+  background: var(--bg-surface); padding: 8px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+}
+.sc-url { font-family: var(--font-code); font-size: 9px; color: var(--text-muted); }
+.sc-cta { font-size: 9px; color: var(--amber); font-weight: 600; }
+.share-modal-btns { display: flex; gap: 8px; }
+.share-dl-btn {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+  padding: 9px 20px; border-radius: var(--radius-md);
+  background: var(--amber); color: #0e0e10; border: none; cursor: pointer;
+}
+.share-close-btn {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+  padding: 9px 20px; border-radius: var(--radius-md);
+  background: var(--bg-elevated); color: var(--text-secondary);
+  border: 1px solid var(--border); cursor: pointer;
+}
+
+/* ── FEATURE 12: SWIPE HISTORY ──────────────── */
+.history-nav { display: flex; gap: 4px; }
+.history-nav-btn {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+  width: 26px; height: 26px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.history-nav-btn:hover { border-color: var(--amber); color: var(--amber); }
+.history-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.history-swipe-info { font-size: 10px; color: var(--text-muted); font-family: var(--font-code); }
+
+/* ── FEATURE 13: CONCEPT OF THE DAY ─────────── */
+.cotd-banner {
+  margin: 12px 0; padding: 12px 14px;
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--radius-md);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.cotd-icon { font-size: 18px; flex-shrink: 0; padding-top: 1px; }
+.cotd-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--purple); margin-bottom: 3px; }
+.cotd-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.cotd-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+.cotd-dismiss {
+  margin-left: auto; font-size: 14px; color: var(--text-muted);
+  background: transparent; border: none; cursor: pointer; padding: 0 2px; flex-shrink: 0;
+}
+.cotd-dismiss:hover { color: var(--text-primary); }
+
+/* ── FEATURE 15: SIMILAR ERRORS ─────────────── */
+.similar-errors-card {
+  margin-top: 8px; padding: 10px 12px;
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+}
+.similar-errors-title {
+  font-size: 10px; font-weight: 700; color: var(--amber);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+}
+
+/* ── FEATURE 16: EMAIL WAITLIST ─────────────── */
+.waitlist-section {
+  padding: 14px 16px;
+  background: rgba(16,185,129,0.04);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.waitlist-label { font-size: 11px; font-weight: 600; color: var(--green); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+.waitlist-row { display: flex; gap: 6px; }
+.waitlist-input {
+  flex: 1; font-family: var(--font-ui); font-size: 12px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-primary);
+  padding: 7px 10px; outline: none; transition: border-color 0.2s;
+  min-height: unset;
+}
+.waitlist-input:focus { border-color: var(--green); }
+.waitlist-input::placeholder { color: var(--text-muted); }
+.waitlist-btn {
+  font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  background: var(--green); color: #0e0e10; border: none; cursor: pointer;
+  transition: background 0.15s; white-space: nowrap; min-height: unset;
+}
+.waitlist-btn:hover { background: var(--green-dim); }
+
+/* ── FEATURE 17: REFERRAL SHARE ─────────────── */
+.referral-btn {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+  padding: 8px 16px; border-radius: var(--radius-md);
+  background: transparent; border: 1px solid var(--green);
+  color: var(--green); cursor: pointer; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.15s; margin-top: 8px; min-height: unset;
+}
+.referral-btn:hover { background: var(--green-glow); }
+
+/* ── HELP MODAL (shortcuts) ──────────────────── */
+.help-modal {
+  position: fixed; inset: 0; z-index: 9997;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.help-modal.open { display: flex; }
+.help-modal-inner {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 24px;
+  width: 100%; max-width: 400px;
+}
+.help-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.help-modal-title { font-size: 15px; font-weight: 700; }
+.help-modal-close {
+  background: transparent; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 16px; padding: 2px 6px;
+}
+.help-modal-close:hover { color: var(--text-primary); }

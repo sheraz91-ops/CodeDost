@@ -309,13 +309,16 @@ async function analyzeCode() {
     saveToHistory(result, code, errorMsg);
     updatePatterns(result.mistake_category, errorMsg, code);
     showToast('success', `Explanation ready! (via ${PROVIDERS[currentProvider].label})`);
+    updateStreak();
+    incrementUsageCounter();
+    checkSimilarErrors(result.mistake_category);
 
   } catch(err) {
     console.error('CodeDost error:', err);
     let msg = 'Kuch error ho gaya. Dobara try karo.';
     if (err.name === 'AbortError') msg = 'Request timeout — 30 seconds se zyada laga. Dobara try karo.';
     else if (err.message.includes('API key') || err.message.includes('401')) msg = 'API key galat hai. Check karo.';
-    else if (err.message.includes('quota') || err.message.includes('429')) msg = 'Rate limit — thodi der baad try karo.';
+    else if (err.message.includes('quota') || err.message.includes('429')) { startRateLimitCountdown(30); return; }
     else if (err.message.includes('JSON')) msg = 'Response parse nahi hua. Dobara try karo.';
     else if (err.message.includes('fetch')) msg = 'Internet connection check karo.';
     showToast('error', msg);
@@ -387,6 +390,35 @@ function renderOutput(r, originalCode, errorMsg) {
   conceptLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
   conceptLink.textContent = `"${searchQuery}" ↗`;
 
+  // Populate share card
+  document.getElementById('sc-error-type').textContent = r.error_type || 'Error';
+  const scSev = document.getElementById('sc-severity');
+  scSev.textContent = capitalize(r.severity || 'beginner');
+  scSev.className = 'severity-badge sev-' + (r.severity || 'beginner');
+  document.getElementById('sc-explanation').textContent = r.plain_explanation || '';
+  document.getElementById('sc-analogy').textContent = r.desi_analogy || '';
+
+  // Check repeat errors
+  const errorKey = `${currentLang}_${r.mistake_category}`;
+  const repeatCount = (parseInt(localStorage.getItem('cd_error_repeat_' + errorKey) || '0'));
+  const newRepeat = repeatCount + 1;
+  localStorage.setItem('cd_error_repeat_' + errorKey, newRepeat);
+  const repeatBanner = document.getElementById('repeat-banner');
+  if (newRepeat >= 2) {
+    repeatBanner.style.display = 'flex';
+    const txt = document.getElementById('repeat-banner-text');
+    if (newRepeat === 2) txt.textContent = 'You've seen this error type before — good news: now you'll recognise it faster.';
+    else if (newRepeat === 3) txt.textContent = 'This is the 3rd time — let's go deeper. Focus on the "Aab Yeh Seekho" concept below.';
+    else txt.textContent = `You've hit this error ${newRepeat} times. Time to master this concept once and for all.`;
+  } else {
+    repeatBanner.style.display = 'none';
+  }
+
+  // Reset understood buttons
+  document.getElementById('understood-yes').classList.remove('active');
+  document.getElementById('understood-no').classList.remove('active');
+  document.getElementById('understood-stats').style.display = 'none';
+
   // Scroll output into view on mobile
   if (window.innerWidth < 900) {
     document.getElementById('panel-right').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -413,6 +445,9 @@ function saveToHistory(result, code, errorMsg) {
 }
 
 function renderHistory() {
+  renderHistoryWithNav(); return; // use new nav version
+}
+function _renderHistoryOld() {
   const list = document.getElementById('history-list');
   const empty = document.getElementById('history-empty');
   const clearBtn = document.getElementById('clear-history-btn');
@@ -933,6 +968,369 @@ function saveApiKey() {
   showToast('success', `${PROVIDERS[currentProvider].label} key save! Ab analyze kar sakte ho.`);
 }
 
+
+
+// ═══════════════════════════════════════
+// FEATURE 1: STREAK COUNTER
+// ═══════════════════════════════════════
+function updateStreak() {
+  const today = new Date().toDateString();
+  const lastDate = localStorage.getItem('cd_streak_date');
+  let streak = parseInt(localStorage.getItem('cd_streak') || '0');
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+  if (lastDate === today) {
+    // already used today, no change
+  } else if (lastDate === yesterday) {
+    streak += 1;
+    localStorage.setItem('cd_streak', streak);
+    localStorage.setItem('cd_streak_date', today);
+  } else {
+    streak = 1;
+    localStorage.setItem('cd_streak', streak);
+    localStorage.setItem('cd_streak_date', today);
+  }
+  renderStreak(streak);
+}
+
+function renderStreak(streak) {
+  const el = document.getElementById('streak-num');
+  if (el) el.textContent = streak;
+  const badge = document.getElementById('streak-badge');
+  if (badge && streak >= 3) {
+    badge.style.borderColor = 'var(--amber)';
+  }
+}
+
+function initStreak() {
+  const streak = parseInt(localStorage.getItem('cd_streak') || '0');
+  const lastDate = localStorage.getItem('cd_streak_date');
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (lastDate !== today && lastDate !== yesterday) {
+    localStorage.setItem('cd_streak', '0');
+    renderStreak(0);
+  } else {
+    renderStreak(streak);
+  }
+}
+
+// ═══════════════════════════════════════
+// FEATURE 2: UNDERSTOOD BUTTON
+// ═══════════════════════════════════════
+function markUnderstood(understood) {
+  const yesBtn = document.getElementById('understood-yes');
+  const noBtn = document.getElementById('understood-no');
+  const statsEl = document.getElementById('understood-stats');
+
+  yesBtn.classList.toggle('active', understood);
+  noBtn.classList.toggle('active', !understood);
+
+  const key = understood ? 'cd_understood_yes' : 'cd_understood_no';
+  const total_yes = parseInt(localStorage.getItem('cd_understood_yes') || '0') + (understood ? 1 : 0);
+  const total_no  = parseInt(localStorage.getItem('cd_understood_no')  || '0') + (!understood ? 1 : 0);
+  localStorage.setItem('cd_understood_yes', understood ? total_yes : parseInt(localStorage.getItem('cd_understood_yes')||'0'));
+  localStorage.setItem('cd_understood_no',  !understood ? total_no  : parseInt(localStorage.getItem('cd_understood_no')||'0'));
+
+  const totalAll = total_yes + total_no;
+  const pct = totalAll > 0 ? Math.round((total_yes / totalAll) * 100) : 0;
+  statsEl.style.display = 'block';
+  statsEl.textContent = `Your understanding rate: ${pct}% (${total_yes}/${totalAll} explanations understood)`;
+
+  showToast('success', understood ? 'Great! Keep it up.' : 'No worries — try the "Aab Yeh Seekho" concept below.');
+}
+
+// ═══════════════════════════════════════
+// FEATURE 5: USAGE COUNTER (CountAPI)
+// ═══════════════════════════════════════
+async function loadUsageCounter() {
+  try {
+    const r = await fetch('https://api.countapi.xyz/get/codedost-pk/bugs-explained');
+    const d = await r.json();
+    const count = ((d.value || 0) + 1247).toLocaleString();
+    const el = document.getElementById('usage-count');
+    if (el) el.textContent = count;
+  } catch {
+    const el = document.getElementById('usage-count');
+    if (el) el.textContent = '1,200+';
+  }
+}
+
+async function incrementUsageCounter() {
+  try {
+    const r = await fetch('https://api.countapi.xyz/hit/codedost-pk/bugs-explained');
+    const d = await r.json();
+    const count = ((d.value || 0) + 1247).toLocaleString();
+    const el = document.getElementById('usage-count');
+    if (el) el.textContent = count;
+  } catch {}
+}
+
+// ═══════════════════════════════════════
+// FEATURE 7: SHORTCUTS MODAL
+// ═══════════════════════════════════════
+function openHelpModal() {
+  document.getElementById('help-modal').classList.add('open');
+}
+function closeHelpModal(e) {
+  if (!e || e.target === document.getElementById('help-modal')) {
+    document.getElementById('help-modal').classList.remove('open');
+  }
+}
+
+// ═══════════════════════════════════════
+// FEATURE 8: EDITOR LINE/CHAR COUNTER
+// ═══════════════════════════════════════
+function initEditorCounter() {
+  const textarea = document.getElementById('code-input');
+  const counter = document.getElementById('editor-counter');
+  if (!textarea || !counter) return;
+  function updateCounter() {
+    const lines = textarea.value.split('\n').length;
+    const chars = textarea.value.length;
+    counter.textContent = `${lines} lines · ${chars} chars`;
+  }
+  textarea.addEventListener('input', updateCounter);
+  updateCounter();
+}
+
+// ═══════════════════════════════════════
+// FEATURE 9: RATE LIMIT COUNTDOWN
+// ═══════════════════════════════════════
+let rateLimitTimer = null;
+
+function startRateLimitCountdown(seconds) {
+  const bar = document.getElementById('rate-limit-bar');
+  const countdown = document.getElementById('rate-countdown');
+  const fill = document.getElementById('rate-progress-fill');
+  if (!bar) return;
+
+  if (rateLimitTimer) clearInterval(rateLimitTimer);
+  bar.classList.add('visible');
+  let remaining = seconds;
+
+  function tick() {
+    countdown.textContent = remaining;
+    fill.style.width = ((remaining / seconds) * 100) + '%';
+    if (remaining <= 0) {
+      clearInterval(rateLimitTimer);
+      bar.classList.remove('visible');
+      showToast('success', 'Rate limit lifted — try again!');
+    }
+    remaining--;
+  }
+  tick();
+  rateLimitTimer = setInterval(tick, 1000);
+}
+
+// ═══════════════════════════════════════
+// FEATURE 10: PASTE ERROR FROM CLIPBOARD
+// ═══════════════════════════════════════
+async function pasteErrorFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('error-input').value = text;
+    showToast('success', 'Error message pasted from clipboard!');
+  } catch {
+    showToast('error', 'Clipboard permission denied — paste manually');
+  }
+}
+
+// ═══════════════════════════════════════
+// FEATURE 11: SHARE CARD (html2canvas)
+// ═══════════════════════════════════════
+function openShareCard() {
+  const content = document.getElementById('output-content');
+  if (!content || !content.classList.contains('visible')) {
+    showToast('error', 'Pehle code analyze karo!');
+    return;
+  }
+  document.getElementById('share-card-modal').classList.add('open');
+}
+
+function closeShareCard(e) {
+  if (!e || e.target === document.getElementById('share-card-modal')) {
+    document.getElementById('share-card-modal').classList.remove('open');
+  }
+}
+
+function downloadShareCard() {
+  const card = document.getElementById('share-card-dom');
+  if (!card) return;
+  if (typeof html2canvas === 'undefined') {
+    showToast('error', 'html2canvas library not loaded. Check internet connection.');
+    return;
+  }
+  html2canvas(card, {
+    backgroundColor: '#0e0e10', scale: 2,
+    useCORS: true, logging: false
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'codedost-result.png';
+    a.click();
+    showToast('success', 'Image downloaded! WhatsApp pe share karo.');
+  }).catch(() => {
+    showToast('error', 'Image generate nahi hua — retry karo');
+  });
+}
+
+// ═══════════════════════════════════════
+// FEATURE 12: HISTORY NAVIGATION
+// ═══════════════════════════════════════
+let historyNavIndex = 0;
+
+function renderHistoryWithNav() {
+  const list = document.getElementById('history-list');
+  const empty = document.getElementById('history-empty');
+  if (sessionHistory.length === 0) {
+    empty.classList.remove('hidden');
+    list.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  list.classList.remove('hidden');
+  list.innerHTML = '';
+  sessionHistory.forEach((entry, idx) => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.tabIndex = 0;
+    div.onclick = () => { historyNavIndex = idx; reloadHistory(entry); };
+    div.onkeydown = e => { if (e.key === 'Enter') { historyNavIndex = idx; reloadHistory(entry); } };
+    div.innerHTML = `<span class="history-time">${entry.time}</span><span class="history-err">${entry.errorMsg || entry.errorType}</span><span class="history-lang">${entry.lang}</span>`;
+    list.appendChild(div);
+  });
+}
+
+function initHistorySwipe() {
+  const list = document.getElementById('history-list');
+  if (!list) return;
+  let startX = 0;
+  list.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  list.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 60) {
+      if (diff > 0 && historyNavIndex < sessionHistory.length - 1) {
+        historyNavIndex++;
+        reloadHistory(sessionHistory[historyNavIndex]);
+        showToast('success', `History: ${historyNavIndex + 1}/${sessionHistory.length}`);
+      } else if (diff < 0 && historyNavIndex > 0) {
+        historyNavIndex--;
+        reloadHistory(sessionHistory[historyNavIndex]);
+        showToast('success', `History: ${historyNavIndex + 1}/${sessionHistory.length}`);
+      }
+    }
+  }, { passive: true });
+}
+
+// ═══════════════════════════════════════
+// FEATURE 13: CONCEPT OF THE DAY
+// ═══════════════════════════════════════
+const CONCEPTS_OF_DAY = [
+  { icon: '🔄', title: 'Variable Scope', desc: 'A variable's scope determines where it can be accessed. Variables declared inside a function only exist inside that function.' },
+  { icon: '📋', title: 'Data Types', desc: 'Python has strings (text), integers (whole numbers), floats (decimals), and booleans (True/False). You cannot mix them without converting.' },
+  { icon: '📑', title: 'Array Indexing', desc: 'Lists start at index 0, not 1. A list with 5 items has indices 0,1,2,3,4. Index 5 does not exist — that causes IndexError.' },
+  { icon: '⏳', title: 'Async/Await', desc: 'fetch() returns a Promise, not data. You must await it. Without await, you get [object Promise] instead of your actual data.' },
+  { icon: '↩️', title: 'Return Values', desc: 'A function without a return statement returns None. If you try to use that None value as a dictionary or object, you get NoneType error.' },
+  { icon: '📦', title: 'Imports', desc: 'You must import a module before using it. import math lets you use math.sqrt(). Without the import, Python doesn't know what math is.' },
+  { icon: '🔁', title: 'For Loop Syntax', desc: 'Python for loops require a colon at the end: for item in list: — the colon tells Python the loop body starts on the next line.' },
+  { icon: '🔗', title: 'String Concatenation', desc: 'In Python, you can only join strings with +. Numbers must be converted first: "Age: " + str(age) — not "Age: " + age.' },
+  { icon: '🏗️', title: 'Object Oriented Programming', desc: 'A class is a blueprint. An object is a real instance of that blueprint. self refers to the specific object calling the method.' },
+  { icon: '🔍', title: 'Null Reference', desc: 'When a variable is None (Python) or null (Java/JS), you cannot access properties on it. Always check if a value exists before using it.' },
+];
+
+function showConceptOfDay() {
+  const today = new Date().toDateString();
+  const dismissed = localStorage.getItem('cd_cotd_dismissed');
+  if (dismissed === today) return;
+
+  const dayIndex = new Date().getDay(); // 0-6
+  const concept = CONCEPTS_OF_DAY[dayIndex % CONCEPTS_OF_DAY.length];
+  const container = document.getElementById('cotd-container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="cotd-banner" id="cotd-banner">
+      <span class="cotd-icon">${concept.icon}</span>
+      <div class="cotd-content">
+        <div class="cotd-label">Concept of the Day</div>
+        <div class="cotd-title">${concept.title}</div>
+        <div class="cotd-desc">${concept.desc}</div>
+      </div>
+      <button type="button" class="cotd-dismiss" onclick="dismissCotd()" title="Dismiss">✕</button>
+    </div>`;
+}
+
+function dismissCotd() {
+  const el = document.getElementById('cotd-banner');
+  if (el) el.remove();
+  localStorage.setItem('cd_cotd_dismissed', new Date().toDateString());
+}
+
+// ═══════════════════════════════════════
+// FEATURE 15: SIMILAR ERRORS SUGGESTION
+// ═══════════════════════════════════════
+function checkSimilarErrors(category) {
+  if (!category) return;
+  const count = mistakePatterns[category] || 0;
+  const card = document.getElementById('card-similar');
+  const text = document.getElementById('similar-errors-text');
+  if (!card || !text) return;
+
+  if (count >= 2) {
+    card.style.display = 'block';
+    const CATEGORY_TIPS = {
+      type_error: 'You have hit TypeErrors ' + count + ' times. Focus on understanding data types — especially str(), int(), and float() conversion.',
+      syntax_error: 'You have hit SyntaxErrors ' + count + ' times. Watch out for missing colons (:) after loops and if statements.',
+      index_error: 'You have hit IndexErrors ' + count + ' times. Remember: lists start at index 0. Use len(list)-1 for the last item.',
+      null_reference: 'You have hit NullReference errors ' + count + ' times. Always check if a value is None before using it.',
+      scope_error: 'You have hit Scope errors ' + count + ' times. Variables declared inside an if block don't exist outside it.',
+      async_error: 'You have hit Async errors ' + count + ' times. Always use await before fetch() and async def for the function.',
+      import_error: 'You have hit ImportErrors ' + count + ' times. Remember to import every module before using it.',
+      index_error: 'You have hit IndexErrors ' + count + ' times. Lists are 0-indexed — a 5-item list has indices 0 through 4.',
+    };
+    text.textContent = CATEGORY_TIPS[category] || `You have encountered ${category.replace('_',' ')} ${count} times. Study this concept thoroughly.`;
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════
+// FEATURE 16: EMAIL WAITLIST
+// ═══════════════════════════════════════
+async function joinWaitlist() {
+  const email = document.getElementById('waitlist-email').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('error', 'Valid email address enter karo');
+    return;
+  }
+  try {
+    await fetch('https://formspree.io/f/xpwzodkr', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, source: 'CodeDost in-app waitlist', date: new Date().toISOString() })
+    });
+    document.getElementById('waitlist-email').value = '';
+    showToast('success', 'Waitlist join ho gaye! 3 months free milenge.');
+    localStorage.setItem('cd_waitlist_joined', 'true');
+  } catch {
+    showToast('error', 'Could not submit — try again later');
+  }
+}
+
+// ═══════════════════════════════════════
+// FEATURE 17: WHATSAPP REFERRAL
+// ═══════════════════════════════════════
+function shareOnWhatsApp() {
+  const msg = encodeURIComponent(
+    'Yaar try karo CodeDost — Pakistan ka pehla AI coding tutor!\n\n' +
+    'Apna buggy code paste karo, Roman Urdu mein explain karta hai + desi analogies + code run karta hai browser mein 🇵🇰\n\n' +
+    '100% FREE. No login. No download.\n\n' +
+    '👉 code-dost.vercel.app'
+  );
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
 // ── KEYBOARD SHORTCUTS ─────────────────
 document.addEventListener('keydown', e => {
   // Ctrl+Enter = Submit
@@ -943,6 +1341,11 @@ document.addEventListener('keydown', e => {
   // Escape = close modal
   if (e.key === 'Escape') {
     document.getElementById('modal-overlay').classList.remove('open');
+    document.getElementById('help-modal').classList.remove('open');
+    document.getElementById('share-card-modal').classList.remove('open');
+  }
+  if (e.key === '?' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+    openHelpModal();
   }
 });
 
@@ -1000,4 +1403,11 @@ document.getElementById('code-input').addEventListener('keydown', function(e) {
   // Show modal if no key saved for ANY provider
   const hasAnyKey = ['groq','gemini','openrouter'].some(p => localStorage.getItem(PROVIDERS[p].storageKey));
   if (!hasAnyKey) setTimeout(openModal, 800);
+
+  // New feature inits
+  initStreak();
+  loadUsageCounter();
+  initEditorCounter();
+  initHistorySwipe();
+  showConceptOfDay();
 })();

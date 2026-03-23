@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CodeDost — Error Glossary | Every Programming Error Explained</title>
+<meta name="description" content="Complete guide to every programming error in Python, JavaScript, Java, C++. Plain English explanations, common causes, and fixes."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0e0e10; --bg-s: #161618; --bg-e: #1e1e22;
+  --border: #2e2e36; --amber: #f59e0b; --green: #10b981;
+  --red: #f87171; --blue: #60a5fa; --purple: #a78bfa;
+  --t1: #f1f0ee; --t2: #9a9a9e; --t3: #5a5a62;
+  --fui: 'Syne',sans-serif; --fcode: 'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fui);background:var(--bg);color:var(--t1);line-height:1.7;font-size:14px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+a{color:var(--amber);text-decoration:none}a:hover{text-decoration:underline}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(14,14,16,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 24px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-icon{width:30px;height:30px;background:var(--amber);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--fcode);font-size:13px;font-weight:800;color:#0e0e10}
+.nav-brand{font-size:16px;font-weight:700;color:var(--t1)}
+.nav-brand span{color:var(--amber)}
+.nav-back{margin-left:auto;font-size:12px;color:var(--t2);text-decoration:none}
+.nav-back:hover{color:var(--amber)}
+
+.hero{padding:40px 24px 32px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 600px 200px at 50% 0%,rgba(245,158,11,0.04) 0%,transparent 70%)}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
+.hero h1 span{color:var(--amber)}
+.hero p{font-size:14px;color:var(--t2);max-width:520px;margin:0 auto 16px}
+.search-box{max-width:400px;margin:0 auto;position:relative}
+.search-input{width:100%;background:var(--bg-s);border:1px solid var(--border);border-radius:10px;color:var(--t1);font-family:var(--fui);font-size:13px;padding:10px 16px;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--amber)}
+.search-input::placeholder{color:var(--t3)}
+
+.content{max-width:900px;margin:0 auto;padding:32px 24px 48px}
+.section-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;margin-top:32px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.error-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:12px}
+.error-card{background:var(--bg-s);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s}
+.error-card:hover{border-color:var(--amber)}
+.error-card.hidden-search{display:none}
+.ec-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ec-name{font-family:var(--fcode);font-size:13px;font-weight:700}
+.ec-lang{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--bg-e);color:var(--t2)}
+.ec-sev{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.sev-b{background:rgba(16,185,129,0.1);color:var(--green)}
+.sev-i{background:rgba(245,158,11,0.1);color:var(--amber)}
+.sev-a{background:rgba(248,113,113,0.1);color:var(--red)}
+.ec-body{padding:12px 16px}
+.ec-desc{font-size:13px;color:var(--t1);line-height:1.65;margin-bottom:8px}
+.ec-cause{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px}
+.ec-cause strong{color:var(--amber);font-weight:600}
+.ec-example{background:var(--bg-e);border-radius:6px;padding:10px 12px;font-family:var(--fcode);font-size:11px;color:var(--red);margin-bottom:8px;border:1px solid rgba(248,113,113,0.15)}
+.ec-fix{font-size:12px;color:var(--green);line-height:1.6}
+.ec-fix strong{font-weight:600}
+.ec-analogy{margin-top:8px;padding:8px 10px;background:rgba(16,185,129,0.05);border-left:3px solid var(--green);border-radius:4px;font-size:11px;color:var(--t2);font-style:italic}
+
+.try-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--amber);color:#0e0e10;text-decoration:none;transition:opacity 0.15s}
+.try-btn:hover{opacity:0.85;text-decoration:none}
+
+.footer-section{text-align:center;padding:32px 24px;border-top:1px solid var(--border);color:var(--t3);font-size:12px}
+
+@media(max-width:600px){.hero h1{font-size:22px}.error-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="codedost.html">
+    <div class="nav-icon">{}</div>
+    <span class="nav-brand">Code<span>Dost</span></span>
+  </a>
+  <a class="nav-back" href="codedost.html">← Back to App</a>
+</nav>
+
+<section class="hero">
+  <h1>Error <span>Glossary</span></h1>
+  <p>Every programming error explained in plain English — what it means, why it happens, and exactly how to fix it.</p>
+  <div class="search-box">
+    <input type="text" class="search-input" id="search-input" placeholder="Search errors... e.g. TypeError, IndexError"/>
+  </div>
+</section>
+
+<div class="content">
+
+  <div class="section-title">Python Errors</div>
+  <div class="error-grid" id="error-grid">
+
+    <div class="error-card" data-name="syntaxerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">SyntaxError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">Python cannot even read your code because it is written incorrectly. Like a sentence with missing punctuation.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Missing colon (:) after for, if, while, def, or class statements.</div>
+        <div class="ec-example">SyntaxError: expected ':' (line 3)</div>
+        <div class="ec-fix"><strong>Fix:</strong> Add the colon at the end of the line. Every code block in Python starts with a colon.</div>
+        <div class="ec-analogy">Like writing a sentence without a full stop — the reader (Python) cannot tell where one thought ends and the next begins.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="typeerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">TypeError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You performed an operation on the wrong type of data. Python cannot add a number to a string the same way it cannot add salt to a cup of tea that has already been sealed.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Trying to concatenate (join) a string with an integer using + without converting first.</div>
+        <div class="ec-example">TypeError: can only concatenate str (not "int") to str</div>
+        <div class="ec-fix"><strong>Fix:</strong> Use str() to convert the integer to a string first: "Age: " + str(age)</div>
+        <div class="ec-analogy">Trying to add a number directly to a sentence. You have to "translate" the number to words first.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="indexerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">IndexError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You tried to access a position in a list that does not exist. Lists start at position 0, not 1.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Using range(len(list) + 1) instead of range(len(list)), going one position too far.</div>
+        <div class="ec-example">IndexError: list index out of range</div>
+        <div class="ec-fix"><strong>Fix:</strong> A list with 5 items has indices 0, 1, 2, 3, 4. Index 5 does not exist. Use range(len(list)) not range(len(list)+1).</div>
+        <div class="ec-analogy">Like asking for seat number 6 in a rickshaw that only has 5 seats. The seat does not exist.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="nameerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">NameError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You used a variable or function name that Python has never seen before. Either you forgot to define it, or you spelled it wrong.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Typo in a variable name, or using a function before defining it.</div>
+        <div class="ec-example">NameError: name 'squareroot' is not defined</div>
+        <div class="ec-fix"><strong>Fix:</strong> Import the correct module (import math) or use the correct function name (math.sqrt not squareroot).</div>
+        <div class="ec-analogy">Calling someone by the wrong name. Python looks through its contacts list but cannot find anyone called 'squareroot'.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="nonetype typeerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">NoneType Error</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-i">Intermediate</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You tried to use the result of a function, but the function returned nothing (None). None is Python's way of saying "this function produced no result."</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> A function that searches for something but returns nothing when it cannot find it.</div>
+        <div class="ec-example">TypeError: 'NoneType' object is not subscriptable</div>
+        <div class="ec-fix"><strong>Fix:</strong> Add a check: if result is not None: before using the result. Or add a return statement for the not-found case.</div>
+        <div class="ec-analogy">You ordered biryani from a dukaan (shop), but the shop was closed. The delivery returned nothing. You still tried to eat the empty bag.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="importerror modulenotfounderror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">ImportError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">Python cannot find the module (library) you are trying to import. Either it is not installed or the name is wrong.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Forgetting to install a package (pip install package-name) or typo in the module name.</div>
+        <div class="ec-example">ModuleNotFoundError: No module named 'requests'</div>
+        <div class="ec-fix"><strong>Fix:</strong> Run pip install requests in your terminal first, then import it in your code.</div>
+        <div class="ec-analogy">Trying to call a phone number that is not in the phone book. You need to add it first (install it), then call (import it).</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="valueerror python">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">ValueError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Python</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">The data type is correct but the actual value is not valid for this operation. Like asking someone their age and they answer "blue."</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Trying to convert a non-numeric string to int: int("hello") or int("12abc").</div>
+        <div class="ec-example">ValueError: invalid literal for int() with base 10: 'hello'</div>
+        <div class="ec-fix"><strong>Fix:</strong> Validate the input first. Use try/except to catch invalid values, or check if the string is numeric before converting.</div>
+        <div class="ec-analogy">Filling in a form that asks for your age and writing "old." The form accepts text (correct type) but "old" is not a valid age number.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="section-title" style="grid-column:1/-1">JavaScript Errors</div>
+
+    <div class="error-card" data-name="referenceerror javascript">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">ReferenceError</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">JavaScript</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You tried to use a variable that has not been declared. JavaScript cannot find it anywhere in scope.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Typo in variable name, or using a variable before declaring it with let/const/var.</div>
+        <div class="ec-example">ReferenceError: myVaraible is not defined</div>
+        <div class="ec-fix"><strong>Fix:</strong> Declare the variable first with let, const, or var. Check for typos — JavaScript is case-sensitive.</div>
+        <div class="ec-analogy">Calling a person's name in a room where they have not arrived yet. Nobody responds because they are not there.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="scope let var javascript">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">Scope Bug (let vs var)</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">JavaScript</span><span class="ec-sev sev-i">Intermediate</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">A variable declared with let inside a block (if, for) only exists inside that block. Outside the block, the outer variable is used instead, causing wrong results with no error message.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Declaring let discountRate inside an if block when you meant to modify the outer discountRate.</div>
+        <div class="ec-example">// Expected: 6800 (15% discount) | Got: 7600 (5% discount)</div>
+        <div class="ec-fix"><strong>Fix:</strong> Do not redeclare the variable inside the block. Just assign: discountRate = 0.15 (without let).</div>
+        <div class="ec-analogy">Like having two registers at a dukaan with the same name. The one inside the back room is different from the one at the front counter.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="async await promise javascript">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">Async/Await Error</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">JavaScript</span><span class="ec-sev sev-a">Advanced</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">fetch() does not return data — it returns a Promise (a future delivery). Without await, your code reads the Promise object instead of the actual data.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Calling fetch() without await, or .json() without await. Both return Promises, not values.</div>
+        <div class="ec-example">TypeError: response.json is not a function | Student Name: undefined</div>
+        <div class="ec-fix"><strong>Fix:</strong> Add async to your function and await before fetch() and before .json(). Both steps need await.</div>
+        <div class="ec-analogy">Ordering chai and immediately looking into an empty cup before it has been made. You need to wait (await) for the chai to arrive.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="section-title" style="grid-column:1/-1">Java Errors</div>
+
+    <div class="error-card" data-name="nullpointerexception java">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">NullPointerException</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Java</span><span class="ec-sev sev-i">Intermediate</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">You tried to call a method or access a property on an object that is null. Null means "nothing" — you cannot do anything with nothing.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> A method that should return an object returns null instead, and you use the result without checking.</div>
+        <div class="ec-example">NullPointerException at grade.toUpperCase()</div>
+        <div class="ec-fix"><strong>Fix:</strong> Always add a null check before using a returned value: if (grade != null) { grade.toUpperCase(); }</div>
+        <div class="ec-analogy">Trying to squeeze juice from a glass that does not exist. You need to create the glass (return a value) before you can use it.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="error-card" data-name="missing return statement java">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">Missing Return Statement</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">Java</span><span class="ec-sev sev-i">Intermediate</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">Your method promises to return a value (String, int, etc.) but there is a code path where it returns nothing. Java requires every possible path to return a value.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> if-else chain that covers some cases but misses the else case entirely.</div>
+        <div class="ec-example">error: missing return statement</div>
+        <div class="ec-fix"><strong>Fix:</strong> Add a final return statement outside all if blocks that handles the default case: return "F"; or return null;</div>
+        <div class="ec-analogy">A waiter who has a response for "Chai", "Coffee", and "Juice" but freezes completely if you order water. Every order needs an answer.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+    <div class="section-title" style="grid-column:1/-1">C++ Errors</div>
+
+    <div class="error-card" data-name="segmentation fault c++ array">
+      <div class="ec-header">
+        <span class="ec-name" style="color:var(--red)">Segmentation Fault</span>
+        <div style="display:flex;gap:4px"><span class="ec-lang">C++</span><span class="ec-sev sev-b">Beginner</span></div>
+      </div>
+      <div class="ec-body">
+        <div class="ec-desc">Your program tried to read or write memory that does not belong to it. This almost always means accessing an array at an index that does not exist.</div>
+        <div class="ec-cause"><strong>Most common cause:</strong> Using i &lt;= 5 instead of i &lt; 5 when the array has 5 items (indices 0 through 4).</div>
+        <div class="ec-example">Segmentation fault (core dumped)</div>
+        <div class="ec-fix"><strong>Fix:</strong> Change &lt;= to &lt; in your loop condition. int marks[5] means indices 0,1,2,3,4 — not 0,1,2,3,4,5.</div>
+        <div class="ec-analogy">Trying to enter house number 6 in a street that only has houses numbered 1 through 5. That address does not exist — the OS stops you.</div>
+        <a class="try-btn" href="codedost.html">Try in CodeDost →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer-section">
+  <p>Can't find your error? <a href="codedost.html">Paste it in CodeDost</a> — it will explain any error in Roman Urdu.</p>
+  <p style="margin-top:8px">code-dost.vercel.app · <a href="https://github.com/sheraz91-ops/CodeDost" target="_blank">GitHub</a></p>
+</div>
+
+<script>
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  document.querySelectorAll('.error-card').forEach(card => {
+    const name = card.dataset.name || '';
+    const text = card.textContent.toLowerCase();
+    card.classList.toggle('hidden-search', q.length > 0 && !name.includes(q) && !text.includes(q));
+  });
+});
+</script>
+</body>
+</html>

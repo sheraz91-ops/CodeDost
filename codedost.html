@@ -8,9 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
 <link rel="stylesheet" href="codedost.css"/>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </head>
 <body>
+
+<!-- PILOT BANNER -->
+<div class="pilot-banner" id="pilot-banner">
+  🎓 Now piloting at <strong>Pakistani universities</strong> — <a href="https://code-dost.vercel.app" target="_blank">code-dost.vercel.app</a> &nbsp;·&nbsp; <a href="https://sherazramzan.gumroad.com/l/cfevjo" target="_blank">Upgrade to Pro — $0.99/mo ↗</a>
+</div>
 
 <!-- ═══════════════════════════════════════════
      HEADER
@@ -21,7 +27,18 @@
     <span class="logo-text">Code<span>Dost</span></span>
   </a>
   <div class="header-right">
+    <div class="streak-badge" id="streak-badge" title="Your daily learning streak">
+      <span class="streak-fire">🔥</span>
+      <span class="streak-count" id="streak-num">0</span>
+      <span style="font-size:11px;color:var(--text-muted)">day streak</span>
+    </div>
+    <div class="usage-counter-pill" title="Total bugs explained worldwide">
+      <div class="usage-pulse"></div>
+      <span id="usage-count" style="font-family:var(--font-code);font-weight:700;color:var(--green)">...</span>
+      <span style="color:var(--text-muted)">bugs fixed</span>
+    </div>
     <span class="badge-urdu">🇵🇰 Roman Urdu</span>
+    <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">?</button>
     <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
   </div>
 </header>
@@ -33,6 +50,7 @@
   <div class="hero-tagline">AI Coding Tutor — Powered by Groq + Llama 3 (100% Free)</div>
   <h1 class="hero-title">Error ho gaya? <em>Koi baat nahi.</em></h1>
   <p class="hero-sub">Apna buggy code paste karo. CodeDost Roman Urdu mein explain karega — desi analogy ke saath — aur fix bhi karega.</p>
+  <div id="cotd-container"></div>
   <div class="mode-toggle" role="group" aria-label="Language mode">
     <button type="button" id="theme-toggle" class="mode-btn" onclick="toggleTheme()" aria-label="Toggle theme">
       🌙 Dark
@@ -72,6 +90,7 @@
             <option value="html">HTML/CSS</option>
             <option value="sql">SQL</option>
           </select>
+          <span class="editor-counter" id="editor-counter">0 lines</span>
           <span class="editor-lang-tag" id="lang-tag">script.py</span>
         </div>
         <textarea id="code-input" spellcheck="false"
@@ -89,7 +108,7 @@ def calculate_total(items):
     <div class="panel-section">
       <div class="section-header">
         <span class="section-title">Error Message</span>
-        <span style="font-size:11px;color:var(--text-muted)">(optional but helps)</span>
+<button type="button" class="paste-error-btn" onclick="pasteErrorFromClipboard()" title="Paste from clipboard">📋 Paste</button>
       </div>
       <div class="error-input-wrap">
         <span class="error-icon">⚠</span>
@@ -120,8 +139,14 @@ def calculate_total(items):
         <div class="btn-spinner"></div>
       </button>
       <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;">
-        Groq (Free) se powered · Roman Urdu mein jawab milega
+        Groq (Free) se powered · Roman Urdu mein jawab milega · Ctrl+Enter
       </p>
+      <div class="rate-limit-bar" id="rate-limit-bar">
+        <span>⏳ Rate limit — ready in</span>
+        <span class="rate-countdown" id="rate-countdown">30</span>
+        <span>seconds</span>
+        <div class="rate-progress"><div class="rate-progress-fill" id="rate-progress-fill" style="width:100%"></div></div>
+      </div>
     </div>
 
   </div>
@@ -153,6 +178,12 @@ def calculate_total(items):
     <!-- Output content -->
     <div class="output-content" id="output-content" aria-live="polite" aria-atomic="false">
 
+      <!-- Repeat error banner -->
+      <div class="repeat-banner" id="repeat-banner" style="display:none;margin:12px 22px 0;">
+        <span class="repeat-banner-icon">⚠️</span>
+        <span id="repeat-banner-text">You have seen this error before — let's go deeper this time.</span>
+      </div>
+
       <!-- Error Type Badge -->
       <div class="result-card" id="card-type">
         <div class="card-label" style="color:var(--red)">🔴 Error Identified</div>
@@ -166,6 +197,17 @@ def calculate_total(items):
       <div class="result-card" id="card-explain">
         <div class="card-label" style="color:var(--amber)">💬 Kya Hua — Roman Urdu Mein</div>
         <div class="explanation-text" id="out-explanation">—</div>
+      </div>
+
+      <!-- Understood + Share row -->
+      <div class="result-card" style="padding:10px 22px;">
+        <div class="understood-row">
+          <span class="understood-label">Did you understand this?</span>
+          <button type="button" class="understood-btn yes" onclick="markUnderstood(true)" id="understood-yes">👍 Yes</button>
+          <button type="button" class="understood-btn no" onclick="markUnderstood(false)" id="understood-no">👎 No</button>
+          <button type="button" class="copy-btn" onclick="openShareCard()" style="margin-left:auto">📤 Share</button>
+        </div>
+        <div class="understood-stats" id="understood-stats" style="display:none"></div>
       </div>
 
       <!-- Desi Analogy -->
@@ -218,6 +260,12 @@ def calculate_total(items):
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;" id="out-concept-why">—</div>
           <a class="concept-search" id="out-concept-link" href="#" target="_blank">YouTube / Google pe search karo</a>
         </div>
+      </div>
+
+      <!-- Similar errors suggestion -->
+      <div class="result-card" id="card-similar" style="display:none">
+        <div class="similar-errors-title">📊 Pattern Detected</div>
+        <div class="similar-errors-card" id="similar-errors-text"></div>
       </div>
 
     </div>
@@ -276,6 +324,16 @@ def calculate_total(items):
         <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">Pattern tab dekho regularly — agar ek hi type ka error baar baar ho raha hai, toh concept gap hai.</div>
       </div>
     </div>
+  </div>
+
+  <!-- Waitlist + Referral -->
+  <div class="waitlist-section">
+    <div class="waitlist-label">⭐ Get Pro free — join early access waitlist</div>
+    <div class="waitlist-row">
+      <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com"/>
+      <button type="button" class="waitlist-btn" onclick="joinWaitlist()">Join Waitlist</button>
+    </div>
+    <button type="button" class="referral-btn" onclick="shareOnWhatsApp()">📱 Share CodeDost on WhatsApp</button>
   </div>
 </div>
 
@@ -345,6 +403,57 @@ def calculate_total(items):
 
     <button class="modal-save" onclick="saveApiKey()">Key Save Karo ✓</button>
     <div class="modal-note" style="margin-top:10px">Key sirf tumhare browser mein save hoti hai · Kahi send nahi hoti</div>
+  </div>
+</div>
+
+<!-- SHARE CARD MODAL -->
+<div class="share-card-modal" id="share-card-modal" onclick="closeShareCard(event)">
+  <div class="share-card-preview" id="share-card-dom">
+    <div class="sc-header">
+      <div class="sc-logo-box">{}</div>
+      <div class="sc-brand">CodeDost — AI Coding Tutor</div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-error-row">
+        <span class="error-type-badge" id="sc-error-type">—</span>
+        <span class="severity-badge" id="sc-severity">—</span>
+      </div>
+      <div class="sc-explain" id="sc-explanation">—</div>
+      <div class="sc-analogy" id="sc-analogy">—</div>
+    </div>
+    <div class="sc-footer">
+      <span class="sc-url">code-dost.vercel.app</span>
+      <span class="sc-cta">Free · Roman Urdu · No Login</span>
+    </div>
+  </div>
+  <div class="share-modal-btns">
+    <button class="share-dl-btn" onclick="downloadShareCard()">⬇ Download Image</button>
+    <button class="share-close-btn" onclick="closeShareCard()">Close</button>
+  </div>
+</div>
+
+<!-- HELP / SHORTCUTS MODAL -->
+<div class="help-modal" id="help-modal" onclick="closeHelpModal(event)">
+  <div class="help-modal-inner">
+    <div class="help-modal-header">
+      <span class="help-modal-title">⌨️ Keyboard Shortcuts</span>
+      <button class="help-modal-close" onclick="closeHelpModal()">✕</button>
+    </div>
+    <table class="shortcuts-table">
+      <tr><td>Ctrl + Enter</td><td>Submit code for analysis</td></tr>
+      <tr><td>Escape</td><td>Close any modal</td></tr>
+      <tr><td>Tab (in editor)</td><td>Insert 2 spaces</td></tr>
+      <tr><td>? (this button)</td><td>Open shortcuts help</td></tr>
+    </table>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px">QUICK LINKS</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://code-dost.vercel.app" target="_blank" style="font-size:12px;color:var(--blue);text-decoration:none">🌐 code-dost.vercel.app ↗</a>
+        <a href="https://github.com/sheraz91-ops/CodeDost" target="_blank" style="font-size:12px;color:var(--blue);text-decoration:none">⭐ GitHub Repository ↗</a>
+        <a href="https://sherazramzan.gumroad.com/l/cfevjo" target="_blank" style="font-size:12px;color:var(--amber);text-decoration:none">💳 Pro Plan — $0.99/month ↗</a>
+        <a href="glossary.html" target="_blank" style="font-size:12px;color:var(--green);text-decoration:none">📚 Error Glossary ↗</a>
+      </div>
+    </div>
   </div>
 </div>
 
