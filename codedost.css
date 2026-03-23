@@ -2,6 +2,7 @@
    CODEDOST — COMPLETE STYLES
    Theme: Dark terminal with warm amber + desi green accents
    ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
 
 :root {
   --bg-base:       #0e0e10;
@@ -28,7 +29,7 @@
   --text-muted:    #5a5a62;
   --text-code:     #e2e0dc;
 
-  --font-ui:       'Syne', sans-serif;
+  --font-ui:      "Google Sans", sans-serif;
   --font-code:     'JetBrains Mono', monospace;
 
   --radius-sm:     6px;
