@@ -1,3 +1,11 @@
+const BACKEND_URL = 'https://codedost-backend-production.up.railway.app';
+
+async function checkQuota() {
+  const r = await fetch(`${BACKEND_URL}/api/analyze/quota`, {
+    credentials: 'include'
+  });
+  return await r.json();
+}
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
