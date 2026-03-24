@@ -1,0 +1,147 @@
+/* Small phones */
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+
+  .header {
+    padding: 0 8px;
+    height: 48px;
+    gap: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo {
+    gap: 6px;
+  }
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  .logo-text {
+    font-size: 14px;
+  }
+
+  .badge-urdu {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+  .api-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+    min-height: 32px;
+  }
+
+  .hero {
+    padding: 16px 8px 12px;
+  }
+  .hero-title {
+    font-size: 28px;
+  }
+  .hero-sub {
+    font-size: 11px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .mode-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .mode-toggle {
+    gap: 1px;
+    padding: 2px;
+  }
+
+  .panel-section {
+    padding: 10px;
+  }
+
+  .code-block-wrap {
+    max-height: 300px;
+  }
+
+  .execution-output {
+    max-height: 250px;
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .pattern-text {
+    font-size: 11px;
+  }
+  .result-card {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .tab-btn {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  .tab-panel {
+    padding: 10px 12px;
+  }
+
+  button {
+    min-height: 32px;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  input[type="range"] {
+    width: 50px;
+  }
+
+  .footer {
+    padding: 8px 8px;
+    font-size: 10px;
+  }
+
+  .modal {
+    padding: 20px;
+    max-width: 90vw;
+  }
+  .modal h2 {
+    font-size: 16px;
+  }
+  .modal p {
+    font-size: 12px;
+  }
+  .header{
+    
+    padding: 10px 0;
+  }
+  .shortcuts-btn{
+    display: none;
+    
+  }
+  .header-right-res{
+    display: flex;
+    flex-direction: column;
+
+  }
+  .fa-solid{
+    display: block !important;
+    position: absolute;
+    right: 10px;
+    top: 18px;
+  }
+  .h-normal{
+    height: 50px;
+     transition: height 0.5s ease  ;
+  }
+.h-full{
+height: 250px;
+transition: height 0.5s ease  ;
+}
+
+  .none{
+    display: none !important;
+  }
+      .referral-btn {
+        width: 96%;
+    }
+}

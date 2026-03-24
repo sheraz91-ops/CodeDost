@@ -9,6 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
 <link rel="stylesheet" href="codedost.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-1024px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-768px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-900px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-480px.css"/>
 <link rel="manifest" href="manifest.json"/>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
@@ -27,12 +31,16 @@
 <!-- ═══════════════════════════════════════════
      HEADER
 ════════════════════════════════════════════ -->
-<header class="header">
-  <a class="logo" href="#">
+<header class="header h-normal">
+  <a class="logo" id="logo" href="#">
     <div class="logo-icon">{}</div>
     <span class="logo-text">Code<span>Dost</span></span>
   </a>
-  <div class="header-right">
+ <div class="hamburger">
+   <i class="fa-solid fa-bars" style="display: none;"></i>
+  <i class="fa-solid fa-xmark none" ></i>
+ </div>
+  <div class="header-right none">
     <div class="streak-badge" id="streak-badge" title="Your daily learning streak">
       <span class="streak-fire">🔥</span>
       <span class="streak-count" id="streak-num">0</span>
@@ -494,8 +502,9 @@ def calculate_total(items):
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
 <script src="codedost.js"></script>
+<script src="/codedost/js/hamburger.js"></script>
 <!-- AUTH MODAL -->
-<div class="modal-overlay" id="auth-modal-overlay" onclick="closeAuthModalOutside(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
+<!-- <div class="modal-overlay" id="auth-modal-overlay" onclick="closeAuthModalOutside(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
   <div class="modal" style="max-width:380px;width:90%;">
     <h2 id="auth-modal-title">👤 Login to CodeDost</h2>
     <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px">
@@ -515,6 +524,6 @@ def calculate_total(items):
     <div class="modal-note" id="auth-error-msg" style="color:var(--red);margin-top:8px;display:none;"></div>
     <div class="modal-note" style="margin-top:8px;">Data secure hai · Sirf quota track karne ke liye</div>
   </div>
-</div>
+</div> -->
 </body>
 </html>
