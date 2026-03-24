@@ -1,10 +1,24 @@
 const BACKEND_URL = 'https://codedost-backend-production.up.railway.app';
 
 async function checkQuota() {
-  const r = await fetch(`${BACKEND_URL}/api/analyze/quota`, {
-    credentials: 'include'
-  });
-  return await r.json();
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/analyze/quota`, {
+      credentials: 'include'
+    });
+    if (!r.ok) return { allowed: true }; // if backend down, allow anyway
+    return await r.json();
+  } catch {
+    return { allowed: true }; // if backend unreachable, allow anyway
+  }
+}
+
+async function incrementQuota() {
+  try {
+    await fetch(`${BACKEND_URL}/api/analyze/increment`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch {}
 }
 // ═══════════════════════════════════════
 // STATE
@@ -265,6 +279,12 @@ async function analyzeCode() {
     return;
   }
 
+  // Check quota before proceeding
+  const quota = await checkQuota();
+  if (quota.allowed === false) {
+    showToast('error', `Monthly limit khatam — ${quota.used}/${quota.limit} analyses used`);
+    return;
+  }
   const apiKey = getActiveKey();
   if (!apiKey) {
     showToast("error", "API key daalo pehle — upar wali button se");
@@ -352,6 +372,7 @@ async function analyzeCode() {
       "success",
       `Explanation ready! (via ${PROVIDERS[currentProvider].label})`,
     );
+  await incrementQuota();
     updateStreak();
     incrementUsageCounter();
     checkSimilarErrors(result.mistake_category);
