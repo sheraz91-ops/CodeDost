@@ -21,6 +21,135 @@ async function incrementQuota() {
   } catch {}
 }
 // ═══════════════════════════════════════
+// AUTH SYSTEM
+// ═══════════════════════════════════════
+let authToken = localStorage.getItem('cd_auth_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('cd_user') || 'null');
+
+function openAuthModal() {
+  if (currentUser) {
+    // Already logged in — show logout option
+    if (confirm(`Logged in as ${currentUser.email}\n\nLogout karna hai?`)) {
+      logoutUser();
+    }
+    return;
+  }
+  document.getElementById('auth-modal-overlay').style.display = 'flex';
+}
+
+function closeAuthModalOutside(e) {
+  if (e.target === document.getElementById('auth-modal-overlay')) {
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+  }
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('auth-form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('auth-tab-login').classList.toggle('active-tab', tab === 'login');
+  document.getElementById('auth-tab-register').classList.toggle('active-tab', tab === 'register');
+  document.getElementById('auth-submit-btn').textContent = tab === 'login' ? 'Login' : 'Sign Up';
+  document.getElementById('auth-modal-title').textContent = tab === 'login' ? '👤 Login to CodeDost' : '👤 Sign Up — It\'s Free';
+  document.getElementById('auth-error-msg').style.display = 'none';
+}
+
+async function submitAuth() {
+  const isLogin = document.getElementById('auth-form-login').style.display !== 'none';
+  const btn = document.getElementById('auth-submit-btn');
+  const errEl = document.getElementById('auth-error-msg');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Please wait...';
+
+  try {
+    let body, endpoint;
+    if (isLogin) {
+      endpoint = '/api/auth/login';
+      body = {
+        email: document.getElementById('auth-email-login').value.trim(),
+        password: document.getElementById('auth-pass-login').value,
+      };
+    } else {
+      endpoint = '/api/auth/register';
+      body = {
+        name: document.getElementById('auth-name-register').value.trim(),
+        email: document.getElementById('auth-email-register').value.trim(),
+        password: document.getElementById('auth-pass-register').value,
+      };
+    }
+
+    const res = await fetch(BACKEND_URL + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || data.error || 'Something went wrong');
+    }
+
+    // Save token and user
+    authToken = data.token || data.accessToken;
+    currentUser = data.user;
+    localStorage.setItem('cd_auth_token', authToken);
+    localStorage.setItem('cd_user', JSON.stringify(currentUser));
+
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+    updateAuthUI();
+    loadQuotaFromBackend();
+    showToast('success', `Welcome ${currentUser.name || currentUser.email}! 🎉`);
+
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = isLogin ? 'Login' : 'Sign Up';
+  }
+}
+
+function logoutUser() {
+  authToken = null;
+  currentUser = null;
+  localStorage.removeItem('cd_auth_token');
+  localStorage.removeItem('cd_user');
+  updateAuthUI();
+  showToast('success', 'Logged out!');
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById('auth-btn');
+  const quotaPill = document.getElementById('quota-pill');
+  if (currentUser) {
+    btn.textContent = `👤 ${currentUser.name || currentUser.email.split('@')[0]}`;
+    btn.style.background = 'var(--green)';
+    quotaPill.style.display = 'flex';
+  } else {
+    btn.textContent = '👤 Login / Sign Up';
+    btn.style.background = 'var(--purple)';
+    quotaPill.style.display = 'none';
+  }
+}
+
+async function loadQuotaFromBackend() {
+  if (!authToken) return;
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/analyze/quota`, {
+      credentials: 'include',
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    if (data.used !== undefined) {
+      document.getElementById('quota-used').textContent = data.used;
+      document.getElementById('quota-limit').textContent = data.limit || 20;
+    }
+  } catch {}
+}
+// ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
 let currentMode = "urdu"; // urdu | mixed | english
@@ -1711,7 +1840,9 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
   initEditorCounter();
   initHistorySwipe();
   showConceptOfDay();
-
+// Init auth UI
+  updateAuthUI();
+  if (authToken) loadQuotaFromBackend();
   // Register service worker for PWA
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker

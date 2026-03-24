@@ -49,7 +49,13 @@
     </button>
     <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
     <!-- <button class="api-btn" aria-label="Open API key setup">🔑 Free API Key</button> -->
-     <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+    <!-- AUTH BUTTON -->
+<button class="api-btn" id="auth-btn" onclick="openAuthModal()" style="background:var(--purple);color:white;">👤 Login / Sign Up</button>
+<!-- QUOTA DISPLAY (shows after login) -->
+<div id="quota-pill" style="display:none;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);">
+  <span id="quota-used">0</span>/<span id="quota-limit">5</span> uses
+</div> 
+    <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
       🌙
     </button>
   </div>
@@ -488,5 +494,27 @@ def calculate_total(items):
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
 <script src="codedost.js"></script>
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal-overlay" onclick="closeAuthModalOutside(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:380px;width:90%;">
+    <h2 id="auth-modal-title">👤 Login to CodeDost</h2>
+    <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px">
+      <button id="auth-tab-login" class="provider-tab active-tab" onclick="switchAuthTab('login')">Login</button>
+      <button id="auth-tab-register" class="provider-tab" onclick="switchAuthTab('register')">Sign Up</button>
+    </div>
+    <div id="auth-form-login">
+      <input class="modal-input" type="email" id="auth-email-login" placeholder="Email address" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="password" id="auth-pass-login" placeholder="Password"/>
+    </div>
+    <div id="auth-form-register" style="display:none;">
+      <input class="modal-input" type="text" id="auth-name-register" placeholder="Your name" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="email" id="auth-email-register" placeholder="Email address" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="password" id="auth-pass-register" placeholder="Password (min 6 chars)"/>
+    </div>
+    <button class="modal-save" id="auth-submit-btn" onclick="submitAuth()" style="margin-top:12px;">Login</button>
+    <div class="modal-note" id="auth-error-msg" style="color:var(--red);margin-top:8px;display:none;"></div>
+    <div class="modal-note" style="margin-top:8px;">Data secure hai · Sirf quota track karne ke liye</div>
+  </div>
+</div>
 </body>
 </html>
