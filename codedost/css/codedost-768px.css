@@ -1,4 +1,9 @@
 /* Large phones & small tablets */
+@media (min-width: 768px) {
+   .hamburger{
+    display: none !important;
+  }
+}
 @media (max-width: 768px) {
   html {
     font-size: 14px;
