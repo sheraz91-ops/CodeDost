@@ -1,0 +1,17 @@
+
+/* Tablet & mid-size */
+@media (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+  .header {
+    padding: 0 12px;
+  }
+  .hero-title {
+    font-size: 18px;
+  }
+  .hero-sub {
+    font-size: 12px;
+  }
+}
+

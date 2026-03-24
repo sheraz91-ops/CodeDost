@@ -1,0 +1,83 @@
+/* Large phones & small tablets */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  .main {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0;
+  }
+
+  .panel-left {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-right {
+    border-bottom: none;
+  }
+
+  .header {
+    padding: 0 12px;
+    height: 50px;
+  }
+  .badge-urdu {
+    font-size: 9px;
+  }
+  .api-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .hero {
+    padding: 24px 12px 18px;
+  }
+  .hero-title {
+    font-size: 29px;
+  }
+  .hero-sub {
+    font-size: 16px;
+    width: 80%;
+    margin-bottom: 14px;
+  }
+
+  .mode-toggle {
+    justify-content: space-between;
+  }
+  .mode-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .tab-btn {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  .tab-panel {
+    padding: 12px 14px;
+  }
+
+  .result-card {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .code-block-wrap,
+  .execution-output {
+    max-height: 400px;
+  }
+
+  .pattern-grid {
+    grid-template-columns: 1fr;
+  }
+  .history-list {
+    max-height: 200px;
+  }
+
+  .footer {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  .referral-btn{
+    width: 37%;
+  }
+}
