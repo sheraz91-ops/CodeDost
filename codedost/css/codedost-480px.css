@@ -39,10 +39,11 @@
     padding: 16px 8px 12px;
   }
   .hero-title {
-    font-size: 28px;
+    font-size: 32px;
+    padding: 0 2px;
   }
   .hero-sub {
-    font-size: 11px;
+    font-size: 13px;
     margin-bottom: 10px;
     line-height: 1.5;
   }
@@ -50,11 +51,27 @@
   .mode-btn {
     font-size: 10px;
     padding: 4px 8px;
+    width: 100%;
   }
   .mode-toggle {
+    width: 100%;
     gap: 1px;
     padding: 2px;
   }
+  .section-title{
+    font-size: 12px;
+  }
+#clear-code-btn{
+  width: 22%;
+}
+.lang-picker{
+  width: 23%;
+  padding: 0px 1px;
+}
+.paste-error-btn{
+  width: 32%;
+  border-radius: 8px;
+}
 
   .panel-section {
     padding: 10px;
@@ -111,7 +128,6 @@
     font-size: 12px;
   }
   .header{
-    
     padding: 10px 0;
   }
   .shortcuts-btn{
@@ -141,7 +157,48 @@ transition: height 0.5s ease  ;
   .none{
     display: none !important;
   }
-      .referral-btn {
+      /* .referral-btn {
         width: 96%;
+    } */
+    .hero-tagline{
+      padding: 0px 8px;
+    }
+    .cotd-label{
+      font-size: 16px;
+    }
+    .header-right{
+      width: 100% !important;
+    }
+    .header-right *{
+      width: 75% !important;
+      border-radius: 0%;
+      display: flex;
+      align-items: center
+      ;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .streak-badge{
+      display: flex;
+         align-items: center ;
+      justify-content: center;
+      gap: 4px;
+    }
+    .streak-badge:nth-child(1){
+      display: none;
+    }
+    .usage-counter-pill *,.streak-badge *{
+      width: fit-content !important;
+    }
+    .shortcuts-btn{
+      display: none;
+    }
+    .logo{
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      /* gap: 4px; */
+              width: 100%;
+              margin: 0 20px;
     }
 }

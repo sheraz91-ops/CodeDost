@@ -1,5 +1,5 @@
 /* Large phones & small tablets */
-@media (min-width: 768px) {
+@media (min-width: 480px) {
    .hamburger{
     display: none !important;
   }
@@ -82,7 +82,7 @@
     padding: 10px 12px;
     font-size: 11px;
   }
-  .referral-btn{
+  /* .referral-btn{
     width: 37%;
-  }
+  } */
 }

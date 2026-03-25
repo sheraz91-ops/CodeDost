@@ -33,8 +33,14 @@
 ════════════════════════════════════════════ -->
 <header class="header h-normal">
   <a class="logo" id="logo" href="#">
-    <div class="logo-icon">{}</div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 0 6px;">
+      <div class="logo-icon">{}</div>
     <span class="logo-text">Code<span>Dost</span></span>
+    </div>
+    <div class="streak-badge" id="streak-badge" title="Your daily learning streak">
+        <span class="streak-fire">🔥</span>
+        <span class="streak-count" id="streak-num">0</span>
+      </div>
   </a>
  <div class="hamburger">
    <i class="fa-solid fa-bars" style="display: none;"></i>
@@ -351,20 +357,22 @@ def calculate_total(items):
 
   <!-- Waitlist + Referral -->
   <div class="waitlist-section">
-    <div class="waitlist-label">⭐ Get Pro free — join early access waitlist</div>
+   <div class="waitlist-section-child">
+     <div class="waitlist-label">⭐ Get Pro free — join early access waitlist</div>
     <div class="waitlist-row">
       <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com"/>
       <button type="button" class="waitlist-btn" onclick="joinWaitlist()">Join Waitlist</button>
     </div>
     <button type="button" class="referral-btn" onclick="shareOnWhatsApp()">📱 Share CodeDost on WhatsApp</button>
   </div>
+   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════
      FOOTER
 ════════════════════════════════════════════ -->
 <footer class="footer">
-  Built with <span>♥</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
+  Built with <span>❤</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
 </footer>
 
 <!-- ═══════════════════════════════════════════

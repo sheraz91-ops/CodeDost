@@ -840,8 +840,11 @@ pre[class*="language-"] {
 .history-empty {
   text-align: center;
   padding: 20px;
-  color: var(--text-muted);
+  color: var(--text-extra-muted);
   font-size: 13px;
+  border: 2px solid var(--text-extra-muted);
+  border-radius: 10px;
+  
 }
 
 .history-list {
@@ -1840,7 +1843,15 @@ font-size: 22px;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 5px;
+}
+.waitlist-section-child{
+width: 100%;
+}
+.waitlist-input::placeholder{
+color:var(--text-extra-muted) !important;
 }
 .waitlist-row {
   display: flex;
@@ -1888,7 +1899,7 @@ font-size: 22px;
   font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 600;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-radius: var(--radius-md);
   background: transparent;
   border: 1px solid var(--green);
@@ -1902,6 +1913,7 @@ font-size: 22px;
   transition: all 0.15s;
   margin-top: 8px;
   min-height: unset;
+  width: 100%;
 }
 .referral-btn:hover {
   background: var(--green-glow);
@@ -1950,4 +1962,20 @@ font-size: 22px;
 }
 .help-modal-close:hover {
   color: var(--text-primary);
+}
+#code-input.empty:before {
+  content: attr(data-placeholder);
+  color: #888;
+  pointer-events: none;
+  display: block;
+  white-space: pre-wrap;
+}
+/* section::before {
+  content: "";
+  display: block;
+  height: 20px;
+} */
+  option {
+  background: #1e1e1e;
+  color: white;
 }
