@@ -1277,8 +1277,10 @@ function updateStreak() {
 }
 
 function renderStreak(streak) {
-  const el = document.getElementById("streak-num");
-  if (el) el.textContent = streak;
+  const el = document.getElementsByClassName("streak-num");
+  console.log(el)
+  if (el) el[0].textContent = streak;
+  if (el) el[1].textContent = streak;
   const badge = document.getElementById("streak-badge");
   if (badge && streak >= 3) {
     badge.style.borderColor = "var(--amber)";
