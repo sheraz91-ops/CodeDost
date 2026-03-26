@@ -84,13 +84,38 @@ async function submitAuth() {
       credentials: 'include',
       body: JSON.stringify(body),
     });
-
     const data = await res.json();
+    console.log(data)
+ 
 
-    if (!res.ok) {
-      throw new Error(data.message || data.error || 'Something went wrong');
+   if (!res.ok) {
+  const errEl = document.getElementById('auth-error-msg');
+  errEl.style.display = 'block';
+
+  let messages = [];
+
+  if (data.errors && Array.isArray(data.errors)) {
+    messages = data.errors.map(err => err.message);
+  }
+  else if (data.error) {
+    messages.push(data.error);
+  }
+  else if (data.message) {
+    messages.push(data.message);
+  }
+  else {
+    messages.push('Something went wrong');
+  }
+  errEl.innerHTML = messages.map(msg => `• ${msg}`).join('<br>');
+
+  return;
+}
+   if(data.success === false){
+      console.log(data.message)
+     let auth= document.getElementById('auth-error-msg')
+      auth.innerText=data.message
+      auth.style.display='block'
     }
-
     // Save token and user
     authToken = data.token || data.accessToken;
     currentUser = data.user;
@@ -103,8 +128,8 @@ async function submitAuth() {
     showToast('success', `Welcome ${currentUser.name || currentUser.email}! 🎉`);
 
   } catch (err) {
-    errEl.textContent = err.message;
-    errEl.style.display = 'block';
+    // console.log(err)
+    
   } finally {
     btn.disabled = false;
     btn.textContent = isLogin ? 'Login' : 'Sign Up';

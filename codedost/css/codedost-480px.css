@@ -1,4 +1,9 @@
 /* Small phones */
+@media (min-width: 480px) {
+header > a > .streak-badge{
+  display: none !important;
+}
+}
 @media (max-width: 480px) {
   html {
     font-size: 13px;
