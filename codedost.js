@@ -1871,12 +1871,12 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
   updateAuthUI();
   if (authToken) loadQuotaFromBackend();
   // Register service worker for PWA
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("sw.js")
-      .then((registration) => console.log("SW registered"))
-      .catch((error) => console.log("SW registration failed"));
-  }
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker
+  //     .register("sw.js")
+  //     .then((registration) => console.log("SW registered"))
+  //     .catch((error) => console.log("SW registration failed"));
+  // }
 })();
 
 document.querySelector("#clear-code-btn").addEventListener("click", clearBoard);
