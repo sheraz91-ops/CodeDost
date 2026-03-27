@@ -1303,7 +1303,6 @@ function updateStreak() {
 
 function renderStreak(streak) {
   const el = document.getElementsByClassName("streak-num");
-  console.log(el)
   if (el) el[0].textContent = streak;
   if (el) el[1].textContent = streak;
   const badge = document.getElementById("streak-badge");
@@ -1383,28 +1382,32 @@ function markUnderstood(understood) {
 async function loadUsageCounter() {
   try {
     const r = await fetch(
-      "https://api.countapi.xyz/get/codedost-pk/bugs-explained",
+     `${BACKEND_URL}/api/counter`,
     );
     const d = await r.json();
-    const count = ((d.value || 0) + 1247).toLocaleString();
+    const count = d.counter;
     const el = document.getElementById("usage-count");
     if (el) el.textContent = count;
   } catch {
     const el = document.getElementById("usage-count");
-    if (el) el.textContent = "1,200+";
+    if (el) el.textContent = "****";
   }
 }
 
 async function incrementUsageCounter() {
   try {
     const r = await fetch(
-      "https://api.countapi.xyz/hit/codedost-pk/bugs-explained",
-    );
+        `${BACKEND_URL}/api/counter`,
+        { method: "POST" }
+      );
     const d = await r.json();
-    const count = ((d.value || 0) + 1247).toLocaleString();
+    const count = d.counter;
     const el = document.getElementById("usage-count");
     if (el) el.textContent = count;
-  } catch {}
+  } catch {
+    const el = document.getElementById("usage-count");
+    if (el) el.textContent = "****";
+  }
 }
 
 // ═══════════════════════════════════════
