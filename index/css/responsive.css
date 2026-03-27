@@ -1,26 +1,268 @@
-/* Enhancements for mobile UI */
-/* Improved touch targets, font sizes, spacing, and responsive design */
+@media screen and (min-width: 768px) {
+  .hero-badge {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .hero-inner h1 {
+    font-size: 2.5rem;
+    margin-top: 15px;
+    font-weight: 700;
+  }
+  .hero-sub {
+    font-size: 16px;
+  }
+  .hero-stats {
+    margin-bottom: 10px;
+  }
+  .hero {
+    height: calc(100vh - 106px);
+  }
+}
+@media (max-width: 400px) {
+  nav .nav-pro {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+  }
 
-body {
-    font-size: 16px; /* Base font size */
-    line-height: 1.5; /* Increased line height for readability */
+  nav .nav-cta {
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+  .nav-logo-text {
+    font-size: 15px;
+  }
 }
 
-.button {
-    padding: 12px 20px; /* Larger padding for touch targets */
-    font-size: 18px; /* Increased font size for accessibility */
-}
+@media (max-width: 720px) {
+  /* Nav */
+  nav {
+    padding: 0 4%;
+    height: 56px;
+  }
 
-.container {
-    margin: 0 auto; /* Centering the container */
-    max-width: 100%; /* Responsive width */
-}
+  nav .nav-links .nav-link:not(.nav-cta):not(.nav-pro) {
+    display: none;
+  }
 
-@media (max-width: 600px) {
-    body {
-        font-size: 14px; /* Smaller font size for smaller screens */
-    }
-    .button {
-        padding: 10px 15px; /* Adjust button size for small screens */
-    }
+  nav .nav-links {
+    gap: 4px;
+  }
+
+  nav .nav-pro {
+    font-size: 11px !important;
+    padding: 5px 8px !important;
+    border-radius: 6px !important;
+  }
+
+  nav .nav-pro:first-of-type::before {
+    content: none;
+  }
+
+  /* Shorten button text on small screens */
+  .nav-pro-label-full {
+    display: none;
+  }
+
+  .nav-pro-label-short {
+    display: inline;
+  }
+
+  nav .nav-cta {
+    font-size: 12px;
+    padding: 7px 11px;
+  }
+
+  /* Hero */
+  .hero {
+    /* padding: 48px 5% 48px; */
+    height: 88vh;
+  }
+
+  h1 {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    margin-bottom: 28px;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+  }
+
+  .hero-stats {
+    gap: 20px;
+    margin-top: 32px;
+    padding-top: 24px;
+  }
+
+  .stat-num {
+    font-size: 22px;
+  }
+
+  /* Preview strip */
+  .preview-inner {
+    flex-direction: column;
+  }
+
+  .preview-left {
+    border-right: none;
+    border-bottom: 1px solid #2e2e36;
+  }
+
+  .preview-left,
+  .preview-right {
+    padding: 20px;
+  }
+
+  /* Sections */
+  section {
+    padding: 48px 5%;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  /* Features */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* How it works */
+  .steps-row {
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .steps-row::before {
+    display: none;
+  }
+
+  .step-item {
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 0;
+    flex-direction: column;
+    border: 1px solid #10b981;
+    padding: 10px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .step-title {
+    margin-bottom: 0;
+  }
+  .step-num {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin: 0;
+    align-self: center;
+  }
+
+  /* Providers */
+  .providers-row {
+    flex-direction: column;
+  }
+
+  /* Testimonials */
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Universities */
+  .uni-section {
+    padding: 40px 5%;
+  }
+
+  .uni-inner {
+    flex-direction: column;
+    gap: 24px;
+    padding: 1.8rem 1.4rem;
+    border-radius: 14px;
+  }
+
+  .uni-title {
+    font-size: 20px;
+  }
+
+  .uni-right {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn-whatsapp,
+  .btn-email {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 56px 5%;
+  }
+
+  .cta-section div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-section .btn-primary,
+  .cta-section .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer */
+  footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    padding: 24px 5%;
+  }
+
+  /* Pro modal */
+  .pro-modal {
+    padding: 1.8rem 1.4rem;
+    border-radius: 16px;
+  }
+
+  .pro-modal h2 {
+    font-size: 1.4rem;
+  }
+
+  .pro-modal-features {
+    gap: 6px;
+  }
 }
