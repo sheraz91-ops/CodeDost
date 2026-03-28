@@ -158,7 +158,270 @@ function updateAuthUI() {
     quotaPill.style.display = 'none';
   }
 }
+// ═══════════════════════════════════════════
+// AUTH MODAL: Forgot Password & Reset Password
+// ═══════════════════════════════════════════
+let authMode = 'login'; // login | register | forgot | reset
 
+function switchAuthTab(tab) {
+  authMode = tab;
+  
+  // Hide all forms
+  document.getElementById('auth-form-login').style.display = 'none';
+  document.getElementById('auth-form-register').style.display = 'none';
+  document.getElementById('auth-form-forgot').style.display = 'none';
+  document.getElementById('auth-form-reset').style.display = 'none';
+  
+  // Hide all tabs
+  document.getElementById('auth-tab-login').classList.remove('active-tab');
+  document.getElementById('auth-tab-register').classList.remove('active-tab');
+  document.getElementById('auth-tab-forgot').classList.remove('active-tab');
+  
+  // Clear messages
+  document.getElementById('auth-error-msg').style.display = 'none';
+  document.getElementById('auth-success-msg').style.display = 'none';
+  
+  const btn = document.getElementById('auth-submit-btn');
+  
+  if (tab === 'login') {
+    document.getElementById('auth-form-login').style.display = 'block';
+    document.getElementById('auth-tab-login').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '👤 Login to CodeDost';
+    btn.textContent = 'Login';
+  } else if (tab === 'register') {
+    document.getElementById('auth-form-register').style.display = 'block';
+    document.getElementById('auth-tab-register').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '👤 Sign Up — It\'s Free';
+    btn.textContent = 'Sign Up';
+  } else if (tab === 'forgot') {
+    document.getElementById('auth-form-forgot').style.display = 'block';
+    document.getElementById('auth-tab-forgot').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '🔑 Forgot Password?';
+    btn.textContent = 'Send Reset Link';
+  } else if (tab === 'reset') {
+    document.getElementById('auth-form-reset').style.display = 'block';
+    document.getElementById('auth-modal-title').textContent = '🔐 Reset Password';
+    btn.textContent = 'Reset Password';
+  }
+}
+
+async function submitAuth() {
+  const btn = document.getElementById('auth-submit-btn');
+  const errEl = document.getElementById('auth-error-msg');
+  const successEl = document.getElementById('auth-success-msg');
+  
+  errEl.style.display = 'none';
+  successEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Please wait...';
+  
+  try {
+    if (authMode === 'login') {
+      await handleLoginNew();
+    } else if (authMode === 'register') {
+      await handleRegisterNew();
+    } else if (authMode === 'forgot') {
+      await handleForgotPassword();
+    } else if (authMode === 'reset') {
+      await handleResetPassword();
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = getButtonText();
+  }
+}
+
+function getButtonText() {
+  const texts = {
+    login: 'Login',
+    register: 'Sign Up',
+    forgot: 'Send Reset Link',
+    reset: 'Reset Password'
+  };
+  return texts[authMode] || 'Submit';
+}
+
+async function handleLoginNew() {
+  const email = document.getElementById('auth-email-login').value.trim();
+  const password = document.getElementById('auth-pass-login').value;
+  
+  if (!email || !password) {
+    showAuthError('Email and password required.');
+    return;
+  }
+  
+  const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email, password })
+  });
+  
+  const data = await res.json();
+  
+  if (!res.ok || !data.success) {
+    showAuthError(data.message || 'Login failed.');
+    return;
+  }
+  
+  authToken = data.accessToken || data.token;
+  currentUser = data.user;
+  localStorage.setItem('cd_auth_token', authToken);
+  localStorage.setItem('cd_user', JSON.stringify(currentUser));
+  
+  showAuthSuccess(`Welcome ${currentUser.name}! 🎉`);
+  updateAuthUI();
+  loadQuotaFromBackend();
+  
+  setTimeout(() => {
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+  }, 1500);
+}
+
+async function handleRegisterNew() {
+  const name = document.getElementById('auth-name-register').value.trim();
+  const email = document.getElementById('auth-email-register').value.trim();
+  const password = document.getElementById('auth-pass-register').value;
+  const university = document.getElementById('auth-university-register').value.trim();
+  
+  if (!name || !email || !password) {
+    showAuthError('Name, email, and password required.');
+    return;
+  }
+  
+  if (password.length < 8) {
+    showAuthError('Password must be at least 8 characters.');
+    return;
+  }
+  
+  const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ name, email, password, university })
+  });
+  
+  const data = await res.json();
+  
+  if (!res.ok || !data.success) {
+    showAuthError(data.message || 'Registration failed.');
+    return;
+  }
+  
+  authToken = data.accessToken || data.token;
+  currentUser = data.user;
+  localStorage.setItem('cd_auth_token', authToken);
+  localStorage.setItem('cd_user', JSON.stringify(currentUser));
+  
+  showAuthSuccess('✅ Account created! Check email for verification link.');
+  updateAuthUI();
+  
+  // Clear form
+  document.getElementById('auth-name-register').value = '';
+  document.getElementById('auth-email-register').value = '';
+  document.getElementById('auth-pass-register').value = '';
+  document.getElementById('auth-university-register').value = '';
+  
+  setTimeout(() => {
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+  }, 2500);
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('auth-email-forgot').value.trim();
+  
+  if (!email) {
+    showAuthError('Please enter your email address.');
+    return;
+  }
+  
+  const res = await fetch(`${BACKEND_URL}/api/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email })
+  });
+  
+  const data = await res.json();
+  
+  if (!data.success) {
+    showAuthError(data.message || 'Failed to send reset link.');
+    return;
+  }
+  
+  showAuthSuccess('✅ Reset link sent! Check your email inbox.');
+  document.getElementById('auth-email-forgot').value = '';
+  
+  setTimeout(() => {
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+  }, 2000);
+}
+
+async function handleResetPassword() {
+  const newPassword = document.getElementById('auth-pass-reset-new').value;
+  const confirmPassword = document.getElementById('auth-pass-reset-confirm').value;
+  
+  if (!newPassword || !confirmPassword) {
+    showAuthError('Please enter both passwords.');
+    return;
+  }
+  
+  if (newPassword.length < 8) {
+    showAuthError('Password must be at least 8 characters.');
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    showAuthError('Passwords do not match.');
+    return;
+  }
+  
+  // Get token from URL if available
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('reset_token');
+  
+  if (!token) {
+    showAuthError('Invalid reset link. Please request a new one.');
+    return;
+  }
+  
+  const res = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ token, newPassword, confirmPassword })
+  });
+  
+  const data = await res.json();
+  
+  if (!data.success) {
+    showAuthError(data.message || 'Password reset failed.');
+    return;
+  }
+  
+  showAuthSuccess('✅ Password reset successfully! You can now login.');
+  
+  // Clear form
+  document.getElementById('auth-pass-reset-new').value = '';
+  document.getElementById('auth-pass-reset-confirm').value = '';
+  
+  setTimeout(() => {
+    switchAuthTab('login');
+    window.location.href = 'codedost.html'; // Remove token from URL
+  }, 2000);
+}
+
+function showAuthError(message) {
+  const el = document.getElementById('auth-error-msg');
+  el.textContent = '❌ ' + message;
+  el.style.display = 'block';
+}
+
+function showAuthSuccess(message) {
+  const el = document.getElementById('auth-success-msg');
+  el.textContent = message;
+  el.style.display = 'block';
+}
 async function loadQuotaFromBackend() {
   if (!authToken) return;
   try {
