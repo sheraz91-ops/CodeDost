@@ -293,15 +293,16 @@ async function handleRegisterNew() {
     showAuthError('Password must be at least 8 characters.');
     return;
   }
-  
+  console.log(({ name, email, password, university }))
   const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ name, email, password, university })
   });
-  
+  console.log(res)
   const data = await res.json();
+  console.log(data)
   
   if (!res.ok || !data.success) {
     showAuthError(data.message || 'Registration failed.');
