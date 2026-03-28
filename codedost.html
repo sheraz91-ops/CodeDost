@@ -595,8 +595,8 @@ def calculate_total(items):
 <script>
 (function checkEmailVerification() {
   const params = new URLSearchParams(window.location.search);
-  const verifyToken = params.get('verify_token');
-  
+  const verifyToken = params.get('verify_token') || params.get('token');
+  console.log(verifyToken);
   if (verifyToken) {
     verifyEmailToken(verifyToken);
   }
@@ -611,7 +611,7 @@ async function verifyEmailToken(token) {
     });
     
     const data = await res.json();
-    
+    console.log(data)
     if (data.success) {
       authToken = data.accessToken || data.token || authToken;
       currentUser = data.user;
