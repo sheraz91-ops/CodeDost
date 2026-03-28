@@ -5,10 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CodeDost — Your AI Coding Tutor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdx..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
 <link rel="stylesheet" href="codedost.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-1024px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-768px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-900px.css"/>
+<link rel="stylesheet" href="codedost/css/codedost-480px.css"/>
 <link rel="manifest" href="manifest.json"/>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
@@ -17,48 +21,52 @@
 
 <!-- PILOT BANNER -->
 <div class="pilot-banner" id="pilot-banner" >
-  <!-- 🎓 Now piloting at 
-  <strong>Pakistani universities</strong> — 
-  <a href="https://code-dost.vercel.app" target="_blank">code-dost.vercel.app</a> 
-  &nbsp;·&nbsp;  -->
   <a href="https://sherazramzan.gumroad.com/l/cfevjo" target="_blank">Upgrade to Pro — $0.99/mo ↗</a>
 </div>
 
 <!-- ═══════════════════════════════════════════
      HEADER
 ════════════════════════════════════════════ -->
-<header class="header">
-  <a class="logo" href="#">
-    <div class="logo-icon">{}</div>
+<header class="header h-normal">
+  <a class="logo" id="logo" href="#">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 0 6px;">
+      <div class="logo-icon">{}</div>
     <span class="logo-text">Code<span>Dost</span></span>
-  </a>
-  <div class="header-right">
+    </div>
     <div class="streak-badge" id="streak-badge" title="Your daily learning streak">
-      <span class="streak-fire">🔥</span>
-      <span class="streak-count" id="streak-num">0</span>
-      <span style="font-size:11px;color:var(--text-muted)">day streak</span>
-    </div>
-    <div class="usage-counter-pill" title="Total bugs explained worldwide">
-      <div class="usage-pulse"></div>
-      <span id="usage-count" style="font-family:var(--font-code);font-weight:700;color:var(--green)">...</span>
-      <span style="color:var(--text-muted)">bugs fixed</span>
-    </div>
-    <!-- <span class="badge-urdu">🇵🇰 Roman Urdu</span> -->
-    <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">
-      <i class="fa-regular fa-keyboard"></i>
-    </button>
-    <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
-    <!-- <button class="api-btn" aria-label="Open API key setup">🔑 Free API Key</button> -->
-    <!-- AUTH BUTTON -->
+        <span class="streak-fire">🔥</span>
+        <span class="streak-count streak-num">0</span>
+      </div>
+  </a>
+ <div class="hamburger">
+    <i class="fa-solid fa-bars" style="display: none;"></i>
+   <i class="fa-solid fa-xmark none" ></i>
+  </div>
+   <div class="header-right none">
+     <div class="streak-badge" id="streak-badge" title="Your daily learning streak">
+       <span class="streak-fire">🔥</span>
+       <span class="streak-count streak-num">0</span>
+       <span style="font-size:11px;color:var(--text-muted)">day streak</span>
+     </div>
+     <div class="usage-counter-pill" title="Total bugs explained worldwide">
+       <div class="usage-pulse"></div>
+       <span id="usage-count" style="font-family:var(--font-code);font-weight:700;color:var(--green)">...</span>
+       <span style="color:var(--text-muted)">bugs fixed</span>
+     </div>
+     <button class="shortcuts-btn" onclick="openHelpModal()" title="Keyboard shortcuts (?)">
+       <i class="fa-regular fa-keyboard"></i>
+     </button>
+     <button class="api-btn" onclick="openModal()" aria-label="Open API key setup">🔑 Free API Key</button>
+     <!-- AUTH BUTTON -->
 <button class="api-btn" id="auth-btn" onclick="openAuthModal()" style="background:var(--purple);color:white;">👤 Login / Sign Up</button>
 <!-- QUOTA DISPLAY (shows after login) -->
 <div id="quota-pill" style="display:none;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);">
-  <span id="quota-used">0</span>/<span id="quota-limit">5</span> uses
-</div> 
-    <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
-      🌙
-    </button>
-  </div>
+   <span id="quota-used">0</span>/<span id="quota-limit">5</span> uses
+ </div> 
+     <button type="button" id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+       🌙
+     </button>
+   </div>
 </header>
 
 <!-- ═══════════════════════════════════════════
@@ -343,20 +351,22 @@ def calculate_total(items):
 
   <!-- Waitlist + Referral -->
   <div class="waitlist-section">
-    <div class="waitlist-label">⭐ Get Pro free — join early access waitlist</div>
-    <div class="waitlist-row">
-      <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com"/>
-      <button type="button" class="waitlist-btn" onclick="joinWaitlist()">Join Waitlist</button>
+   <div class="waitlist-section-child">
+      <div class="waitlist-label">⭐ Get Pro free — join early access waitlist</div>
+     <div class="waitlist-row">
+       <input type="email" class="waitlist-input" id="waitlist-email" placeholder="your@email.com"/>
+       <button type="button" class="waitlist-btn" onclick="joinWaitlist()">Join Waitlist</button>
+     </div>
+     <button type="button" class="referral-btn" onclick="shareOnWhatsApp()">📱 Share CodeDost on WhatsApp</button>
+   </div>
     </div>
-    <button type="button" class="referral-btn" onclick="shareOnWhatsApp()">📱 Share CodeDost on WhatsApp</button>
-  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════
      FOOTER
 ════════════════════════════════════════════ -->
 <footer class="footer">
-  Built with <span>♥</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
+  Built with <span>❤</span> for Pakistani CS students · CodeDost v1.0 · Powered by Groq (Free) + Llama 3
 </footer>
 
 <!-- ═══════════════════════════════════════════
@@ -473,8 +483,71 @@ def calculate_total(items):
 </div>
 
 <!-- ═══════════════════════════════════════════
-     TOAST
+     AUTH MODAL (Complete: Login, Register, Forgot, Reset)
 ════════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal-overlay" onclick="closeAuthModalOutside(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:380px;width:90%;">
+    <h2 id="auth-modal-title">👤 Login to CodeDost</h2>
+    
+    <!-- TABS: Login / Register / Forgot -->
+    <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px;">
+      <button id="auth-tab-login" class="provider-tab active-tab" onclick="switchAuthTab('login')">Login</button>
+      <button id="auth-tab-register" class="provider-tab" onclick="switchAuthTab('register')">Sign Up</button>
+      <button id="auth-tab-forgot" class="provider-tab" onclick="switchAuthTab('forgot')">Forgot?</button>
+    </div>
+    
+    <!-- ── LOGIN FORM ────────────────────── -->
+    <div id="auth-form-login">
+      <input class="modal-input" type="email" id="auth-email-login" placeholder="Email address" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="password" id="auth-pass-login" placeholder="Password" style="margin-bottom:8px;"/>
+      <div style="text-align: right; font-size: 11px;">
+        <a onclick="switchAuthTab('forgot')" style="color:var(--blue); cursor:pointer; text-decoration:none;">
+          Forgot password?
+        </a>
+      </div>
+    </div>
+    
+    <!-- ── REGISTER FORM ────────────────── -->
+    <div id="auth-form-register" style="display:none;">
+      <input class="modal-input" type="text" id="auth-name-register" placeholder="Your name" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="email" id="auth-email-register" placeholder="Email address" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="password" id="auth-pass-register" placeholder="Password (min 8 chars)" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="text" id="auth-university-register" placeholder="University name (optional)"/>
+    </div>
+    
+    <!-- ── FORGOT PASSWORD FORM ─────────── -->
+    <div id="auth-form-forgot" style="display:none;">
+      <input class="modal-input" type="email" id="auth-email-forgot" placeholder="Enter your email address" style="margin-bottom:8px;"/>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;">
+        We'll send you a reset link via email.
+      </div>
+    </div>
+    
+    <!-- ── RESET PASSWORD FORM ──────────── -->
+    <div id="auth-form-reset" style="display:none;">
+      <input class="modal-input" type="password" id="auth-pass-reset-new" placeholder="New password" style="margin-bottom:8px;"/>
+      <input class="modal-input" type="password" id="auth-pass-reset-confirm" placeholder="Confirm password" style="margin-bottom:8px;"/>
+      <div style="font-size:11px;color:var(--text-muted);" id="password-strength">
+        Strength: <span id="strength-text">Weak</span>
+      </div>
+    </div>
+    
+    <!-- ERROR MESSAGE -->
+    <div class="modal-note" id="auth-error-msg" style="color:var(--red);margin-top:8px;display:none;"></div>
+    
+    <!-- SUCCESS MESSAGE -->
+    <div class="modal-note" id="auth-success-msg" style="color:var(--green);margin-top:8px;display:none;"></div>
+    
+    <!-- SUBMIT BUTTON -->
+    <button class="modal-save" id="auth-submit-btn" onclick="submitAuth()" style="margin-top:12px;">Login</button>
+    
+    <div class="modal-note" style="margin-top:8px;">Data secure · Encrypted connection</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOAST
+════���═══════════════════════════════════════ -->
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
   <div class="toast-dot"></div>
   <span id="toast-msg">—</span>
@@ -494,27 +567,61 @@ def calculate_total(items):
 <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
 <script src="codedost.js"></script>
-<!-- AUTH MODAL -->
-<div class="modal-overlay" id="auth-modal-overlay" onclick="closeAuthModalOutside(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
-  <div class="modal" style="max-width:380px;width:90%;">
-    <h2 id="auth-modal-title">👤 Login to CodeDost</h2>
-    <div style="display:flex;gap:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px">
-      <button id="auth-tab-login" class="provider-tab active-tab" onclick="switchAuthTab('login')">Login</button>
-      <button id="auth-tab-register" class="provider-tab" onclick="switchAuthTab('register')">Sign Up</button>
-    </div>
-    <div id="auth-form-login">
-      <input class="modal-input" type="email" id="auth-email-login" placeholder="Email address" style="margin-bottom:8px;"/>
-      <input class="modal-input" type="password" id="auth-pass-login" placeholder="Password"/>
-    </div>
-    <div id="auth-form-register" style="display:none;">
-      <input class="modal-input" type="text" id="auth-name-register" placeholder="Your name" style="margin-bottom:8px;"/>
-      <input class="modal-input" type="email" id="auth-email-register" placeholder="Email address" style="margin-bottom:8px;"/>
-      <input class="modal-input" type="password" id="auth-pass-register" placeholder="Password (min 6 chars)"/>
-    </div>
-    <button class="modal-save" id="auth-submit-btn" onclick="submitAuth()" style="margin-top:12px;">Login</button>
-    <div class="modal-note" id="auth-error-msg" style="color:var(--red);margin-top:8px;display:none;"></div>
-    <div class="modal-note" style="margin-top:8px;">Data secure hai · Sirf quota track karne ke liye</div>
-  </div>
-</div>
+<script src="/codedost/js/hamburger.js"></script>
+
+<!-- AUTO VERIFY EMAIL ON PAGE LOAD -->
+<script>
+(function checkEmailVerification() {
+  const params = new URLSearchParams(window.location.search);
+  const verifyToken = params.get('verify_token');
+  
+  if (verifyToken) {
+    verifyEmailToken(verifyToken);
+  }
+})();
+
+async function verifyEmailToken(token) {
+  const BACKEND_URL = 'https://codedost-backend-production.up.railway.app';
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/verify-email?token=${token}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    const data = await res.json();
+    
+    if (data.success) {
+      authToken = data.accessToken || data.token || authToken;
+      currentUser = data.user;
+      localStorage.setItem('cd_auth_token', authToken);
+      localStorage.setItem('cd_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      showToast('success', '✅ Email verified! Welcome to CodeDost!');
+      
+      // Clean URL
+      window.history.replaceState({}, document.title, 'codedost.html');
+    } else {
+      showToast('error', '❌ Email verification failed: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Verification error:', error);
+    showToast('error', 'Email verification error');
+  }
+}
+
+// AUTO OPEN RESET PASSWORD ON PAGE LOAD
+(function checkPasswordReset() {
+  const params = new URLSearchParams(window.location.search);
+  const resetToken = params.get('reset_token');
+  
+  if (resetToken) {
+    openAuthModal();
+    setTimeout(() => {
+      switchAuthTab('reset');
+    }, 100);
+  }
+})();
+</script>
+
 </body>
 </html>
