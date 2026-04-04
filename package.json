@@ -1,0 +1,28 @@
+{
+  "name": "codedost",
+  "version": "1.0.0",
+  "description": "Pakistan's AI Coding Tutor in Roman Urdu",
+  "main": "codedost.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sheraz91-ops/CodeDost.git"
+  },
+  "keywords": [
+    "coding",
+    "tutor",
+    "ai",
+    "pakistan"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sheraz91-ops/CodeDost/issues"
+  },
+  "homepage": "https://github.com/sheraz91-ops/CodeDost#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
