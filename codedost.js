@@ -2029,7 +2029,656 @@ async function joinWaitlist() {
     showToast("error", "Could not submit — try again later");
   }
 }
+// Static exercises library (no AI needed)
+const TOPIC_EXERCISES = {
+  variables: {
+    title: "Variables Basics",
+    description: "Create variables for a student's name, age, and GPA",
+    starter_code: `# Create variables for:
+# name: your name (string)
+# age: your age (number)  
+# gpa: your GPA (decimal)
 
+name = "Ahmed"
+age = 20
+gpa = 3.5
+
+print(f"Name: {name}, Age: {age}, GPA: {gpa}")`,
+    test_cases: [
+      { input: "name='Ali', age=21, gpa=3.8", output: "Name: Ali, Age: 21, GPA: 3.8" }
+    ],
+    hints: ["Use quotes for strings", "Numbers don't need quotes", "Use f-strings for printing"]
+  },
+  
+  conditionals: {
+    title: "If-Else Statements",
+    description: "Check if a number is positive, negative, or zero",
+    starter_code: `num = 5
+
+if num > 0:
+    print("Positive")
+elif num < 0:
+    print("Negative")
+else:
+    print("Zero")`,
+    test_cases: [
+      { input: "num=5", output: "Positive" },
+      { input: "num=-3", output: "Negative" },
+      { input: "num=0", output: "Zero" }
+    ],
+    hints: ["Use > and < for comparisons", "elif is 'else if'", "Always use colons after if/elif/else"]
+  },
+  
+  loops: {
+    title: "For Loop Practice",
+    description: "Print numbers from 1 to 5",
+    starter_code: `for i in range(1, 6):
+    print(i)`,
+    test_cases: [
+      { input: "range(1,6)", output: "1\\n2\\n3\\n4\\n5" }
+    ],
+    hints: ["range(1,6) gives 1,2,3,4,5", "The end number is NOT included", "Use for loops for iteration"]
+  },
+  
+  functions: {
+    title: "Create a Function",
+    description: "Write a function that adds two numbers",
+    starter_code: `def add(a, b):
+    return a + b
+
+result = add(5, 3)
+print(result)`,
+    test_cases: [
+      { input: "add(5,3)", output: "8" },
+      { input: "add(10,20)", output: "30" }
+    ],
+    hints: ["Functions start with 'def'", "Use 'return' to send back a value", "Call functions with ()"]
+  },
+  
+  lists: {
+    title: "List Operations",
+    description: "Create a list and access its elements",
+    starter_code: `fruits = ["apple", "banana", "mango", "orange"]
+
+print(fruits[0])   # First element
+print(fruits[-1])  # Last element
+print(len(fruits)) # Number of items`,
+    test_cases: [
+      { input: "fruits[0]", output: "apple" },
+      { input: "fruits[-1]", output: "orange" },
+      { input: "len(fruits)", output: "4" }
+    ],
+    hints: ["Lists start at index 0", "Negative index counts from the end", "len() gives list size"]
+  },
+
+  dictionaries: {
+    title: "Dictionary Basics",
+    description: "Create and access a dictionary",
+    starter_code: `student = {"name": "Ali", "age": 20, "city": "Lahore"}
+
+print(student["name"])
+print(student["age"])`,
+    test_cases: [
+      { input: 'student["name"]', output: "Ali" },
+      { input: 'student["age"]', output: "20" }
+    ],
+    hints: ["Dictionaries use key-value pairs", "Use {'key': 'value'} format", "Access with dict['key']"]
+  },
+
+  file_io: {
+    title: "Reading Files",
+    description: "Open and read a file",
+    starter_code: `# Writing to a file
+with open("data.txt", "w") as f:
+    f.write("Hello, World!")
+
+# Reading from a file
+with open("data.txt", "r") as f:
+    content = f.read()
+    print(content)`,
+    test_cases: [
+      { input: 'open("file.txt")', output: "<opened file>" }
+    ],
+    hints: ["Use 'with' for file handling", "'w' is write mode, 'r' is read mode", "Always close files after use"]
+  },
+
+  oop: {
+    title: "Classes and Objects",
+    description: "Create a simple class",
+    starter_code: `class Student:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def display(self):
+        print(f"Name: {self.name}, Age: {self.age}")
+
+student = Student("Ahmed", 20)
+student.display()`,
+    test_cases: [
+      { input: 'Student("Ahmed", 20)', output: "Name: Ahmed, Age: 20" }
+    ],
+    hints: ["__init__ is the constructor", "self refers to the object", "Methods are functions inside classes"]
+  },
+
+  exceptions: {
+    title: "Try-Except Handling",
+    description: "Handle errors gracefully",
+    starter_code: `try:
+    num = int("hello")
+except ValueError:
+    print("Invalid number!")
+except Exception as e:
+    print(f"Error: {e}")`,
+    test_cases: [
+      { input: 'int("hello")', output: "Invalid number!" }
+    ],
+    hints: ["try block runs first", "except catches errors", "Use specific exceptions first"]
+  }
+};
+
+function startTopic(topicId) {
+  console.log('Starting topic:', topicId);
+  showToast('info', '📝 Loading exercise...');
+  
+  try {
+    // Get exercise from static library
+    const exercise = TOPIC_EXERCISES[topicId] || TOPIC_EXERCISES.variables;
+    
+    if (!exercise) {
+      showToast('error', 'Exercise not found');
+      return;
+    }
+
+    // Remove old panel
+    document.querySelector('.learning-path-exercise-panel')?.remove();
+
+    // Create exercise panel
+    const panel = document.createElement('div');
+    panel.className = 'learning-path-exercise-panel';
+    panel.style.cssText = `
+      position: fixed;
+      top: 100px;
+      right: 24px;
+      width: 350px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      z-index: 99;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    `;
+
+    panel.innerHTML = `
+      <div style="font-weight: 700; margin-bottom: 8px; color: var(--text-primary); font-size: 14px;">
+        📝 ${exercise.title}
+      </div>
+      <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+        ${exercise.description}
+      </div>
+      
+      <div style="background: var(--bg-surface); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+        <div style="font-size: 11px; font-weight: 600; color: var(--amber); margin-bottom: 6px;">💻 Starter Code:</div>
+        <pre style="font-size: 11px; color: var(--text-code); margin: 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;"><code>${exercise.starter_code}</code></pre>
+      </div>
+
+      ${exercise.test_cases && exercise.test_cases.length > 0 ? `
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 11px; font-weight: 600; color: var(--green); margin-bottom: 6px;">✅ Test Case:</div>
+          ${exercise.test_cases.map((tc, i) => `
+            <div style="background: var(--bg-surface); padding: 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11px;">
+              <div style="color: var(--text-muted);"><strong>Input:</strong> ${tc.input}</div>
+              <div style="color: var(--green);"><strong>Expected:</strong> ${tc.output}</div>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      ${exercise.hints && exercise.hints.length > 0 ? `
+        <details style="margin-bottom: 12px;">
+          <summary style="cursor: pointer; color: var(--amber); font-size: 12px; font-weight: 600;">💡 Hints</summary>
+          <ul style="margin-top: 8px; font-size: 11px; color: var(--text-muted); list-style: none; padding-left: 8px;">
+            ${exercise.hints.map(h => `<li style="margin-bottom: 4px;">• ${h}</li>`).join('')}
+          </ul>
+        </details>
+      ` : ''}
+
+      <button 
+        onclick="learningPath.completeTopic('${topicId}'); document.querySelector('.learning-path-exercise-panel')?.remove();"
+        style="
+          width: 100%;
+          margin-top: 12px;
+          padding: 8px;
+          background: var(--green);
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+          color: white;
+          font-size: 12px;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='#059669'"
+        onmouseout="this.style.background='var(--green)'"
+      >
+        ✅ Mark Complete
+      </button>
+    `;
+
+    document.body.appendChild(panel);
+    showToast('success', '✅ Exercise loaded!');
+    closeModal();
+
+  } catch (error) {
+    console.error('Exercise loading failed:', error);
+    showToast('error', 'Failed to load exercise: ' + error.message);
+  }
+}
+// ═══════════════════════════════════════════
+// LEARNING PATH GENERATOR CLASS
+// ═══════════════════════════════════════════
+
+class LearningPathGenerator {
+  constructor() {
+    this.userProfile = this.loadUserProfile();
+    this.learningPaths = this.initializePaths();
+  }
+
+  loadUserProfile() {
+    const saved = localStorage.getItem('cd_learning_profile');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    
+    return {
+      weakAreas: {},
+      strongAreas: {},
+      completedTopics: [],
+      currentLevel: 'beginner',
+      totalErrors: 0,
+      streakDays: 0,
+      lastActive: Date.now()
+    };
+  }
+
+  saveUserProfile() {
+    localStorage.setItem('cd_learning_profile', JSON.stringify(this.userProfile));
+  }
+
+  analyzeError(code, errorMsg, category) {
+    const topics = this.detectTopics(code, errorMsg, category);
+    
+    topics.forEach(topic => {
+      this.userProfile.weakAreas[topic] = (this.userProfile.weakAreas[topic] || 0) + 1;
+    });
+    
+    this.userProfile.totalErrors++;
+    this.userProfile.lastActive = Date.now();
+    this.saveUserProfile();
+    
+    if (this.userProfile.totalErrors >= 5) {
+      this.showLearningPathWidget();
+    }
+  }
+
+  detectTopics(code, errorMsg, category) {
+    const topics = [];
+    
+    const keywords = {
+      'loops': ['for', 'while', 'range', 'iterator', 'loop'],
+      'functions': ['def', 'function', 'return', 'parameter', 'argument'],
+      'lists': ['list', 'array', '[', ']', 'append', 'index'],
+      'dictionaries': ['dict', '{', '}', 'key', 'value'],
+      'conditionals': ['if', 'else', 'elif', 'condition'],
+      'strings': ['str', 'string', '"', "'", 'substring'],
+      'file_io': ['open', 'read', 'write', 'file'],
+      'oop': ['class', 'self', 'object', '__init__'],
+      'exceptions': ['try', 'except', 'raise', 'error'],
+      'async': ['async', 'await', 'promise', 'fetch']
+    };
+    
+    const codeL = code.toLowerCase();
+    for (const [topic, keys] of Object.entries(keywords)) {
+      if (keys.some(k => codeL.includes(k))) {
+        topics.push(topic);
+      }
+    }
+    
+    const errorL = errorMsg.toLowerCase();
+    if (errorL.includes('index')) topics.push('lists');
+    if (errorL.includes('key')) topics.push('dictionaries');
+    if (errorL.includes('type')) topics.push('data_types');
+    if (errorL.includes('syntax')) topics.push('syntax_basics');
+    if (errorL.includes('name')) topics.push('variables');
+    
+    return [...new Set(topics)];
+  }
+
+  initializePaths() {
+  return {
+    python_beginner: {
+      name: 'Python Fundamentals',
+      level: 'beginner',
+      duration: '4 weeks',
+      topics: [
+        { id: 'variables', name: 'Variables & Data Types', duration: '3 days', exercises: 5, description: 'Learn Python variables, strings, numbers' },
+        { id: 'conditionals', name: 'If-Else Statements', duration: '3 days', exercises: 6, description: 'Master conditional logic' },
+        { id: 'loops', name: 'Loops (For & While)', duration: '5 days', exercises: 8, description: 'Understand iteration' },
+        { id: 'functions', name: 'Functions & Modules', duration: '5 days', exercises: 7, description: 'Create reusable code' },
+        { id: 'lists', name: 'Lists & Arrays', duration: '4 days', exercises: 10, description: 'Work with collections' },
+        { id: 'dictionaries', name: 'Dictionaries & Sets', duration: '4 days', exercises: 8, description: 'Master key-value data' },
+        { id: 'file_io', name: 'File Operations', duration: '3 days', exercises: 5, description: 'Read and write files' },
+        { id: 'oop', name: 'Classes and Objects', duration: '5 days', exercises: 12, description: 'Object-oriented programming' },
+        { id: 'exceptions', name: 'Try-Except Handling', duration: '4 days', exercises: 8, description: 'Error handling' }
+      ]
+    }
+  };
+}
+
+  generatePersonalizedPath() {
+    const weakTopics = Object.entries(this.userProfile.weakAreas)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([topic, count]) => ({ topic, count }));
+    
+    if (weakTopics.length === 0) {
+      return this.learningPaths.python_beginner;
+    }
+    
+    const customPath = {
+      name: 'Your Personalized Path',
+      level: this.userProfile.currentLevel,
+      duration: 'Flexible',
+      topics: []
+    };
+    
+    Object.values(this.learningPaths).forEach(path => {
+      path.topics.forEach(topic => {
+        const isWeak = weakTopics.some(w => topic.id.includes(w.topic) || w.topic.includes(topic.id));
+        if (isWeak && !customPath.topics.find(t => t.id === topic.id)) {
+          customPath.topics.push({
+            ...topic,
+            priority: weakTopics.find(w => topic.id.includes(w.topic)) ? weakTopics.find(w => topic.id.includes(w.topic)).count : 0
+          });
+        }
+      });
+    });
+    
+    customPath.topics.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    
+    return customPath.topics.length > 0 ? customPath : this.learningPaths.python_beginner;
+  }
+
+showLearningPathWidget() {
+    const existing = document.getElementById('learning-path-widget');
+    if (existing) existing.remove();
+    
+    const path = this.generatePersonalizedPath();
+    const progress = this.calculateProgress(path);
+    const topWeakAreas = Object.entries(this.userProfile.weakAreas).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    
+    const widget = document.createElement('div');
+    widget.id = 'learning-path-widget';
+    widget.style.cssText = 'position:fixed;bottom:24px;left:24px;width:350px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px;z-index:95;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
+    
+    let html = '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;"><div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">📚 Your Learning Path</div><div style="font-size:16px;font-weight:700;color:var(--text-primary);">' + path.name + '</div></div><button onclick="closeLearningPath()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;">×</button></div>';
+    
+    html += '<div style="background:var(--bg-surface);padding:12px;border-radius:8px;margin-bottom:12px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">Overall Progress</div><div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;height:8px;background:var(--bg-base);border-radius:99px;overflow:hidden;"><div style="height:100%;background:var(--amber);width:' + progress + '%;transition:width 0.5s;"></div></div><div style="font-size:18px;font-weight:700;color:var(--amber);">' + progress + '%</div></div></div>';
+    
+    if (topWeakAreas.length > 0) {
+      html += '<div style="margin-bottom:12px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">⚠️ Focus On:</div>';
+      topWeakAreas.forEach(function([topic, count]) {
+        html += '<div style="background:var(--red-bg);padding:6px 10px;border-radius:6px;margin-bottom:4px;font-size:12px;color:var(--red);">' + topic.replace('_', ' ') + ' - ' + count + ' errors</div>';
+      });
+      html += '</div>';
+    }
+    
+    html += '<div style="max-height:200px;overflow-y:auto;margin-bottom:12px;">';
+    // FIXED: Show ALL topics, not just first 5
+    path.topics.forEach((topic, i) => {
+      const isCompleted = this.userProfile.completedTopics.includes(topic.id);
+      const isCurrent = i === this.userProfile.completedTopics.length;
+      const icon = isCompleted ? '✅' : isCurrent ? '🔥' : '⭕';
+      const borderColor = isCompleted ? 'var(--green)' : isCurrent ? 'var(--amber)' : 'var(--border)';
+      html += '<div style="display:flex;align-items:start;gap:12px;padding:10px;border-radius:6px;margin-bottom:6px;border-left:3px solid ' + borderColor + ';"><div style="font-size:20px;">' + icon + '</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);">' + topic.name + '</div><div style="font-size:11px;color:var(--text-muted);">' + topic.duration + ' • ' + topic.exercises + ' exercises</div></div></div>';
+    });
+    html += '</div>';
+    
+    html += '<button onclick="openFullLearningPath()" style="width:100%;padding:10px;background:var(--amber);color:#0e0e10;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">🚀 Start Learning Path</button>';
+    html += '<div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:8px;">Based on your ' + this.userProfile.totalErrors + ' coding sessions</div>';
+    
+    widget.innerHTML = html;
+    document.body.appendChild(widget);
+  }
+  calculateProgress(path) {
+    const completed = this.userProfile.completedTopics.length;
+    const total = path.topics.length;
+    return Math.round((completed / total) * 100);
+  }
+
+  completeTopic(topicId) {
+    if (!this.userProfile.completedTopics.includes(topicId)) {
+      this.userProfile.completedTopics.push(topicId);
+      this.saveUserProfile();
+      showToast('success', '🎉 Topic completed! Keep going!');
+      this.showLearningPathWidget();
+    }
+  }
+
+  generateCertificate() {
+    if (this.userProfile.completedTopics.length < 5) {
+      showToast('error', 'Complete at least 5 topics to get certificate');
+      return;
+    }
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = '#0e0e10';
+    ctx.fillRect(0, 0, 1200, 800);
+    
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(40, 40, 1120, 720);
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 60px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Certificate of Achievement', 600, 150);
+    
+    ctx.fillStyle = '#f1f0ee';
+    ctx.font = '40px Arial';
+    ctx.fillText(currentUser && currentUser.name ? currentUser.name : 'CodeDost Learner', 600, 250);
+    
+    ctx.font = '24px Arial';
+    ctx.fillStyle = '#cfcfcf';
+    ctx.fillText('Has successfully completed', 600, 320);
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 48px Arial';
+    ctx.fillText(this.userProfile.completedTopics.length + ' Coding Topics', 600, 400);
+    
+    ctx.fillStyle = '#cfcfcf';
+    ctx.font = '20px Arial';
+    ctx.fillText(new Date().toLocaleDateString('en-PK'), 600, 500);
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 32px monospace';
+    ctx.fillText('{ CodeDost }', 600, 650);
+    
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'codedost-certificate.png';
+      a.click();
+      showToast('success', '🎓 Certificate downloaded!');
+    });
+  }
+}
+
+const learningPath = new LearningPathGenerator();
+
+// ═══════════════════════════════════════════
+// LEARNING PATH HELPER FUNCTIONS
+// ═══════════════════════════════════════════
+
+function closeLearningPath() {
+  const el = document.getElementById('learning-path-widget');
+  if (el) el.remove();
+}
+
+function openFullLearningPath() {
+  const path = learningPath.generatePersonalizedPath();
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  modal.onclick = function(e) { if (e.target === modal) closeModal(); };
+  
+  let topicsHtml = '';
+  path.topics.forEach(function(topic, i) {
+    const isCompleted = learningPath.userProfile.completedTopics.includes(topic.id);
+    const borderColor = isCompleted ? 'var(--green)' : 'var(--border)';
+    const startBtn = !isCompleted ? '<button onclick="startTopic(\'' + topic.id + '\')" style="padding:6px 14px;background:var(--amber);border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#0e0e10;">Start</button>' : '';
+    const title = isCompleted ? '✅ ' + topic.name : (i + 1) + '. ' + topic.name;
+    
+    topicsHtml += '<div style="background:var(--bg-surface);padding:16px;border-radius:10px;border-left:4px solid ' + borderColor + ';margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:start;"><div style="flex:1;"><div style="font-size:15px;font-weight:600;margin-bottom:6px;">' + title + '</div><div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + topic.description + '</div><div style="font-size:11px;color:var(--text-muted);">⏱️ ' + topic.duration + ' • 📝 ' + topic.exercises + ' exercises</div></div>' + startBtn + '</div></div>';
+  });
+  
+  modal.innerHTML = '<div class="modal" style="max-width:700px;width:90%;max-height:90vh;overflow-y:auto;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:24px;"><h2 style="color:var(--text-primary);margin-bottom:8px;">📚 Your Complete Learning Path</h2><p style="color:var(--text-muted);margin-bottom:20px;">' + path.name + ' • ' + path.duration + ' • ' + path.topics.length + ' topics</p>' + topicsHtml + '<div style="margin-top:20px;display:flex;gap:12px;"><button onclick="learningPath.generateCertificate()" class="modal-save" style="flex:1;padding:10px;background:var(--amber);color:#0e0e10;border:none;border-radius:6px;cursor:pointer;font-weight:600;">🎓 Get Certificate</button><button onclick="closeModal()" class="modal-save" style="flex:1;padding:10px;background:var(--bg-surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:600;">Close</button></div></div>';
+  
+  document.body.appendChild(modal);
+}
+
+function startTopic(topicId) {
+  console.log('Starting topic:', topicId);
+  showToast('info', '📝 Loading exercise...');
+  
+  try {
+    const exercise = TOPIC_EXERCISES[topicId] || TOPIC_EXERCISES.variables;
+    
+    if (!exercise) {
+      showToast('error', 'Exercise not found');
+      return;
+    }
+
+    const existingPanel = document.querySelector('.learning-path-exercise-panel');
+    if (existingPanel) existingPanel.remove();
+
+    const panel = document.createElement('div');
+    panel.className = 'learning-path-exercise-panel';
+    panel.style.cssText = 'position:fixed;top:100px;right:24px;width:350px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:16px;z-index:99;max-height:70vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
+
+    let panelHtml = '<div style="font-weight:700;margin-bottom:8px;color:var(--text-primary);font-size:14px;">📝 ' + exercise.title + '</div><div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">' + exercise.description + '</div><div style="background:var(--bg-surface);padding:10px;border-radius:6px;margin-bottom:12px;"><div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:6px;">💻 Starter Code:</div><pre style="font-size:11px;color:var(--text-code);margin:0;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;"><code>' + exercise.starter_code + '</code></pre></div>';
+
+    if (exercise.test_cases && exercise.test_cases.length > 0) {
+      panelHtml += '<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:6px;">✅ Test Cases:</div>';
+      exercise.test_cases.forEach(function(tc) {
+        panelHtml += '<div style="background:var(--bg-surface);padding:8px;border-radius:4px;margin-bottom:6px;font-size:11px;"><div style="color:var(--text-muted);"><strong>Input:</strong> ' + tc.input + '</div><div style="color:var(--green);"><strong>Expected:</strong> ' + tc.output + '</div></div>';
+      });
+      panelHtml += '</div>';
+    }
+
+    if (exercise.hints && exercise.hints.length > 0) {
+      panelHtml += '<details style="margin-bottom:12px;"><summary style="cursor:pointer;color:var(--amber);font-size:12px;font-weight:600;">💡 Hints</summary><ul style="margin-top:8px;font-size:11px;color:var(--text-muted);list-style:none;padding-left:8px;">';
+      exercise.hints.forEach(function(h) {
+        panelHtml += '<li style="margin-bottom:4px;">• ' + h + '</li>';
+      });
+      panelHtml += '</ul></details>';
+    }
+
+    panelHtml += '<button onclick="learningPath.completeTopic(\'' + topicId + '\');const p=document.querySelector(\'.learning-path-exercise-panel\');if(p)p.remove();" style="width:100%;margin-top:12px;padding:8px;background:var(--green);border:none;border-radius:6px;cursor:pointer;font-weight:600;color:white;font-size:12px;transition:all 0.2s;" onmouseover="this.style.background=\'#059669\'" onmouseout="this.style.background=\'var(--green)\'" >✅ Mark Complete</button>';
+
+    panel.innerHTML = panelHtml;
+    document.body.appendChild(panel);
+    showToast('success', '✅ Exercise loaded!');
+    closeModal();
+
+  } catch (error) {
+    console.error('Exercise loading failed:', error);
+    showToast('error', 'Failed to load exercise: ' + error.message);
+  }
+}
+
+function closeModal() {
+  const modal = document.querySelector('.modal-overlay');
+  if (modal) modal.remove();
+}
+
+function closeAuthModalOutside(e) {
+  if (e && e.target && e.target === document.getElementById('auth-modal-overlay')) {
+    document.getElementById('auth-modal-overlay').style.display = 'none';
+  }
+}
+
+function switchAuthTab(tab) {
+  if (!tab) return;
+  authMode = tab;
+  
+  document.getElementById('auth-form-login').style.display = 'none';
+  document.getElementById('auth-form-register').style.display = 'none';
+  document.getElementById('auth-form-forgot').style.display = 'none';
+  document.getElementById('auth-form-reset').style.display = 'none';
+  
+  document.getElementById('auth-tab-login').classList.remove('active-tab');
+  document.getElementById('auth-tab-register').classList.remove('active-tab');
+  document.getElementById('auth-tab-forgot').classList.remove('active-tab');
+  
+  document.getElementById('auth-error-msg').style.display = 'none';
+  document.getElementById('auth-success-msg').style.display = 'none';
+  
+  const btn = document.getElementById('auth-submit-btn');
+  
+  if (tab === 'login') {
+    document.getElementById('auth-form-login').style.display = 'block';
+    document.getElementById('auth-tab-login').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '👤 Login to CodeDost';
+    if (btn) btn.textContent = 'Login';
+  } else if (tab === 'register') {
+    document.getElementById('auth-form-register').style.display = 'block';
+    document.getElementById('auth-tab-register').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '👤 Sign Up — It\'s Free';
+    if (btn) btn.textContent = 'Sign Up';
+  } else if (tab === 'forgot') {
+    document.getElementById('auth-form-forgot').style.display = 'block';
+    document.getElementById('auth-tab-forgot').classList.add('active-tab');
+    document.getElementById('auth-modal-title').textContent = '🔑 Forgot Password?';
+    if (btn) btn.textContent = 'Send Reset Link';
+  } else if (tab === 'reset') {
+    document.getElementById('auth-form-reset').style.display = 'block';
+    document.getElementById('auth-modal-title').textContent = '🔐 Reset Password';
+    if (btn) btn.textContent = 'Reset Password';
+  }
+}
+
+// Integrate with existing analyze function
+if (typeof window.analyzeCode === 'function') {
+  const originalAnalyze = window.analyzeCode;
+  window.analyzeCode = async function() {
+    const code = document.getElementById('code-input').value;
+    const error = document.getElementById('error-input').value;
+    
+    await originalAnalyze();
+    
+    const category = detectErrorCategory(error);
+    learningPath.analyzeError(code, error, category);
+  };
+}
+
+function detectErrorCategory(error) {
+  const e = error.toLowerCase();
+  if (e.includes('syntax')) return 'syntax_error';
+  if (e.includes('type')) return 'type_error';
+  if (e.includes('index')) return 'index_error';
+  if (e.includes('key')) return 'key_error';
+  if (e.includes('name')) return 'name_error';
+  return 'general';
+}
 // ═══════════════════════════════════════
 // FEATURE 17: WHATSAPP REFERRAL
 // ═══════════════════════════════════════
@@ -2042,6 +2691,7 @@ function shareOnWhatsApp() {
   );
   window.open("https://wa.me/?text=" + msg, "_blank");
 }
+
 
 // ── KEYBOARD SHORTCUTS ─────────────────
 document.addEventListener("keydown", (e) => {
@@ -2075,6 +2725,7 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
     this.selectionStart = this.selectionEnd = start + 2;
   }
 });
+
 
 // ═══════════════════════════════════════
 // INIT

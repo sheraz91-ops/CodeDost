@@ -555,6 +555,45 @@ def calculate_total(items):
   </div>
 </div>
 
+<!-- ═════════════════════════════════════════════
+     LEARNING PATH MODAL & WIDGETS
+════════════════════════════════════════════ -->
+
+<!-- Learning Path Full Modal -->
+<div class="modal-overlay" id="learning-path-modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:997;display:flex;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:700px;width:90%;max-height:90vh;overflow-y:auto;">
+    <h2>📚 Your Complete Learning Path</h2>
+    <p style="color:var(--text-muted);margin-bottom:20px;" id="path-info">Loading your personalized path...</p>
+    
+    <div style="display:grid;gap:12px;" id="learning-path-topics-container">
+      <!-- Topics will be inserted here by JavaScript -->
+    </div>
+    
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button onclick="learningPath.generateCertificate()" class="modal-save" style="flex:1;">
+        🎓 Get Certificate
+      </button>
+      <button onclick="closeModal()" class="modal-save" style="flex:1;background:var(--bg-surface);color:var(--text-primary);">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Learning Path Widget (Fixed Bottom-Left) -->
+<div id="learning-path-widget" style="display:none;"></div>
+
+<!-- Certificate Modal -->
+<div id="certificate-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:998;display:flex;align-items:center;justify-content:center;">
+  <div style="background:var(--bg-elevated);border-radius:12px;padding:24px;max-width:500px;width:90%;text-align:center;border:2px solid var(--amber);">
+    <div style="font-size:24px;margin-bottom:12px;">🎓</div>
+    <h2 style="color:var(--amber);margin-bottom:8px;">Certificate Generated!</h2>
+    <p style="color:var(--text-secondary);margin-bottom:16px;">Your achievement certificate is ready to download and share.</p>
+    <button onclick="document.getElementById('certificate-modal').style.display='none'" class="modal-save">
+      Close
+    </button>
+  </div>
+</div>
 <!-- ═════════════════════════════��═════════════
      TOAST
 ════���═══════════════════════════════════════ -->

@@ -991,6 +991,406 @@ pre[class*="language-"] {
   flex: 1;
 }
 
+/* ═══════════════════════════════════════════
+   LEARNING PATH GENERATOR STYLES
+════════════════════════════════════════════ */
+
+/* Learning Path Widget (Fixed Position) */
+#learning-path-widget {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 350px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  z-index: 95;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUpIn 0.4s ease forwards;
+}
+
+@keyframes slideUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.learning-path-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.learning-path-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.learning-path-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.learning-path-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.learning-path-close:hover {
+  color: var(--text-primary);
+}
+
+/* Progress Bar */
+.learning-path-progress {
+  background: var(--bg-surface);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.learning-path-progress-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.learning-path-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.learning-path-progress-fill-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-base);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.learning-path-progress-fill {
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.5s ease;
+  border-radius: 99px;
+}
+
+.learning-path-progress-percent {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--amber);
+  min-width: 30px;
+}
+
+/* Focus Areas */
+.learning-path-focus {
+  margin-bottom: 12px;
+}
+
+.learning-path-focus-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.learning-path-focus-item {
+  background: var(--red-bg);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--red);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Topics List */
+.learning-path-topics {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.learning-path-topic-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px;
+  background: transparent;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  border-left: 3px solid var(--border);
+  transition: all 0.2s;
+}
+
+.learning-path-topic-item.completed {
+  border-left-color: var(--green);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.learning-path-topic-item.current {
+  border-left-color: var(--amber);
+  background: var(--amber-subtle);
+}
+
+.learning-path-topic-icon {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.learning-path-topic-content {
+  flex: 1;
+}
+
+.learning-path-topic-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.learning-path-topic-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Action Button */
+.learning-path-action-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+  background: var(--amber);
+  color: #0e0e10;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.learning-path-action-btn:hover {
+  background: #fbbf24;
+  transform: translateY(-1px);
+}
+
+.learning-path-footer {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Modal - Learning Path Full Screen */
+.learning-path-modal {
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.learning-path-modal h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.learning-path-modal-info {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+/* Topic Card in Modal */
+.learning-path-modal-topic {
+  background: var(--bg-surface);
+  padding: 16px;
+  border-radius: 10px;
+  border-left: 4px solid var(--border);
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.learning-path-modal-topic.completed {
+  border-left-color: var(--green);
+}
+
+.learning-path-modal-topic.current {
+  border-left-color: var(--amber);
+  background: var(--amber-subtle);
+}
+
+.learning-path-modal-topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.learning-path-modal-topic-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.learning-path-modal-topic-number {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.learning-path-modal-topic-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.learning-path-modal-topic-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 12px;
+}
+
+.learning-path-modal-topic-btn {
+  padding: 6px 14px;
+  background: var(--amber);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0e0e10;
+  transition: all 0.2s;
+}
+
+.learning-path-modal-topic-btn:hover {
+  background: #fbbf24;
+}
+
+/* Scrollbar in Learning Path */
+.learning-path-topics::-webkit-scrollbar {
+  width: 4px;
+}
+
+.learning-path-topics::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.learning-path-topics::-webkit-scrollbar-thumb {
+  background: var(--amber);
+  border-radius: 99px;
+}
+
+/* Exercise Panel Styles */
+.learning-path-exercise-panel {
+  position: fixed;
+  top: 100px;
+  right: 24px;
+  width: 350px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 99;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.learning-path-exercise-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.learning-path-exercise-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.learning-path-exercise-hints {
+  margin-top: 12px;
+}
+
+.learning-path-exercise-hints-summary {
+  cursor: pointer;
+  color: var(--amber);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.learning-path-exercise-hints-list {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  list-style: none;
+  padding-left: 0;
+}
+
+.learning-path-exercise-hints-list li {
+  margin-bottom: 6px;
+}
+
+.learning-path-exercise-complete-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: var(--green);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.learning-path-exercise-complete-btn:hover {
+  background: #059669;
+}
+
+/* Responsive adjustments for learning path */
+@media (max-width: 900px) {
+  #learning-path-widget {
+    width: 320px;
+    bottom: 16px;
+    left: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  #learning-path-widget {
+    width: calc(100% - 32px);
+    max-width: 320px;
+    bottom: 16px;
+    left: 16px;
+  }
+}
+
 /* ── API KEY MODAL ────────────────────────────── */
 .modal-overlay {
   position: fixed;
