@@ -2774,10 +2774,10 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
     .addEventListener("change", filterPatternsByDate);
 
   // Show modal if no key saved for ANY provider
-//  const hasAnyKey = ["groq", "gemini", "openrouter"].some((p) =>
- //   localStorage.getItem(PROVIDERS[p].storageKey),
- // );
- // if (!hasAnyKey) setTimeout(openModal, 800);
+  const hasAnyKey = ["groq", "gemini", "openrouter"].some((p) =>
+    localStorage.getItem(PROVIDERS[p].storageKey),
+  );
+  if (!hasAnyKey) setTimeout(openModal, 800);
 
   // New feature inits
   initStreak();
