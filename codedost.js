@@ -34,7 +34,9 @@ function openAuthModal() {
     }
     return;
   }
-  document.getElementById('auth-modal-overlay').style.display = 'flex';
+  const authModalOverlay = document.getElementById('auth-modal-overlay');
+  if (!authModalOverlay) return;
+  authModalOverlay.style.display = 'flex';
 }
 
 function closeAuthModalOutside(e) {
@@ -1477,7 +1479,9 @@ function capitalize(s) {
 
 // ── MODAL ──────────────────────────────
 function openModal() {
-  document.getElementById("modal-overlay").classList.add("open");
+  const modalOverlay = document.getElementById("modal-overlay");
+  if (!modalOverlay) return;
+  modalOverlay.classList.add("open");
   // Load saved keys into inputs
   ["groq", "gemini", "openrouter"].forEach((p) => {
     const saved = localStorage.getItem(PROVIDERS[p].storageKey) || "";
