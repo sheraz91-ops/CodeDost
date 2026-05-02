@@ -680,16 +680,17 @@ async function verifyEmailToken(token) {
   }
 }
 
-// AUTO OPEN RESET PASSWORD ON PAGE LOAD
+// AUTO OPEN RESET PASSWORD ON PAGE LOAD - DISABLED: Don't auto-open modal
 (function checkPasswordReset() {
   const params = new URLSearchParams(window.location.search);
   const resetToken = params.get('reset_token');
   
   if (resetToken) {
-    openAuthModal();
-    setTimeout(() => {
-      switchAuthTab('reset');
-    }, 100);
+    // DISABLED: Don't auto-open password reset modal
+    // openAuthModal();
+    // setTimeout(() => {
+    //   switchAuthTab('reset');
+    // }, 100);
   }
 })();
 </script>

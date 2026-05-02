@@ -34,7 +34,8 @@ function openAuthModal() {
     }
     return;
   }
-  document.getElementById('auth-modal-overlay').style.display = 'flex';
+  const authModal = document.getElementById('auth-modal-overlay');
+  if (authModal) authModal.style.display = 'flex';
 }
 
 function closeAuthModalOutside(e) {
@@ -1477,7 +1478,8 @@ function capitalize(s) {
 
 // ── MODAL ──────────────────────────────
 function openModal() {
-  document.getElementById("modal-overlay").classList.add("open");
+  const modal = document.getElementById("modal-overlay");
+  if (modal) modal.classList.add("open");
   // Load saved keys into inputs
   ["groq", "gemini", "openrouter"].forEach((p) => {
     const saved = localStorage.getItem(PROVIDERS[p].storageKey) || "";
@@ -2319,7 +2321,8 @@ class LearningPathGenerator {
     this.saveUserProfile();
     
     if (this.userProfile.totalErrors >= 5) {
-      this.showLearningPathWidget();
+      // DISABLED: Don't auto-show learning path widget
+      // this.showLearningPathWidget();
     }
   }
 
@@ -2773,18 +2776,21 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
     .getElementById("pattern-date-filter")
     .addEventListener("change", filterPatternsByDate);
 
-  // Show modal if no key saved for ANY provider
-  const hasAnyKey = ["groq", "gemini", "openrouter"].some((p) =>
-    localStorage.getItem(PROVIDERS[p].storageKey),
-  );
-  if (!hasAnyKey) setTimeout(openModal, 800);
+  // Show modal if no key saved for ANY provider - DISABLED: Don't auto-show API key modal
+  // const hasAnyKey = ["groq", "gemini", "openrouter"].some((p) =>
+  //   localStorage.getItem(PROVIDERS[p].storageKey),
+  // );
+  // if (!hasAnyKey) setTimeout(openModal, 800);
 
   // New feature inits
-  initStreak();
-  loadUsageCounter();
+  // DISABLED: Don't auto-init streak
+  // initStreak();
+  // DISABLED: Don't auto-load usage counter (causes CORS errors)
+  // loadUsageCounter();
   initEditorCounter();
   initHistorySwipe();
-  showConceptOfDay();
+  // DISABLED: Don't auto-show concept of day
+  // showConceptOfDay();
 // Init auth UI
   updateAuthUI();
   if (authToken) loadQuotaFromBackend();
