@@ -2420,8 +2420,11 @@ function startTopic(topicId) {
 }
 
 function closeModal() {
-  const modal = document.querySelector('.modal-overlay');
-  if (modal) modal.remove();
+  const apiKeyModal = document.getElementById('modal-overlay');
+  const learningPathModal = document.getElementById('learning-path-modal-overlay');
+  
+  if (apiKeyModal) apiKeyModal.classList.remove('open');
+  if (learningPathModal) learningPathModal.style.display = 'none';
 }
 
 function closeAuthModalOutside(e) {
