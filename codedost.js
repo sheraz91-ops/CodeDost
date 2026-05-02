@@ -614,8 +614,8 @@ async function analyzeCode() {
   }
 }
 
-// ═══════════════════════════════════════
-// RENDER OUTPUT
+/// ═══════════════════════════════════════
+// RENDER OUTPUT — ENHANCED WITH UI FEATURES
 // ═══════════════════════════════════════
 function renderOutput(r, originalCode, errorMsg) {
   // Show output panel
@@ -632,6 +632,16 @@ function renderOutput(r, originalCode, errorMsg) {
   const sevEl = document.getElementById("out-severity");
   sevEl.textContent = r.severity ? capitalize(r.severity) : "Unknown";
   sevEl.className = "severity-badge sev-" + (r.severity || "beginner");
+
+  // ════════════════════════════════════════
+  // ENHANCEMENT: Add slide-in animation
+  // ════════════════════════════════════════
+  const cardType = document.getElementById("card-type");
+  if (cardType) {
+    cardType.classList.remove("slide-in-up");
+    void cardType.offsetWidth; // Trigger reflow
+    cardType.classList.add("slide-in-up");
+  }
 
   // Explanation
   document.getElementById("out-explanation").textContent =
@@ -666,13 +676,71 @@ function renderOutput(r, originalCode, errorMsg) {
     "block";
   document.getElementById("diff-toggle-btn").textContent = "Show Diff";
 
+  // ════════════════════════════════════════
+  // ENHANCEMENT: Add before/after comparison
+  // ════════════════════════════════════════
+  const cardFix = document.getElementById("card-fix");
+  if (cardFix) {
+    // Check if comparison already exists, remove it
+    const existingComparison = cardFix.querySelector(".code-comparison");
+    if (existingComparison) {
+      existingComparison.remove();
+    }
+
+    // Create and insert comparison card
+    const comparisonCard = document.createElement('div');
+    comparisonCard.className = 'result-card slide-in-up';
+    comparisonCard.style.cssText = 'padding: 18px 22px; border-bottom: 1px solid var(--border);';
+    
+    // Get fix explanation
+    const fixExplanation = r.fix_bullets && r.fix_bullets.length > 0 
+      ? r.fix_bullets[0] 
+      : 'See line-by-line fixes below';
+
+    comparisonCard.innerHTML = `
+      <div class="card-label" style="color: var(--purple); margin-bottom: 12px;">
+        📊 Before vs After
+      </div>
+      
+      <div class="code-comparison">
+        <div class="code-panel">
+          <div class="code-panel-header error">
+            ❌ Your Code (Buggy)
+          </div>
+          <div class="code-panel-body">
+            <pre style="margin: 0; color: var(--red); max-height: 200px; overflow-y: auto;">${escapeHtml(originalCode.substring(0, 300))}</pre>
+          </div>
+        </div>
+        
+        <div class="code-panel">
+          <div class="code-panel-header success">
+            ✅ Fixed Code
+          </div>
+          <div class="code-panel-body">
+            <pre style="margin: 0; color: var(--green); max-height: 200px; overflow-y: auto;">${escapeHtml(r.fixed_code.substring(0, 300))}</pre>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 12px; padding: 12px; background: var(--amber-subtle); border-radius: 8px; border-left: 4px solid var(--amber);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--amber); margin-bottom: 4px;">💡 Key Changes:</div>
+        <div style="font-size: 13px; color: var(--text-secondary);">${fixExplanation}</div>
+      </div>
+    `;
+
+    // Insert before the fixed code section
+    cardFix.insertBefore(comparisonCard, cardFix.firstChild);
+  }
+
   // Fix bullets
   const fixList = document.getElementById("out-fix-list");
   fixList.innerHTML = "";
   if (r.fix_bullets && Array.isArray(r.fix_bullets)) {
-    r.fix_bullets.forEach((bullet) => {
+    r.fix_bullets.forEach((bullet, index) => {
       const li = document.createElement("li");
       li.textContent = bullet;
+      // Add staggered animation
+      li.style.animation = `slideInLeft 0.5s ease-out ${index * 0.1}s backwards`;
       fixList.appendChild(li);
     });
   }
@@ -686,6 +754,14 @@ function renderOutput(r, originalCode, errorMsg) {
     r.concept_search || r.concept_to_study || "programming debugging tutorial";
   conceptLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
   conceptLink.textContent = `"${searchQuery}" ↗`;
+
+  // ════════════════════════════════════════
+  // ENHANCEMENT: Add pulse animation to concept card
+  // ════════════════════════════════════════
+  const cardConcept = document.getElementById("card-concept");
+  if (cardConcept) {
+    cardConcept.classList.add("slide-in-up");
+  }
 
   // Populate share card
   document.getElementById("sc-error-type").textContent =
@@ -720,19 +796,35 @@ function renderOutput(r, originalCode, errorMsg) {
     repeatBanner.style.display = "none";
   }
 
+  // ════════════════════════════════════════
+  // ENHANCEMENT: Show emoji reaction on success
+  // ════════════════════════════════════════
+  setTimeout(() => {
+    if (uiEnhancements && typeof uiEnhancements.showEmojiReaction === 'function') {
+      uiEnhancements.showEmojiReaction('✨', window.innerWidth - 120, 150);
+    }
+  }, 500);
+
   // Reset understood buttons
   document.getElementById("understood-yes").classList.remove("active");
   document.getElementById("understood-no").classList.remove("active");
   document.getElementById("understood-stats").style.display = "none";
 
-  // Scroll output into view on mobile
+  // ════════════════════════════════════════
+  // ENHANCEMENT: Scroll with smooth behavior
+  // ════════════════════════════════════════
   if (window.innerWidth < 900) {
     document
       .getElementById("panel-right")
       .scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    // On desktop, scroll output panel to top
+    const outputContent = document.getElementById("output-content");
+    if (outputContent) {
+      outputContent.parentElement.scrollTop = 0;
+    }
   }
 }
-
 // ═══════════════════════════════════════
 // HISTORY
 // ═══════════════════════════════════════
@@ -2655,7 +2747,210 @@ if (_codeInputEl) {
   //     .catch((error) => console.log("SW registration failed"));
   // }
 })();
+// ═══════════════════════════════════════════════════════════
+// ENHANCED UI/UX FEATURES
+// ═══════════════════════════════════════════════════════════
 
+class UIEnhancements {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.addAnimatedHero();
+    this.setupCodeTypingAnimation();
+  }
+
+  // Animated Hero Section with particles
+  addAnimatedHero() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    hero.classList.add('animated-hero');
+    
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'hero-particles';
+    hero.insertBefore(particlesContainer, hero.firstChild);
+
+    for (let i = 0; i < 15; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  // Code Typing Animation in Hero
+  setupCodeTypingAnimation() {
+    const codeExamples = [
+      'def hello():\n    print("Hello World")',
+      'for i in range(10):\n    print(i)',
+      'if x > 10:\n    return True'
+    ];
+
+    const typingElement = document.createElement('div');
+    typingElement.className = 'typing-code';
+    typingElement.innerHTML = '<span id="typed-code"></span><span class="cursor"></span>';
+
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      const modeToggle = hero.querySelector('.mode-toggle');
+      if (modeToggle) {
+        modeToggle.parentNode.insertBefore(typingElement, modeToggle);
+      }
+    }
+
+    let currentIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    const type = () => {
+      const current = codeExamples[currentIndex];
+      const typedCodeEl = document.getElementById('typed-code');
+      
+      if (!typedCodeEl) return;
+
+      if (!isDeleting && charIndex <= current.length) {
+        typedCodeEl.textContent = current.substring(0, charIndex);
+        charIndex++;
+        setTimeout(type, 100);
+      } else if (isDeleting && charIndex >= 0) {
+        typedCodeEl.textContent = current.substring(0, charIndex);
+        charIndex--;
+        setTimeout(type, 50);
+      } else if (!isDeleting && charIndex > current.length) {
+        isDeleting = true;
+        setTimeout(type, 2000);
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        currentIndex = (currentIndex + 1) % codeExamples.length;
+        setTimeout(type, 500);
+      }
+    };
+
+    setTimeout(type, 1000);
+  }
+
+  // Show Emoji Reaction
+  showEmojiReaction(emoji, x, y) {
+    const emojiEl = document.createElement('div');
+    emojiEl.className = 'emoji-reaction';
+    emojiEl.textContent = emoji;
+    emojiEl.style.left = x + 'px';
+    emojiEl.style.top = y + 'px';
+    document.body.appendChild(emojiEl);
+
+    setTimeout(() => emojiEl.remove(), 2000);
+  }
+
+  // Launch Confetti Celebration
+  launchConfetti() {
+    const colors = ['var(--amber)', 'var(--green)', 'var(--blue)', 'var(--purple)', 'var(--red)'];
+    
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.top = '-10px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+        confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 4000);
+      }, i * 30);
+    }
+  }
+
+  // Show Skeleton Loading
+  showSkeleton(container) {
+    container.innerHTML = `
+      <div class="skeleton" style="height: 20px; margin-bottom: 12px; width: 80%;"></div>
+      <div class="skeleton" style="height: 20px; margin-bottom: 12px; width: 90%;"></div>
+      <div class="skeleton" style="height: 20px; margin-bottom: 12px; width: 70%;"></div>
+      <div class="skeleton" style="height: 100px; margin-top: 20px;"></div>
+    `;
+  }
+
+  // Before/After Code Comparison
+  showCodeComparison(beforeCode, afterCode, explanation) {
+    const comparisonCard = document.createElement('div');
+    comparisonCard.className = 'result-card slide-in-up';
+    
+    comparisonCard.innerHTML = `
+      <div class="card-label" style="color: var(--purple);">📊 Code Comparison</div>
+      
+      <div class="code-comparison">
+        <div class="code-panel">
+          <div class="code-panel-header error">
+            ❌ Your Code
+          </div>
+          <div class="code-panel-body">
+            <pre style="margin: 0; color: var(--red);">${this.escapeHtml(beforeCode)}</pre>
+          </div>
+        </div>
+        
+        <div class="code-panel">
+          <div class="code-panel-header success">
+            ✅ Fixed Code
+          </div>
+          <div class="code-panel-body">
+            <pre style="margin: 0; color: var(--green);">${this.escapeHtml(afterCode)}</pre>
+          </div>
+        </div>
+      </div>
+      
+      ${explanation ? `
+        <div style="margin-top: 12px; padding: 12px; background: var(--amber-subtle); border-radius: 8px; border-left: 4px solid var(--amber);">
+          <div style="font-size: 11px; font-weight: 600; color: var(--amber); margin-bottom: 4px;">💡 Changes Made:</div>
+          <div style="font-size: 13px; color: var(--text-secondary);">${explanation}</div>
+        </div>
+      ` : ''}
+    `;
+
+    return comparisonCard;
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+}
+
+// Global instance
+const uiEnhancements = new UIEnhancements();
+
+// Celebrate on successful analysis
+const originalAnalyzeCodeUI = window.analyzeCode;
+window.analyzeCode = async function() {
+  await originalAnalyzeCodeUI.call(this);
+  
+  setTimeout(() => {
+    const explainCard = document.getElementById('card-explain');
+    if (explainCard && explainCard.style.display !== 'none') {
+      uiEnhancements.showEmojiReaction('✨', window.innerWidth - 120, 150);
+    }
+  }, 800);
+};
+
+// Celebrate on perfect understanding
+const originalMarkUnderstood = window.markUnderstood;
+if (originalMarkUnderstood) {
+  window.markUnderstood = function(understood) {
+    originalMarkUnderstood.call(this, understood);
+    if (understood) {
+      uiEnhancements.launchConfetti();
+      uiEnhancements.showEmojiReaction('🎉', window.innerWidth / 2, window.innerHeight / 2);
+    }
+  };
+}
+
+console.log('✨ Enhanced UI loaded!');
 const _clearCodeBtn = document.querySelector("#clear-code-btn");
 if (_clearCodeBtn) _clearCodeBtn.addEventListener("click", clearBoard);
 function clearBoard() {

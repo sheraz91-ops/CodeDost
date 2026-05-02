@@ -2379,3 +2379,306 @@ color:var(--text-extra-muted) !important;
   background: #1e1e1e;
   color: white;
 }
+/* ═══════════════════════════════════════════════════════════
+   ENHANCED UI/UX IMPROVEMENTS — Added Features
+   ═══════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────────
+   ANIMATED HERO SECTION
+   ────────────────────────────────────────────────────────── */
+
+.animated-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-base) 0%, var(--bg-elevated) 100%);
+}
+
+.hero-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--amber);
+  border-radius: 50%;
+  animation: float 20s infinite;
+  opacity: 0.3;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-100px) translateX(50px); }
+  50% { transform: translateY(-50px) translateX(-30px); }
+  75% { transform: translateY(-80px) translateX(20px); }
+}
+
+.typing-code {
+  font-family: var(--font-code);
+  font-size: 18px;
+  color: var(--text-primary);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 20px;
+  background: var(--amber);
+  margin-left: 2px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   FLOATING EMOJI REACTIONS
+   ────────────────────────────────────────────────────────── */
+
+.emoji-reaction {
+  position: fixed;
+  font-size: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: rise-and-fade 2s ease-out forwards;
+}
+
+@keyframes rise-and-fade {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   SMOOTH TRANSITIONS & HOVER EFFECTS
+   ────────────────────────────────────────────────────────── */
+
+.card, .info-card, .modal, button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover, .info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ──────────────────────────────────────────────────────────
+   SKELETON LOADING
+   ────────────────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface) 0%,
+    var(--bg-elevated) 50%,
+    var(--bg-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   GLOWING EFFECTS
+   ────────────────────────────────────────────────────────── */
+
+.glow-on-hover {
+  position: relative;
+}
+
+.glow-on-hover::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--amber), var(--purple), var(--blue), var(--green));
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+  background-size: 400%;
+  animation: glow-rotate 20s linear infinite;
+}
+
+.glow-on-hover:hover::before {
+  opacity: 1;
+  filter: blur(20px);
+}
+
+@keyframes glow-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   PULSE ANIMATION (for live indicators)
+   ────────────────────────────────────────────────────────── */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* ──────────────────────────────────────────────────────────
+   SLIDE IN ANIMATIONS
+   ────────────────────────────────────────────────────────── */
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-right { animation: slideInRight 0.5s ease-out; }
+.slide-in-left { animation: slideInLeft 0.5s ease-out; }
+.slide-in-up { animation: slideInUp 0.5s ease-out; }
+
+/* ──────────────────────────────────────────────────────────
+   BEFORE/AFTER CODE COMPARISON
+   ────────────────────────────────────────────────────────── */
+
+.code-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.code-panel {
+  background: var(--bg-surface);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.code-panel-header {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-panel-header.error {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.code-panel-header.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--green);
+}
+
+.code-panel-body {
+  padding: 16px;
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+/* ──────────────────────────────────────────────────────────
+   CONFETTI CELEBRATION
+   ────────────────────────────────────────────────────────── */
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--amber);
+  animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   RESPONSIVE IMPROVEMENTS
+   ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .code-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-particles {
+    display: none;
+  }
+}
