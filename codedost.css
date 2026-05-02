@@ -971,7 +971,7 @@ pre[class*="language-"] {
 .pattern-text {
   font-family: var(--font-code);
   font-size: 13px;
-  background: var(--bg-primary);
+  background: var(--bg-surface);
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--border);

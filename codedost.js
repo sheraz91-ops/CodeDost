@@ -18,227 +18,9 @@ async function incrementQuota() {
       method: 'POST',
       credentials: 'include'
     });
-  } catch {}
-}
-// ═══════════════════════════════════════
-// AUTH SYSTEM
-// ═══════════════════════════════════════
-let authToken = localStorage.getItem('cd_auth_token') || null;
-let currentUser = JSON.parse(localStorage.getItem('cd_user') || 'null');
-
-function openAuthModal() {
-  if (currentUser) {
-    // Already logged in — show logout option
-    if (confirm(`Logged in as ${currentUser.email}\n\nLogout karna hai?`)) {
-      logoutUser();
-    }
-    return;
+  } catch (e) {
+    console.log('Increment quota failed (backend may be down):', e.message);
   }
-  document.getElementById('auth-modal-overlay').style.display = 'flex';
-}
-
-function closeAuthModalOutside(e) {
-  if (e.target === document.getElementById('auth-modal-overlay')) {
-    document.getElementById('auth-modal-overlay').style.display = 'none';
-  }
-}
-
-function switchAuthTab(tab) {
-  document.getElementById('auth-form-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('auth-form-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('auth-tab-login').classList.toggle('active-tab', tab === 'login');
-  document.getElementById('auth-tab-register').classList.toggle('active-tab', tab === 'register');
-  document.getElementById('auth-submit-btn').textContent = tab === 'login' ? 'Login' : 'Sign Up';
-  document.getElementById('auth-modal-title').textContent = tab === 'login' ? '👤 Login to CodeDost' : '👤 Sign Up — It\'s Free';
-  document.getElementById('auth-error-msg').style.display = 'none';
-}
-
-async function submitAuth() {
-  const isLogin = document.getElementById('auth-form-login').style.display !== 'none';
-  const btn = document.getElementById('auth-submit-btn');
-  const errEl = document.getElementById('auth-error-msg');
-  errEl.style.display = 'none';
-  btn.disabled = true;
-  btn.textContent = 'Please wait...';
-
-  try {
-    let body, endpoint;
-    if (isLogin) {
-      endpoint = '/api/auth/login';
-      body = {
-        email: document.getElementById('auth-email-login').value.trim(),
-        password: document.getElementById('auth-pass-login').value,
-      };
-    } else {
-      endpoint = '/api/auth/register';
-      body = {
-        name: document.getElementById('auth-name-register').value.trim(),
-        email: document.getElementById('auth-email-register').value.trim(),
-        password: document.getElementById('auth-pass-register').value,
-      };
-    }
-
-    const res = await fetch(BACKEND_URL + endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    console.log(data)
- 
-
-   if (!res.ok) {
-  const errEl = document.getElementById('auth-error-msg');
-  errEl.style.display = 'block';
-
-  let messages = [];
-
-  if (data.errors && Array.isArray(data.errors)) {
-    messages = data.errors.map(err => err.message);
-  }
-  else if (data.error) {
-    messages.push(data.error);
-  }
-  else if (data.message) {
-    messages.push(data.message);
-  }
-  else {
-    messages.push('Something went wrong');
-  }
-  errEl.innerHTML = messages.map(msg => `• ${msg}`).join('<br>');
-
-  return;
-}
-   if(data.success === false){
-      console.log(data.message)
-     let auth= document.getElementById('auth-error-msg')
-      auth.innerText=data.message
-      auth.style.display='block'
-    }
-    // Save token and user
-    authToken = data.token || data.accessToken;
-    currentUser = data.user;
-    localStorage.setItem('cd_auth_token', authToken);
-    localStorage.setItem('cd_user', JSON.stringify(currentUser));
-
-    document.getElementById('auth-modal-overlay').style.display = 'none';
-    updateAuthUI();
-    loadQuotaFromBackend();
-    showToast('success', `Welcome ${currentUser.name || currentUser.email}! 🎉`);
-
-  } catch (err) {
-    // console.log(err)
-    
-  } finally {
-    btn.disabled = false;
-    btn.textContent = isLogin ? 'Login' : 'Sign Up';
-  }
-}
-
-function logoutUser() {
-  authToken = null;
-  currentUser = null;
-  localStorage.removeItem('cd_auth_token');
-  localStorage.removeItem('cd_user');
-  updateAuthUI();
-  showToast('success', 'Logged out!');
-}
-
-function updateAuthUI() {
-  const btn = document.getElementById('auth-btn');
-  const quotaPill = document.getElementById('quota-pill');
-  if (currentUser) {
-    btn.textContent = `👤 ${currentUser.name || currentUser.email.split('@')[0]}`;
-    btn.style.background = 'var(--green)';
-    quotaPill.style.display = 'flex';
-  } else {
-    btn.textContent = '👤 Login / Sign Up';
-    btn.style.background = 'var(--purple)';
-    quotaPill.style.display = 'none';
-  }
-}
-// ═══════════════════════════════════════════
-// AUTH MODAL: Forgot Password & Reset Password
-// ═══════════════════════════════════════════
-let authMode = 'login'; // login | register | forgot | reset
-
-function switchAuthTab(tab) {
-  authMode = tab;
-  
-  // Hide all forms
-  document.getElementById('auth-form-login').style.display = 'none';
-  document.getElementById('auth-form-register').style.display = 'none';
-  document.getElementById('auth-form-forgot').style.display = 'none';
-  document.getElementById('auth-form-reset').style.display = 'none';
-  
-  // Hide all tabs
-  document.getElementById('auth-tab-login').classList.remove('active-tab');
-  document.getElementById('auth-tab-register').classList.remove('active-tab');
-  document.getElementById('auth-tab-forgot').classList.remove('active-tab');
-  
-  // Clear messages
-  document.getElementById('auth-error-msg').style.display = 'none';
-  document.getElementById('auth-success-msg').style.display = 'none';
-  
-  const btn = document.getElementById('auth-submit-btn');
-  
-  if (tab === 'login') {
-    document.getElementById('auth-form-login').style.display = 'block';
-    document.getElementById('auth-tab-login').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '👤 Login to CodeDost';
-    btn.textContent = 'Login';
-  } else if (tab === 'register') {
-    document.getElementById('auth-form-register').style.display = 'block';
-    document.getElementById('auth-tab-register').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '👤 Sign Up — It\'s Free';
-    btn.textContent = 'Sign Up';
-  } else if (tab === 'forgot') {
-    document.getElementById('auth-form-forgot').style.display = 'block';
-    document.getElementById('auth-tab-forgot').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '🔑 Forgot Password?';
-    btn.textContent = 'Send Reset Link';
-  } else if (tab === 'reset') {
-    document.getElementById('auth-form-reset').style.display = 'block';
-    document.getElementById('auth-modal-title').textContent = '🔐 Reset Password';
-    btn.textContent = 'Reset Password';
-  }
-}
-
-async function submitAuth() {
-  const btn = document.getElementById('auth-submit-btn');
-  const errEl = document.getElementById('auth-error-msg');
-  const successEl = document.getElementById('auth-success-msg');
-  
-  errEl.style.display = 'none';
-  successEl.style.display = 'none';
-  btn.disabled = true;
-  btn.textContent = 'Please wait...';
-  
-  try {
-    if (authMode === 'login') {
-      await handleLoginNew();
-    } else if (authMode === 'register') {
-      await handleRegisterNew();
-    } else if (authMode === 'forgot') {
-      await handleForgotPassword();
-    } else if (authMode === 'reset') {
-      await handleResetPassword();
-    }
-  } finally {
-    btn.disabled = false;
-    btn.textContent = getButtonText();
-  }
-}
-
-function getButtonText() {
-  const texts = {
-    login: 'Login',
-    register: 'Sign Up',
-    forgot: 'Send Reset Link',
-    reset: 'Reset Password'
-  };
-  return texts[authMode] || 'Submit';
 }
 
 async function handleLoginNew() {
@@ -274,7 +56,8 @@ async function handleLoginNew() {
   loadQuotaFromBackend();
   
   setTimeout(() => {
-    document.getElementById('auth-modal-overlay').style.display = 'none';
+    const modal = document.getElementById('auth-modal-overlay');
+    if (modal) modal.style.display = 'none';
   }, 1500);
 }
 
@@ -318,13 +101,18 @@ async function handleRegisterNew() {
   updateAuthUI();
   
   // Clear form
-  document.getElementById('auth-name-register').value = '';
-  document.getElementById('auth-email-register').value = '';
-  document.getElementById('auth-pass-register').value = '';
-  document.getElementById('auth-university-register').value = '';
+  const nameInput = document.getElementById('auth-name-register');
+  const emailInput = document.getElementById('auth-email-register');
+  const passInput = document.getElementById('auth-pass-register');
+  const univInput = document.getElementById('auth-university-register');
+  if (nameInput) nameInput.value = '';
+  if (emailInput) emailInput.value = '';
+  if (passInput) passInput.value = '';
+  if (univInput) univInput.value = '';
   
   setTimeout(() => {
-    document.getElementById('auth-modal-overlay').style.display = 'none';
+    const modal = document.getElementById('auth-modal-overlay');
+    if (modal) modal.style.display = 'none';
   }, 2500);
 }
 
@@ -351,10 +139,12 @@ async function handleForgotPassword() {
   }
   
   showAuthSuccess('✅ Reset link sent! Check your email inbox.');
-  document.getElementById('auth-email-forgot').value = '';
+  const emailForgot = document.getElementById('auth-email-forgot');
+  if (emailForgot) emailForgot.value = '';
   
   setTimeout(() => {
-    document.getElementById('auth-modal-overlay').style.display = 'none';
+    const modal = document.getElementById('auth-modal-overlay');
+    if (modal) modal.style.display = 'none';
   }, 2000);
 }
 
@@ -403,8 +193,10 @@ async function handleResetPassword() {
   showAuthSuccess('✅ Password reset successfully! You can now login.');
   
   // Clear form
-  document.getElementById('auth-pass-reset-new').value = '';
-  document.getElementById('auth-pass-reset-confirm').value = '';
+  const newPassInput = document.getElementById('auth-pass-reset-new');
+  const confirmPassInput = document.getElementById('auth-pass-reset-confirm');
+  if (newPassInput) newPassInput.value = '';
+  if (confirmPassInput) confirmPassInput.value = '';
   
   setTimeout(() => {
     switchAuthTab('login');
@@ -414,12 +206,14 @@ async function handleResetPassword() {
 
 function showAuthError(message) {
   const el = document.getElementById('auth-error-msg');
+  if (!el) return; // Safety check
   el.textContent = '❌ ' + message;
   el.style.display = 'block';
 }
 
 function showAuthSuccess(message) {
   const el = document.getElementById('auth-success-msg');
+  if (!el) return; // Safety check
   el.textContent = message;
   el.style.display = 'block';
 }
@@ -445,6 +239,11 @@ let currentMode = "urdu"; // urdu | mixed | english
 let currentLang = "python";
 let sessionHistory = JSON.parse(localStorage.getItem("cd_history") || "[]");
 let mistakePatterns = JSON.parse(localStorage.getItem("cd_patterns") || "{}");
+
+// Auth State
+let authToken = localStorage.getItem('cd_auth_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('cd_user') || 'null');
+let authMode = 'login'; // login | register | forgot | reset
 
 const LANG_TAGS = {
   python: "script.py",
@@ -1477,7 +1276,9 @@ function capitalize(s) {
 
 // ── MODAL ──────────────────────────────
 function openModal() {
-  document.getElementById("modal-overlay").classList.add("open");
+  const modal = document.getElementById("modal-overlay");
+  if (!modal) return; // Safety check
+  modal.classList.add("open");
   // Load saved keys into inputs
   ["groq", "gemini", "openrouter"].forEach((p) => {
     const saved = localStorage.getItem(PROVIDERS[p].storageKey) || "";
@@ -1490,6 +1291,21 @@ function openModal() {
     const el = document.getElementById("key-" + currentProvider);
     if (el) el.focus();
   }, 100);
+}
+
+function openAuthModal() {
+  const modal = document.getElementById("auth-modal-overlay");
+  if (!modal) return; // Safety check
+  modal.style.display = 'flex';
+  // Reset form and show login tab by default
+  if (authMode !== 'reset') {
+    switchAuthTab('login');
+  }
+  // Clear error/success messages
+  const errorEl = document.getElementById('auth-error-msg');
+  const successEl = document.getElementById('auth-success-msg');
+  if (errorEl) errorEl.style.display = 'none';
+  if (successEl) successEl.style.display = 'none';
 }
 
 function closeModalOutside(e) {
@@ -1567,8 +1383,8 @@ function updateStreak() {
 
 function renderStreak(streak) {
   const el = document.getElementsByClassName("streak-num");
-  if (el) el[0].textContent = streak;
-  if (el) el[1].textContent = streak;
+  if (el && el.length > 0) el[0].textContent = streak;
+  if (el && el.length > 1) el[1].textContent = streak;
   const badge = document.getElementById("streak-badge");
   if (badge && streak >= 3) {
     badge.style.borderColor = "var(--amber)";
@@ -1583,7 +1399,7 @@ function initStreak() {
   const developedDays = daysBetween(new Date("2026-03-20"), new Date());
   const value = Number(localStorage.getItem("cd_streak"));
   if (developedDays < Number(streak) || isNaN(value)) {
-    streak = "0";
+    streak = 0;
     localStorage.setItem("cd_streak", "0");
     console.log("DOME");
     return;
@@ -1987,10 +1803,8 @@ function checkSimilarErrors(category) {
         "You have hit ImportErrors " +
         count +
         " times. Remember to import every module before using it.",
-      index_error:
-        "You have hit IndexErrors " +
-        count +
-        " times. Lists are 0-indexed — a 5-item list has indices 0 through 4.",
+      other:
+        "You have encountered similar errors " + count + " times. Study this concept thoroughly.",
     };
     text.textContent =
       CATEGORY_TIPS[category] ||
@@ -2611,8 +2425,10 @@ function closeModal() {
 }
 
 function closeAuthModalOutside(e) {
-  if (e && e.target && e.target === document.getElementById('auth-modal-overlay')) {
-    document.getElementById('auth-modal-overlay').style.display = 'none';
+  if (!e || !e.target) return; // Safety check
+  const modal = document.getElementById('auth-modal-overlay');
+  if (modal && e.target === modal) {
+    modal.style.display = 'none';
   }
 }
 
@@ -2620,39 +2436,77 @@ function switchAuthTab(tab) {
   if (!tab) return;
   authMode = tab;
   
-  document.getElementById('auth-form-login').style.display = 'none';
-  document.getElementById('auth-form-register').style.display = 'none';
-  document.getElementById('auth-form-forgot').style.display = 'none';
-  document.getElementById('auth-form-reset').style.display = 'none';
-  
-  document.getElementById('auth-tab-login').classList.remove('active-tab');
-  document.getElementById('auth-tab-register').classList.remove('active-tab');
-  document.getElementById('auth-tab-forgot').classList.remove('active-tab');
-  
-  document.getElementById('auth-error-msg').style.display = 'none';
-  document.getElementById('auth-success-msg').style.display = 'none';
-  
+  const formLogin = document.getElementById('auth-form-login');
+  const formReg = document.getElementById('auth-form-register');
+  const formForgot = document.getElementById('auth-form-forgot');
+  const formReset = document.getElementById('auth-form-reset');
+  const tabLogin = document.getElementById('auth-tab-login');
+  const tabReg = document.getElementById('auth-tab-register');
+  const tabForgot = document.getElementById('auth-tab-forgot');
+  const errorMsg = document.getElementById('auth-error-msg');
+  const successMsg = document.getElementById('auth-success-msg');
   const btn = document.getElementById('auth-submit-btn');
+  const title = document.getElementById('auth-modal-title');
+  
+  // Hide all forms and tabs
+  if (formLogin) formLogin.style.display = 'none';
+  if (formReg) formReg.style.display = 'none';
+  if (formForgot) formForgot.style.display = 'none';
+  if (formReset) formReset.style.display = 'none';
+  if (tabLogin) tabLogin.classList.remove('active-tab');
+  if (tabReg) tabReg.classList.remove('active-tab');
+  if (tabForgot) tabForgot.classList.remove('active-tab');
+  if (errorMsg) errorMsg.style.display = 'none';
+  if (successMsg) successMsg.style.display = 'none';
   
   if (tab === 'login') {
-    document.getElementById('auth-form-login').style.display = 'block';
-    document.getElementById('auth-tab-login').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '👤 Login to CodeDost';
+    if (formLogin) formLogin.style.display = 'block';
+    if (tabLogin) tabLogin.classList.add('active-tab');
+    if (title) title.textContent = '👤 Login to CodeDost';
     if (btn) btn.textContent = 'Login';
   } else if (tab === 'register') {
-    document.getElementById('auth-form-register').style.display = 'block';
-    document.getElementById('auth-tab-register').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '👤 Sign Up — It\'s Free';
+    if (formReg) formReg.style.display = 'block';
+    if (tabReg) tabReg.classList.add('active-tab');
+    if (title) title.textContent = '👤 Sign Up — It\'s Free';
     if (btn) btn.textContent = 'Sign Up';
   } else if (tab === 'forgot') {
-    document.getElementById('auth-form-forgot').style.display = 'block';
-    document.getElementById('auth-tab-forgot').classList.add('active-tab');
-    document.getElementById('auth-modal-title').textContent = '🔑 Forgot Password?';
+    if (formForgot) formForgot.style.display = 'block';
+    if (tabForgot) tabForgot.classList.add('active-tab');
+    if (title) title.textContent = '🔑 Forgot Password?';
     if (btn) btn.textContent = 'Send Reset Link';
   } else if (tab === 'reset') {
-    document.getElementById('auth-form-reset').style.display = 'block';
-    document.getElementById('auth-modal-title').textContent = '🔐 Reset Password';
+    if (formReset) formReset.style.display = 'block';
+    if (title) title.textContent = '🔐 Reset Password';
     if (btn) btn.textContent = 'Reset Password';
+  }
+}
+
+function submitAuth() {
+  if (authMode === 'login') {
+    handleLoginNew();
+  } else if (authMode === 'register') {
+    handleRegisterNew();
+  } else if (authMode === 'forgot') {
+    handleForgotPassword();
+  } else if (authMode === 'reset') {
+    handleResetPassword();
+  }
+}
+
+function updateAuthUI() {
+  const authBtn = document.getElementById('auth-btn');
+  const quotaPill = document.getElementById('quota-pill');
+  
+  if (authToken && currentUser && authBtn) {
+    // User is logged in
+    authBtn.textContent = `👤 ${currentUser.name || 'Account'}`;
+    authBtn.style.background = 'var(--green)';
+    if (quotaPill) quotaPill.style.display = 'block';
+  } else if (authBtn) {
+    // User is not logged in
+    authBtn.textContent = '👤 Login / Sign Up';
+    authBtn.style.background = 'var(--purple)';
+    if (quotaPill) quotaPill.style.display = 'none';
   }
 }
 
@@ -2671,13 +2525,14 @@ if (typeof window.analyzeCode === 'function') {
 }
 
 function detectErrorCategory(error) {
-  const e = error.toLowerCase();
+  const e = (error || '').toLowerCase();
   if (e.includes('syntax')) return 'syntax_error';
   if (e.includes('type')) return 'type_error';
   if (e.includes('index')) return 'index_error';
-  if (e.includes('key')) return 'key_error';
-  if (e.includes('name')) return 'name_error';
-  return 'general';
+  if (e.includes('null') || e.includes('none') || e.includes("noneType".toLowerCase())) return 'null_reference';
+  if (e.includes('import') || e.includes('module') || e.includes('no module')) return 'import_error';
+  if (e.includes('name') || e.includes('undefined') || e.includes('not defined')) return 'scope_error';
+  return 'other';
 }
 // ═══════════════════════════════════════
 // FEATURE 17: WHATSAPP REFERRAL
@@ -2714,17 +2569,19 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Tab key in code editor inserts spaces
-document.getElementById("code-input").addEventListener("keydown", function (e) {
-  if (e.key === "Tab") {
-    e.preventDefault();
-    const start = this.selectionStart;
-    const end = this.selectionEnd;
-    this.value =
-      this.value.substring(0, start) + "  " + this.value.substring(end);
-    this.selectionStart = this.selectionEnd = start + 2;
-  }
-});
+// Tab key in code editor inserts spaces (guarded)
+const _codeInputEl = document.getElementById("code-input");
+if (_codeInputEl) {
+  _codeInputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      this.value = this.value.substring(0, start) + "  " + this.value.substring(end);
+      this.selectionStart = this.selectionEnd = start + 2;
+    }
+  });
+}
 
 
 // ═══════════════════════════════════════
@@ -2769,9 +2626,8 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
   renderPatterns();
 
   // Initialize pattern date filter
-  document
-    .getElementById("pattern-date-filter")
-    .addEventListener("change", filterPatternsByDate);
+  const _patternDateFilter = document.getElementById("pattern-date-filter");
+  if (_patternDateFilter) _patternDateFilter.addEventListener("change", filterPatternsByDate);
 
   // Show modal if no key saved for ANY provider
   const hasAnyKey = ["groq", "gemini", "openrouter"].some((p) =>
@@ -2797,7 +2653,8 @@ document.getElementById("code-input").addEventListener("keydown", function (e) {
   // }
 })();
 
-document.querySelector("#clear-code-btn").addEventListener("click", clearBoard);
+const _clearCodeBtn = document.querySelector("#clear-code-btn");
+if (_clearCodeBtn) _clearCodeBtn.addEventListener("click", clearBoard);
 function clearBoard() {
   if (confirm("Are you sure you want to clear the code and start fresh?")) {
     document.getElementById("code-input").value = "";
