@@ -1014,11 +1014,13 @@ async function runCodeSandbox() {
   const loadingDiv = document.getElementById("execution-loading");
   const resultDiv = document.getElementById("execution-result");
   const runBtn = document.getElementById("run-code-btn");
+  const executionOutput = document.getElementById("execution-output");
 
   // Show execution card and loading state
   executionCard.style.display = "block";
   loadingDiv.style.display = "block";
   resultDiv.style.display = "none";
+  if (executionOutput) executionOutput.style.display = "block";
   runBtn.disabled = true;
   runBtn.textContent = "Running...";
 
@@ -1028,67 +1030,44 @@ async function runCodeSandbox() {
       await initPyodide();
     }
 
-    // Execute code and capture output
-    pyodide.runPython(`
+    // Execute code and capture stdout/stderr reliably
+    pyodide.globals.set("user_code", code);
+    const finalOutput = await pyodide.runPythonAsync(`
 import sys
-from io import StringIO
 import traceback
+from io import StringIO
 
-# Capture output
-output_buffer = []
+stdout_buffer = StringIO()
+stderr_buffer = StringIO()
 original_stdout = sys.stdout
+original_stderr = sys.stderr
 
-class CaptureOutput:
-    def write(self, text):
-        output_buffer.append(text)
-    def flush(self):
-        pass
-
-sys.stdout = CaptureOutput()
-sys.stderr = CaptureOutput()
+sys.stdout = stdout_buffer
+sys.stderr = stderr_buffer
 
 try:
-    # Execute user code
-    exec('''${code.replace(/`/g, "\\`").replace(/\$/g, "\\$")}''')
-except Exception as e:
-    import traceback
-    traceback.print_exc()
+    exec(user_code, globals(), globals())
+except Exception:
+    traceback.print_exc(file=stderr_buffer)
+finally:
+    sys.stdout = original_stdout
+    sys.stderr = original_stderr
 
-# Restore stdout
-sys.stdout = original_stdout
-sys.stderr = original_stdout
+stdout_text = stdout_buffer.getvalue()
+stderr_text = stderr_buffer.getvalue()
+
+if stdout_text or stderr_text:
+    result = stdout_text + stderr_text
+else:
+    result = "Code executed successfully (no output)"
+
+result
     `);
-
-    // Retrieve captured output safely via Python join (best reliability)
-    let finalOutput = "";
-
-    try {
-      finalOutput = pyodide.runPython('"".join(output_buffer)');
-      if (finalOutput === null || finalOutput === undefined) {
-        finalOutput = "";
-      }
-    } catch (innerErr) {
-      console.warn("Falling back to pyodide list conversion", innerErr);
-      try {
-        const outputBuf = pyodide.runPython("output_buffer");
-        if (outputBuf && typeof outputBuf.toJs === "function") {
-          const arr = outputBuf.toJs({ depth: 1 });
-          finalOutput = Array.isArray(arr) ? arr.join("") : "";
-        } else if (Array.isArray(outputBuf)) {
-          finalOutput = outputBuf.join("");
-        }
-      } catch {
-        finalOutput = "";
-      }
-    }
-
-    if (!finalOutput) {
-      finalOutput = "Code executed successfully (no output)";
-    }
 
     loadingDiv.style.display = "none";
     resultDiv.style.display = "block";
-    resultDiv.textContent = finalOutput;
+    resultDiv.textContent = finalOutput || "Code executed successfully (no output)";
+    executionCard.scrollIntoView({ behavior: "smooth", block: "start" });
 
     showToast("success", "Code executed successfully!");
   } catch (error) {
@@ -1096,6 +1075,7 @@ sys.stderr = original_stdout
     loadingDiv.style.display = "none";
     resultDiv.style.display = "block";
     resultDiv.textContent = `Execution Error: ${error.message}`;
+    executionCard.scrollIntoView({ behavior: "smooth", block: "start" });
     showToast("error", "Code execution failed");
   } finally {
     runBtn.disabled = false;
@@ -2226,8 +2206,12 @@ class LearningPathGenerator {
   }
 
 showLearningPathWidget() {
-    const existing = document.getElementById('learning-path-widget');
-    if (existing) existing.remove();
+  const existing = document.getElementById('learning-path-widget');
+  if (existing) existing.remove();
+
+  // If there's an 'Open Learning Path' quick button remove it when showing the full widget
+  const openBtn = document.getElementById('open-learning-path-btn');
+  if (openBtn) openBtn.remove();
     
     const path = this.generatePersonalizedPath();
     const progress = this.calculateProgress(path);
@@ -2344,87 +2328,89 @@ const learningPath = new LearningPathGenerator();
 function closeLearningPath() {
   const el = document.getElementById('learning-path-widget');
   if (el) el.remove();
+
+  // When widget is closed create a small open button so user can reopen it
+  createOpenLearningPathButton();
+}
+
+function createOpenLearningPathButton() {
+  if (document.getElementById('open-learning-path-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'open-learning-path-btn';
+  btn.textContent = 'Open Learning Path';
+  btn.style.cssText = 'position:fixed;bottom:24px;left:24px;padding:10px 12px;background:var(--amber);border:none;border-radius:8px;cursor:pointer;z-index:96;font-weight:600;color:#0e0e10;box-shadow:0 8px 24px rgba(0,0,0,0.15);';
+  btn.onclick = function() {
+    learningPath.showLearningPathWidget();
+    const b = document.getElementById('open-learning-path-btn');
+    if (b) b.remove();
+  };
+  document.body.appendChild(btn);
 }
 
 function openFullLearningPath() {
   const path = learningPath.generatePersonalizedPath();
-  
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;';
-  modal.onclick = function(e) { if (e.target === modal) closeModal(); };
-  
+
+  // Build topics HTML fragment
   let topicsHtml = '';
   path.topics.forEach(function(topic, i) {
     const isCompleted = learningPath.userProfile.completedTopics.includes(topic.id);
     const borderColor = isCompleted ? 'var(--green)' : 'var(--border)';
     const startBtn = !isCompleted ? '<button onclick="startTopic(\'' + topic.id + '\')" style="padding:6px 14px;background:var(--amber);border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#0e0e10;">Start</button>' : '';
     const title = isCompleted ? '✅ ' + topic.name : (i + 1) + '. ' + topic.name;
-    
-    topicsHtml += '<div style="background:var(--bg-surface);padding:16px;border-radius:10px;border-left:4px solid ' + borderColor + ';margin-bottom:12px;"><div style="display:flex;justify-content:space-between;align-items:start;"><div style="flex:1;"><div style="font-size:15px;font-weight:600;margin-bottom:6px;">' + title + '</div><div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + topic.description + '</div><div style="font-size:11px;color:var(--text-muted);">⏱️ ' + topic.duration + ' • 📝 ' + topic.exercises + ' exercises</div></div>' + startBtn + '</div></div>';
+
+    topicsHtml +=
+      '<div style="background:var(--bg-surface);padding:16px;border-radius:10px;border-left:4px solid ' +
+      borderColor +
+      ';margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:start;">' +
+      '<div style="flex:1;">' +
+      '<div style="font-size:15px;font-weight:600;margin-bottom:6px;">' + title + '</div>' +
+      '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + topic.description + '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);">⏱️ ' + topic.duration + ' • 📝 ' + topic.exercises + ' exercises</div>' +
+      '</div>' +
+      startBtn +
+      '</div>' +
+      '</div>';
   });
-  
-  modal.innerHTML = '<div class="modal" style="max-width:700px;width:90%;max-height:90vh;overflow-y:auto;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:24px;"><h2 style="color:var(--text-primary);margin-bottom:8px;">📚 Your Complete Learning Path</h2><p style="color:var(--text-muted);margin-bottom:20px;">' + path.name + ' • ' + path.duration + ' • ' + path.topics.length + ' topics</p>' + topicsHtml + '<div style="margin-top:20px;display:flex;gap:12px;"><button onclick="learningPath.generateCertificate()" class="modal-save" style="flex:1;padding:10px;background:var(--amber);color:#0e0e10;border:none;border-radius:6px;cursor:pointer;font-weight:600;">🎓 Get Certificate</button><button onclick="closeModal()" class="modal-save" style="flex:1;padding:10px;background:var(--bg-surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:600;">Close</button></div></div>';
-  
+
+  // If a static modal overlay exists in the DOM, reuse it so closeModal() works consistently
+  const existingModal = document.getElementById('learning-path-modal-overlay');
+  if (existingModal) {
+    const infoEl = document.getElementById('path-info');
+    const topicsContainer = document.getElementById('learning-path-topics-container');
+    if (infoEl) infoEl.textContent = path.name + ' • ' + path.duration + ' • ' + path.topics.length + ' topics';
+    if (topicsContainer) topicsContainer.innerHTML = topicsHtml;
+    existingModal.style.display = 'flex';
+    return;
+  }
+
+  // Fallback: create a dynamic modal if static overlay not present
+  const modal = document.createElement('div');
+  modal.id = 'learning-path-modal-overlay-dynamic';
+  modal.className = 'modal-overlay';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  modal.onclick = function(e) { if (e.target === modal) closeModal(); };
+
+  modal.innerHTML = '<div class="modal" style="max-width:700px;width:90%;max-height:90vh;overflow-y:auto;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:24px;">'
+    + '<h2 style="color:var(--text-primary);margin-bottom:8px;">📚 Your Complete Learning Path</h2>'
+    + '<p style="color:var(--text-muted);margin-bottom:20px;">' + path.name + ' • ' + path.duration + ' • ' + path.topics.length + ' topics</p>'
+    + topicsHtml
+    + '<div style="margin-top:20px;display:flex;gap:12px;"><button onclick="learningPath.generateCertificate()" class="modal-save" style="flex:1;padding:10px;background:var(--amber);color:#0e0e10;border:none;border-radius:6px;cursor:pointer;font-weight:600;">🎓 Get Certificate</button><button onclick="closeModal()" class="modal-save" style="flex:1;padding:10px;background:var(--bg-surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:600;">Close</button></div></div>';
+
   document.body.appendChild(modal);
 }
 
-function startTopic(topicId) {
-  console.log('Starting topic:', topicId);
-  showToast('info', '📝 Loading exercise...');
-  
-  try {
-    const exercise = TOPIC_EXERCISES[topicId] || TOPIC_EXERCISES.variables;
-    
-    if (!exercise) {
-      showToast('error', 'Exercise not found');
-      return;
-    }
-
-    const existingPanel = document.querySelector('.learning-path-exercise-panel');
-    if (existingPanel) existingPanel.remove();
-
-    const panel = document.createElement('div');
-    panel.className = 'learning-path-exercise-panel';
-    panel.style.cssText = 'position:fixed;top:100px;right:24px;width:350px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:16px;z-index:99;max-height:70vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
-
-    let panelHtml = '<div style="font-weight:700;margin-bottom:8px;color:var(--text-primary);font-size:14px;">📝 ' + exercise.title + '</div><div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">' + exercise.description + '</div><div style="background:var(--bg-surface);padding:10px;border-radius:6px;margin-bottom:12px;"><div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:6px;">💻 Starter Code:</div><pre style="font-size:11px;color:var(--text-code);margin:0;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;"><code>' + exercise.starter_code + '</code></pre></div>';
-
-    if (exercise.test_cases && exercise.test_cases.length > 0) {
-      panelHtml += '<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:6px;">✅ Test Cases:</div>';
-      exercise.test_cases.forEach(function(tc) {
-        panelHtml += '<div style="background:var(--bg-surface);padding:8px;border-radius:4px;margin-bottom:6px;font-size:11px;"><div style="color:var(--text-muted);"><strong>Input:</strong> ' + tc.input + '</div><div style="color:var(--green);"><strong>Expected:</strong> ' + tc.output + '</div></div>';
-      });
-      panelHtml += '</div>';
-    }
-
-    if (exercise.hints && exercise.hints.length > 0) {
-      panelHtml += '<details style="margin-bottom:12px;"><summary style="cursor:pointer;color:var(--amber);font-size:12px;font-weight:600;">💡 Hints</summary><ul style="margin-top:8px;font-size:11px;color:var(--text-muted);list-style:none;padding-left:8px;">';
-      exercise.hints.forEach(function(h) {
-        panelHtml += '<li style="margin-bottom:4px;">• ' + h + '</li>';
-      });
-      panelHtml += '</ul></details>';
-    }
-
-    panelHtml += '<button onclick="learningPath.completeTopic(\'' + topicId + '\');const p=document.querySelector(\'.learning-path-exercise-panel\');if(p)p.remove();" style="width:100%;margin-top:12px;padding:8px;background:var(--green);border:none;border-radius:6px;cursor:pointer;font-weight:600;color:white;font-size:12px;transition:all 0.2s;" onmouseover="this.style.background=\'#059669\'" onmouseout="this.style.background=\'var(--green)\'" >✅ Mark Complete</button>';
-
-    panel.innerHTML = panelHtml;
-    document.body.appendChild(panel);
-    showToast('success', '✅ Exercise loaded!');
-    closeModal();
-
-  } catch (error) {
-    console.error('Exercise loading failed:', error);
-    showToast('error', 'Failed to load exercise: ' + error.message);
-  }
-}
+// The `startTopic` function is defined earlier (kept as the canonical implementation).
+// Removed duplicated/corrupted second copy to avoid conflicts.
 
 function closeModal() {
   const apiKeyModal = document.getElementById('modal-overlay');
   const learningPathModal = document.getElementById('learning-path-modal-overlay');
-  
+  const dynamicLP = document.getElementById('learning-path-modal-overlay-dynamic');
+
   if (apiKeyModal) apiKeyModal.classList.remove('open');
   if (learningPathModal) learningPathModal.style.display = 'none';
+  if (dynamicLP) dynamicLP.remove();
 }
 
 function closeAuthModalOutside(e) {
