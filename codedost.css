@@ -276,9 +276,6 @@ body {
 }
 /* ── MAIN LAYOUT ────────────────────────────── */
 .main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
   min-height: calc(100vh - 56px - 145px);
 }
 
@@ -1584,14 +1581,14 @@ body {
 }
 
 .main {
-  grid-template-columns: 1fr 1fr;
-  gap: 0px;
+  display: flex;
+  justify-content: center;
   min-height: auto;
 }
 
 .panel-left,
 .panel-right {
-  width: 100%;
+  width: 50%;
 }
 
 .panel-section {
