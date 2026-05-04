@@ -1786,6 +1786,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 5px;
+  color: #ffffff;
 }
 .understood-btn.yes:hover,
 .understood-btn.yes.active {
